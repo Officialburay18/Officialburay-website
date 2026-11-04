@@ -1,4 +1,3 @@
-
 {
   "name": "OFFICIALBURAY",
   "short_name": "BURAY",
@@ -11,9 +10,10 @@
   "theme_color": "#4B1028",
   "icons": [
     {
-      "src": "officialburay-designs-under-1mb.jpg",
+      "src": "file_00000000b4608246956c6c7d14a916d5.png",
       "sizes": "512x512",
-      "type": "image/jpeg"
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
