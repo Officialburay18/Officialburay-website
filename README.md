@@ -11,7 +11,7 @@ A very famous person that makes a flyer, banner, and many more
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="google-site-verification" content="rvrPVAxavVVVRuQw5H1O8NDaBB77X-PDviZE8wW74pM" />
 <title>OFFICIALBURAY 👑 | Official Website</title>
 
 <meta name="description" content="Welcome to Officialburay, Ghanaian content creator and graphic designer. Discover my work, entertainment and designs.">
