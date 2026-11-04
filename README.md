@@ -187,5 +187,17 @@ All Rights Reserved.
 Ghana 🇬🇭 0534753518 
 </footer>
 
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register(
+      "/Officialburay-website/service-worker.js"
+    ).catch((error) => {
+      console.error("Service worker registration failed:", error);
+    });
+  });
+}
+</script>
+
 </body>
 </html>
