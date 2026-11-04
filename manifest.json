@@ -16,6 +16,16 @@
       "sizes": "1254x1254",
       "type": "image/png",
       "purpose": "any"
+    }    }
+  ],
+  "screenshots": [
+    {
+      "src": "officialburay_app_screenshot_redacted.jpg",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "OFFICIALBURAY homepage"
     }
+  ]
+}
   ]
 }
