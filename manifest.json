@@ -1,0 +1,19 @@
+
+{
+  "name": "OFFICIALBURAY",
+  "short_name": "BURAY",
+  "description": "The official home of OFFICIALBURAY, creator and designer.",
+  "start_url": "/Officialburay-website/",
+  "scope": "/Officialburay-website/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#4B1028",
+  "theme_color": "#4B1028",
+  "icons": [
+    {
+      "src": "officialburay-designs-under-1mb.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
