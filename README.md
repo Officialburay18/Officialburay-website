@@ -5,7 +5,7 @@
   <meta name="google-site-verification" content="rvrPVAxavVVVRuQw5H1O8NDaBB77X-PDviZE8wW74pM" />
 
 </head><meta name="google-site-verification" content="rvrPVAxavVVVRuQw5H1O8NDaBB77X-PDviZE8wW74pM" /><meta name="google-site-verification" content="rvrPVAxavVVVRuQw5H1O8NDaBB77X-PDviZE8wW74pM" /># Officialburay-website
-A very famous person that makes a flyer bannet and many more 
+A very famous person that makes a flyer, banner, and many more 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,7 +17,7 @@ A very famous person that makes a flyer bannet and many more
 <meta name="description" content="Welcome to Officialburay, Ghanaian content creator and graphic designer. Discover my work, entertainment and designs.">
 
 <meta name="keywords" content="Officialburay, Officialburay Ghana, Officialburay Designs, Ghanaian content creator">
-
+<meta name="google-site-verification" content="rvrPVAxavVVVRuQw5H1O8NDaBB77X-PDviZE8wW74pM" />
 <style>
 * { box-sizing: border-box; }
 
