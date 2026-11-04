@@ -16,7 +16,7 @@
       "sizes": "1254x1254",
       "type": "image/png",
       "purpose": "any"
-    }    }
+    }
   ],
   "screenshots": [
     {
@@ -25,7 +25,5 @@
       "form_factor": "narrow",
       "label": "OFFICIALBURAY homepage"
     }
-  ]
-}
   ]
 }
