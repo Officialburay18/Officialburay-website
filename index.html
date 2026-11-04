@@ -78,6 +78,16 @@ Follow on TikTok
 <footer>
 © 2026 OFFICIALBURAY. All Rights Reserved.
 </footer>
-
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register(
+      "/Officialburay-website/service-worker.js"
+    ).catch((error) => {
+      console.error("Service worker registration failed:", error);
+    });
+  });
+}
+</script>
 </body>
 </html>
