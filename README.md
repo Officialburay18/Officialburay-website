@@ -1,4 +1,10 @@
-<meta name="google-site-verification" content="rvrPVAxavVVVRuQw5H1O8NDaBB77X-PDviZE8wW74pM" /><meta name="google-site-verification" content="rvrPVAxavVVVRuQw5H1O8NDaBB77X-PDviZE8wW74pM" /># Officialburay-website
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="google-site-verification" content="rvrPVAxavVVVRuQw5H1O8NDaBB77X-PDviZE8wW74pM" />
+
+</head><meta name="google-site-verification" content="rvrPVAxavVVVRuQw5H1O8NDaBB77X-PDviZE8wW74pM" /><meta name="google-site-verification" content="rvrPVAxavVVVRuQw5H1O8NDaBB77X-PDviZE8wW74pM" /># Officialburay-website
 A very famous person that makes a flyer bannet and many more 
 <!DOCTYPE html>
 <html lang="en">
@@ -177,7 +183,7 @@ WhatsApp
 © 2026 OFFICIALBURAY.
 All Rights Reserved.
 <br><br>
-Ghana 🇬🇭
+Ghana 🇬🇭 0534753518 
 </footer>
 
 </body>
