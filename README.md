@@ -1,4 +1,5 @@
-<head>
+<head><link rel="manifest" href="/Officialburay-website/manifest.json">
+<meta name="theme-color" content="#4B1028">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
