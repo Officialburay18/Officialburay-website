@@ -1,8 +1,20 @@
-"icons": [
-  {
-    "src": "file_0000000093108246832f34234fd1afc4.png"",
-    "sizes": "1024x1024",
-    "type": "image/png",
-    "purpose": "any"
-  }"description": "The official home of OFFICIALBURAY, Ghanaian content creator and designer.",
-]
+{
+  "id": "/Officialburay-website/",
+  "name": "OFFICIALBURAY",
+  "short_name": "BURAY",
+  "description": "The official platform of OFFICIALBURAY, Ghanaian content creator and designer. Discover creative designs, entertaining content and social media updates.",
+  "start_url": "/Officialburay-website/",
+  "scope": "/Officialburay-website/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#4B1028",
+  "theme_color": "#4B1028",
+  "icons": [
+    {
+      "src": "file_0000000093108246832f34234fd1afc4.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
