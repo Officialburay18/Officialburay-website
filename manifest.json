@@ -1,19 +1,8 @@
-{
-  "name": "OFFICIALBURAY",
-  "short_name": "BURAY",
-  "description": "The official home of OFFICIALBURAY, creator and designer.",
-  "start_url": "/Officialburay-website/",
-  "scope": "/Officialburay-website/",
-  "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#4B1028",
-  "theme_color": "#4B1028",
-  "icons": [
-    {
-      "src": "file_00000000b4608246956c6c7d14a916d5.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    }
-  ]
-}
+"icons": [
+  {
+    "src": "officialburay-app-icon.png",
+    "sizes": "1024x1024",
+    "type": "image/png",
+    "purpose": "any"
+  }
+]
