@@ -1,0 +1,125 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BURAY COINS RECHARGE</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:#100b1c;
+ color:white;
+ font-family:Arial,sans-serif;
+ padding:20px;
+}
+.container{max-width:500px;margin:auto}
+h1{text-align:center;color:#f4d27a}
+.subtitle{text-align:center;color:#c9bddb}
+.card{
+ background:#211832;
+ padding:20px;
+ border-radius:16px;
+ margin:16px 0;
+ border:1px solid #49375f;
+}
+.balance{text-align:center;font-size:30px;color:#f4d27a}
+.packages{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.package{
+ background:#302343;
+ padding:16px;
+ border-radius:12px;
+ text-align:center;
+ border:1px solid #6c527f;
+}
+button{
+ width:100%;
+ padding:14px;
+ border:0;
+ border-radius:10px;
+ background:#e8c56c;
+ color:#211832;
+ font-weight:bold;
+ margin-top:10px;
+}
+select{width:100%;padding:13px;border-radius:9px}
+.notice{color:#ffcf78;text-align:center;font-size:13px}
+a{color:#f4d27a}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>🪙 BURAY COINS</h1>
+<p class="subtitle">OFFICIALBURAY LIVE Recharge Centre</p>
+
+<div class="card">
+<h3>Your Demo Balance</h3>
+<div class="balance" id="balance">500</div>
+<p style="text-align:center">BURAY COINS</p>
+</div>
+
+<div class="card">
+<h3>Choose a Recharge Package</h3>
+<div class="packages">
+<div class="package">
+<h2>100</h2>
+<p>Demo Coins</p>
+<button onclick="recharge(100)">Select</button>
+</div>
+<div class="package">
+<h2>500</h2>
+<p>Demo Coins</p>
+<button onclick="recharge(500)">Select</button>
+</div>
+<div class="package">
+<h2>1,000</h2>
+<p>Demo Coins</p>
+<button onclick="recharge(1000)">Select</button>
+</div>
+<div class="package">
+<h2>5,000</h2>
+<p>Demo Coins</p>
+<button onclick="recharge(5000)">Select</button>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>Payment Method (Preview)</h3>
+<select disabled>
+<option>Payment methods unavailable in demo</option>
+</select>
+<button onclick="alert('Demo only. No payment has been made or collected.')">
+Continue (Demo Only)
+</button>
+</div>
+
+<p class="notice">
+DEMO MODE: These coins are free test points.
+They have no cash value and cannot be withdrawn.
+No real payments are collected.
+</p>
+
+<p style="text-align:center">
+<a href="stream-home.html">Back to OFFICIALBURAY LIVE</a>
+</p>
+</div>
+
+<script>
+let balance = Number(localStorage.getItem("burayDemoCoins") || 500);
+function updateBalance(){
+ document.getElementById("balance").textContent =
+ balance.toLocaleString();
+}
+function recharge(amount){
+ balance += amount;
+ localStorage.setItem("burayDemoCoins",balance);
+ updateBalance();
+ alert(amount + " demo BURAY COINS added successfully!");
+}
+updateBalance();
+</script>
+</body>
+</html>
