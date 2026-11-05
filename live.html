@@ -83,94 +83,94 @@ font-weight:bold;font-size:15px
 <p class="small">Never share your password. Email confirmation may be required.</p>
 </main>
 
-<script type="module">
-import {createClient} from
-"https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-// OFFICIALBURAY LIVE SUPABASE CONNECTION
-const SUPABASE_URL="https://zinbassxezlkipoiphgg.supabase.co";
-sb_publishable__YCk0PKBL2dl7iHZhN6iCA_xP5_jOu5
+<script>
+const SUPABASE_URL = "https://zinbassxezlkipoiphgg.supabase.co";
+const SUPABASE_KEY = "PASTE_YOUR_SB_PUBLISHABLE_KEY_HERE";
 
-const statusBox=document.getElementById("status");
-const signupForm=document.getElementById("signupForm");
-const loginForm=document.getElementById("loginForm");
-const signupTab=document.getElementById("signupTab");
-const loginTab=document.getElementById("loginTab");
+const statusBox = document.getElementById("status");
+const signupForm = document.getElementById("signupForm");
+const loginForm = document.getElementById("loginForm");
 
-function showStatus(message){
-statusBox.textContent=message;
-}
+document.getElementById("signupTab").onclick = function() {
+  signupForm.classList.remove("hidden");
+  loginForm.classList.add("hidden");
+  statusBox.textContent = "";
+};
 
-function switchMode(mode){
-const signup=mode==="signup";
-signupForm.classList.toggle("hidden",!signup);
-loginForm.classList.toggle("hidden",signup);
-signupTab.classList.toggle("active",signup);
-loginTab.classList.toggle("active",!signup);
-showStatus("");
-}
+document.getElementById("loginTab").onclick = function() {
+  loginForm.classList.remove("hidden");
+  signupForm.classList.add("hidden");
+  statusBox.textContent = "";
+};
 
-signupTab.addEventListener("click",()=>switchMode("signup"));
-loginTab.addEventListener("click",()=>switchMode("login"));
+signupForm.addEventListener("submit", async function(event) {
+  event.preventDefault();
 
-let supabase=null;
+  statusBox.textContent = "Creating account...";
 
-if(SUPABASE_PUBLISHABLE_KEY!=="PASTE_YOUR_SB_PUBLISHABLE_KEY_HERE"){
-supabase=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
-}
+  try {
+    const response = await fetch(SUPABASE_URL + "/auth/v1/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SUPABASE_KEY
+      },
+      body: JSON.stringify({
+        email: document.getElementById("signupEmail").value.trim(),
+        password: document.getElementById("signupPassword").value,
+        data: {
+          display_name: document.getElementById("displayName").value.trim()
+        }
+      })
+    });
 
-signupForm.addEventListener("submit",async(event)=>{
-event.preventDefault();
+    const result = await response.json();
 
-if(!supabase){
-showStatus("Setup needed: add your Supabase Publishable key.");
-return;
-}
+    if (!response.ok) {
+      throw new Error(result.msg || result.message || result.error_description || "Registration failed.");
+    }
 
-const displayName=document.getElementById("displayName").value.trim();
-const email=document.getElementById("signupEmail").value.trim();
-const password=document.getElementById("signupPassword").value;
+    statusBox.textContent = result.session
+      ? "Account created successfully!"
+      : "Registration received! Check your email for confirmation.";
 
-showStatus("Creating your account...");
-
-const {data,error}=await supabase.auth.signUp({
-email,
-password,
-options:{data:{display_name:displayName}}
+  } catch (error) {
+    statusBox.textContent = "Error: " + error.message;
+  }
 });
 
-if(error){
-showStatus(error.message);
-}else if(data.session){
-showStatus("Account created. You are signed in.");
-}else{
-showStatus("Registration received. Check your email for confirmation.");
-}
-});
+loginForm.addEventListener("submit", async function(event) {
+  event.preventDefault();
+  statusBox.textContent = "Signing in...";
 
-loginForm.addEventListener("submit",async(event)=>{
-event.preventDefault();
+  try {
+    const response = await fetch(
+      SUPABASE_URL + "/auth/v1/token?grant_type=password",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": SUPABASE_KEY
+        },
+        body: JSON.stringify({
+          email: document.getElementById("loginEmail").value.trim(),
+          password: document.getElementById("loginPassword").value
+        })
+      }
+    );
 
-if(!supabase){
-showStatus("Setup needed: add your Supabase Publishable key.");
-return;
-}
+    const result = await response.json();
 
-const email=document.getElementById("loginEmail").value.trim();
-const password=document.getElementById("loginPassword").value;
+    if (!response.ok) {
+      throw new Error(result.msg || result.message || "Login failed.");
+    }
 
-showStatus("Signing in...");
+    statusBox.textContent = "Welcome back! You are signed in.";
 
-const {error}=await supabase.auth.signInWithPassword({
-email,password
-});
-
-if(error){
-showStatus(error.message);
-}else{
-showStatus("Welcome back. You are signed in.");
-}
+  } catch (error) {
+    statusBox.textContent = "Error: " + error.message;
+  }
 });
 </script>
-</body>
-</html>
+
