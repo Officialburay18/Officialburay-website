@@ -1,0 +1,176 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#12091f">
+<title>BURAY COINS & GIFTS</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#10091b;color:white;
+ font-family:Arial,sans-serif;padding:18px;
+}
+main{max-width:480px;margin:auto}
+h1{color:#f2d078;text-align:center}
+.subtitle{text-align:center;color:#bdaecc}
+.card{
+ background:#21152e;border:1px solid #563a70;
+ border-radius:17px;padding:18px;margin:17px 0;
+}
+.balance{font-size:32px;color:#f2d078;font-weight:bold}
+button{
+ border:0;border-radius:10px;padding:12px;
+ font-weight:bold;cursor:pointer;
+}
+.gold{background:#e8c66d;color:#20142b}
+.gift-grid{
+ display:grid;grid-template-columns:1fr 1fr;gap:12px;
+}
+.gift{
+ background:#291c38;border:1px solid #59416e;
+ padding:15px;border-radius:14px;text-align:center;
+}
+.emoji{font-size:35px}
+.gift p{color:#c6b6d4;font-size:13px}
+.gift button{width:100%;background:#e8c66d}
+.small{font-size:12px;color:#bdaecc;line-height:1.5}
+button:disabled{opacity:.5}
+</style>
+</head>
+
+<body>
+<main>
+
+<h1>🪙 BURAY COINS</h1>
+<p class="subtitle">OFFICIALBURAY LIVE Virtual Gifts</p>
+
+<div class="card">
+ <p>Your demo coin balance</p>
+ <div class="balance" id="coins">500</div>
+ <p class="small">DEMO COINS — no cash value</p>
+ <button class="gold" onclick="recharge()">＋ Add 100 demo coins</button>
+</div>
+
+<div class="card">
+ <h2>🎁 Gift Shop</h2>
+ <p class="small">Choose a gift to send to a creator.</p>
+
+ <div class="gift-grid">
+
+  <div class="gift">
+   <div class="emoji">❤️</div>
+   <h3>Heart</h3>
+   <p>10 coins</p>
+   <button onclick="sendGift('Heart',10)">Send</button>
+  </div>
+
+  <div class="gift">
+   <div class="emoji">🌹</div>
+   <h3>Rose</h3>
+   <p>20 coins</p>
+   <button onclick="sendGift('Rose',20)">Send</button>
+  </div>
+
+  <div class="gift">
+   <div class="emoji">⭐</div>
+   <h3>Star</h3>
+   <p>50 coins</p>
+   <button onclick="sendGift('Star',50)">Send</button>
+  </div>
+
+  <div class="gift">
+   <div class="emoji">👑</div>
+   <h3>Crown</h3>
+   <p>100 coins</p>
+   <button onclick="sendGift('Crown',100)">Send</button>
+  </div>
+
+  <div class="gift">
+   <div class="emoji">💎</div>
+   <h3>Diamond</h3>
+   <p>200 coins</p>
+   <button onclick="sendGift('Diamond',200)">Send</button>
+  </div>
+
+  <div class="gift">
+   <div class="emoji">🚀</div>
+   <h3>Rocket</h3>
+   <p>300 coins</p>
+   <button onclick="sendGift('Rocket',300)">Send</button>
+  </div>
+
+ </div>
+</div>
+
+<div class="card">
+ <h2>🏆 Creator rewards</h2>
+ <p>Demo gifts received:</p>
+ <div class="balance" id="rewards">0</div>
+ <p class="small">Demo reward points. Not withdrawable money.</p>
+</div>
+
+<div class="card">
+ <h2>📜 Gift history</h2>
+ <div id="history" class="small">No gifts sent yet.</div>
+</div>
+
+<p class="small">
+This is a demonstration wallet. Adding coins and sending gifts here does
+not charge money or create real creator earnings.
+</p>
+
+<button class="gold" onclick="location.href='stream-home.html'">
+← Back to OFFICIALBURAY LIVE
+</button>
+
+</main>
+
+<script>
+let coins = Number(localStorage.getItem("burayDemoCoins"));
+let rewards = Number(localStorage.getItem("burayDemoRewards")) || 0;
+
+if(!Number.isFinite(coins)) coins = 500;
+
+function display(){
+ document.getElementById("coins").textContent=coins;
+ document.getElementById("rewards").textContent=rewards;
+ localStorage.setItem("burayDemoCoins",coins);
+ localStorage.setItem("burayDemoRewards",rewards);
+}
+
+function recharge(){
+ coins += 100;
+ display();
+ alert("100 demo BURAY COINS added!");
+}
+
+function sendGift(name,cost){
+ if(coins < cost){
+  alert("Not enough demo coins. Add more demo coins first.");
+  return;
+ }
+
+ coins -= cost;
+ rewards += cost;
+ display();
+
+ const history=document.getElementById("history");
+ if(history.textContent==="No gifts sent yet."){
+  history.textContent="";
+ }
+
+ const item=document.createElement("p");
+ item.textContent="Sent "+name+" gift — "+cost+" demo coins";
+ history.prepend(item);
+
+ alert(name+" gift sent successfully!");
+}
+
+display();
+</script>
+
+</body>
+</html>
