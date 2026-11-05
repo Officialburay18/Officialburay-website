@@ -102,37 +102,26 @@ document.getElementById("loginTab").onclick = function() {
   signupForm.classList.add("hidden");
   statusBox.textContent = "";
 };
-
 signupForm.addEventListener("submit", async function(event) {
   event.preventDefault();
-
   statusBox.textContent = "Creating account...";
 
   try {
-    const response = await fetch(SUPABASE_URL + "/auth/v1/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "apikey": SUPABASE_KEY
-      },
-      body: JSON.stringify({
-        email: document.getElementById("signupEmail").value.trim(),
-        password: document.getElementById("signupPassword").value,
+    const { data, error } = await supabaseClient.auth.signUp({
+      email: document.getElementById("signupEmail").value.trim(),
+      password: document.getElementById("signupPassword").value,
+      options: {
         data: {
           display_name: document.getElementById("displayName").value.trim()
         }
-      })
+      }
     });
 
-    const result = await response.json();
+    if (error) throw error;
 
-    if (!response.ok) {
-      throw new Error(result.msg || result.message || result.error_description || "Registration failed.");
-    }
-
-    statusBox.textContent = result.session
+    statusBox.textContent = data.session
       ? "Account created successfully!"
-      : "Registration received! Check your email for confirmation.";
+      : "Check your email to confirm your account.";
 
   } catch (error) {
     statusBox.textContent = "Error: " + error.message;
@@ -144,33 +133,17 @@ loginForm.addEventListener("submit", async function(event) {
   statusBox.textContent = "Signing in...";
 
   try {
-    const response = await fetch(
-      SUPABASE_URL + "/auth/v1/token?grant_type=password",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "apikey": SUPABASE_KEY
-        },
-        body: JSON.stringify({
-          email: document.getElementById("loginEmail").value.trim(),
-          password: document.getElementById("loginPassword").value
-        })
-      }
-    );
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+      email: document.getElementById("loginEmail").value.trim(),
+      password: document.getElementById("loginPassword").value
+    });
 
-    const result = await response.json();
+    if (error) throw error;
 
-    if (!response.ok) {
-      throw new Error(result.msg || result.message || "Login failed.");
-    }
-
-    statusBox.textContent = "Welcome back! You are signed in.";
-window.location.href = "stream-home.html";
+    statusBox.textContent = "Welcome back!";
+    window.location.href = "stream-home.html";
 
   } catch (error) {
     statusBox.textContent = "Error: " + error.message;
   }
 });
-</script>
-
