@@ -1,23 +1,176 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#090711"><title>OFFICIALBURAY LIVE</title>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#12091f">
+<title>OFFICIALBURAY LIVE</title>
 <style>
-:root{--bg:#090711;--panel:#171220;--purple:#8b45e8;--gold:#e5bd58;--muted:#aaa3b7}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:white;font-family:Arial,sans-serif}button,input{font:inherit}.top{padding:14px;background:#100c19;border-bottom:1px solid #39294a;position:sticky;top:0}.row{max-width:850px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:8px}.brand{font-weight:900;font-size:18px}.brand span{color:var(--gold)}.tag{font-size:10px;letter-spacing:2px;color:#c9b9dc;margin-top:4px}button{cursor:pointer}.btn{border:1px solid #62437e;background:#241833;color:white;border-radius:22px;padding:10px 13px}.gold{background:var(--gold);color:#17101e;border:0;font-weight:bold}main{max-width:850px;margin:auto;padding:18px 14px 90px}.tabs{display:flex;gap:8px;overflow:auto;margin-bottom:15px}.tab{white-space:nowrap}.tab.active{background:var(--purple)}.hero{padding:22px;border:1px solid #63418a;border-radius:18px;background:linear-gradient(125deg,#32145b,#171025 65%,#493019);margin-bottom:20px}.hero h1{font-size:30px;margin:0 0 10px}.hero p,.muted{color:#d2c5df;line-height:1.5;font-size:14px}.primary{padding:12px 17px;border:0;border-radius:22px;background:var(--gold);font-weight:bold;color:#1b1320}.head{margin:20px 0 12px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.creator,.form{background:var(--panel);border:1px solid #392b49;border-radius:15px;overflow:hidden}.thumb{height:135px;display:grid;place-items:center;background:linear-gradient(135deg,#512184,#171025,#95672f);position:relative}.alt{background:linear-gradient(135deg,#16485a,#362044,#8b3b60)}.third{background:linear-gradient(135deg,#603719,#281633,#71429a)}.avatar{border:2px solid #ddd;border-radius:50%;padding:17px;background:#ffffff20;font-weight:bold}.live{position:absolute;top:8px;left:8px;background:#e33c58;padding:4px 7px;border-radius:5px;font-size:10px}.info{padding:10px}.info small{color:var(--muted)}.follow{float:right;background:#2c1d40;color:#eee;border:1px solid #68449a;border-radius:16px;padding:5px 8px;font-size:10px}.page{display:none}.page.active{display:block}.form{max-width:460px;margin:15px auto;padding:20px}.form h2{margin-top:0}.field{display:block;margin:14px 0}.field span{display:block;color:#d9cce7;font-size:12px;margin-bottom:7px}.field input{width:100%;padding:13px;border:1px solid #49345e;border-radius:10px;background:#0d0a16;color:white}.notice{padding:12px;border:1px solid #49345e;border-radius:11px;background:#1a1423;color:#d2c5df;font-size:12px;line-height:1.5;margin:15px 0}.bottom{position:fixed;bottom:0;left:0;right:0;background:#100c19;border-top:1px solid #39294a;display:flex;justify-content:space-around;padding:12px}.nav{background:none;border:0;color:#aaa3b7;font-size:11px}.nav b{display:block;font-size:19px}.nav.active{color:var(--gold)}.link{display:block;color:#d6baff;background:none;border:0;padding:12px 0}@media(min-width:650px){.thumb{height:180px}}@media(max-width:380px){.brand{font-size:15px}.grid{gap:8px}}
-</style></head><body>
-<header class="top"><div class="row"><div><div class="brand">OFFICIALBURAY <span>LIVE</span></div><div class="tag">GO LIVE · CONNECT · INSPIRE</div></div><div><button class="btn" onclick="page('login')">Log in</button> <button class="btn gold" onclick="page('signup')">Sign up</button></div></div></header>
-<main><div class="tabs"><button class="btn tab active" onclick="filter(this,'all')">For You</button><button class="btn tab" onclick="filter(this,'Music')">Music</button><button class="btn tab" onclick="filter(this,'Chat')">Chat</button><button class="btn tab" onclick="filter(this,'Gaming')">Gaming</button></div>
-<section id="home" class="page active"><div class="hero"><h1>Your stage.<br>Your community.</h1><p>Discover creators, join conversations and share positive moments. Your OFFICIALBURAY LIVE community starts here.</p><button class="primary" onclick="alert('Live broadcasting will be added in a later stage.')">＋ Start your LIVE journey</button></div><h3 class="head">🔴 Live now · Sample creators</h3><div class="grid">
-<article class="creator" data-cat="Music"><div class="thumb"><span class="live">● LIVE</span><span class="avatar">AV</span></div><div class="info"><button class="follow" onclick="follow(this)">＋ Follow</button><b>Ama Vibes</b><br><small>Music · Good energy</small></div></article>
-<article class="creator" data-cat="Chat"><div class="thumb alt"><span class="live">● LIVE</span><span class="avatar">KT</span></div><div class="info"><button class="follow" onclick="follow(this)">＋ Follow</button><b>Kojo Talks</b><br><small>Chat · Let's connect</small></div></article>
-<article class="creator" data-cat="Gaming"><div class="thumb third"><span class="live">● LIVE</span><span class="avatar">NP</span></div><div class="info"><button class="follow" onclick="follow(this)">＋ Follow</button><b>Nana Plays</b><br><small>Gaming · Playing together</small></div></article></div><div class="notice">These are sample creator cards, not real broadcasts. Live video, chat, gifts, accounts and payments are not connected yet.</div></section>
-<section id="discover" class="page"><h2>Discover</h2><p class="muted">Creator search will be connected when accounts are added.</p></section>
-<section id="inbox" class="page"><h2>Inbox</h2><div class="notice">Messages and LIVE notifications will appear here in a later stage.</div></section>
-<section id="profile" class="page"><h2>Your profile</h2><div class="hero"><span class="avatar">OB</span><h2>OFFICIALBURAY LIVE</h2><p>Set up your creator profile.</p><button class="primary" onclick="page('signup')">Create account</button></div></section>
-<section id="signup" class="page"><div class="form"><h2>Create your account</h2><p class="muted">Join the OFFICIALBURAY LIVE community.</p><label class="field"><span>Display name</span><input placeholder="Choose a display name"></label><label class="field"><span>Email address</span><input type="email" placeholder="you@example.com"></label><label class="field"><span>Username</span><input placeholder="Choose a username"></label><label class="field"><span>Password</span><input type="password" placeholder="Password field preview"></label><div class="notice">Preview only. Registration is not connected. Do not enter a real password or personal information here.</div><button class="primary" onclick="alert('Secure registration is not connected. Nothing has been sent or saved.')">Continue (preview)</button> <button class="btn" onclick="page('home')">Back</button><button class="link" onclick="page('login')">Already have an account? Log in</button></div></section>
-<section id="login" class="page"><div class="form"><h2>Welcome back</h2><p class="muted">Log in to your OFFICIALBURAY LIVE account.</p><label class="field"><span>Email or username</span><input placeholder="Email or username"></label><label class="field"><span>Password</span><input type="password" placeholder="Password field preview"></label><div class="notice">Preview only. Login is not connected. Do not enter a real password or personal information here.</div><button class="primary" onclick="alert('Secure login is not connected. Nothing has been sent or saved.')">Log in (preview)</button> <button class="btn" onclick="page('home')">Back</button><button class="link" onclick="page('signup')">New here? Create an account</button></div></section>
-</main><nav class="bottom"><button class="nav active" onclick="nav(this,'home')"><b>⌂</b>Home</button><button class="nav" onclick="nav(this,'discover')"><b>⌕</b>Discover</button><button class="nav" onclick="alert('Live broadcasting comes in a later stage.')"><b>＋</b>Go LIVE</button><button class="nav" onclick="nav(this,'inbox')"><b>♧</b>Inbox</button><button class="nav" onclick="nav(this,'profile')"><b>◉</b>Profile</button></nav>
-<script>
-function page(id){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
-function nav(b,id){document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));b.classList.add('active');page(id)}
-function follow(b){b.textContent=b.textContent.includes('Follow')?'✓ Following':'＋ Follow'}
-function filter(b,c){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.creator').forEach(x=>x.style.display=(c==='all'||x.dataset.cat===c)?'block':'none')}
-</script></body></html>
+*{box-sizing:border-box}
+body{
+margin:0;min-height:100vh;padding:24px 16px;
+display:grid;place-items:center;
+background:radial-gradient(circle at top,#39205c,#12091f 55%,#08060d);
+color:white;font-family:Arial,sans-serif
+}
+.panel{
+width:100%;max-width:430px;padding:28px 22px;
+background:#190f25;border:1px solid #63458b;
+border-radius:22px
+}
+.brand{text-align:center;margin-bottom:22px}
+.brand h1{color:#f5d77b;font-size:25px}
+.brand p{color:#c9bdd8;font-size:13px;letter-spacing:2px}
+.tabs{display:flex;gap:8px;margin:22px 0}
+.tabs button{
+flex:1;padding:12px;border:1px solid #6c5489;
+border-radius:10px;background:#241833;color:white;font-weight:bold
+}
+.tabs button.active{background:#d7b65d;color:#1b1125}
+label{display:block;margin:14px 0 7px;font-size:13px}
+input{
+width:100%;padding:13px;border-radius:10px;
+border:1px solid #57436f;background:#100b18;color:white;
+font-size:15px
+}
+.primary{
+width:100%;margin-top:20px;padding:14px;border:0;
+border-radius:10px;background:#e4c46d;color:#1a1020;
+font-weight:bold;font-size:15px
+}
+.status{min-height:42px;color:#d9cde5;font-size:13px;line-height:1.5}
+.small{color:#aa9bb9;font-size:11px;line-height:1.5}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<main class="panel">
+<div class="brand">
+<h1>OFFICIALBURAY LIVE</h1>
+<p>GO LIVE · CONNECT · INSPIRE</p>
+</div>
+
+<div class="tabs">
+<button id="signupTab" class="active" type="button">Create account</button>
+<button id="loginTab" type="button">Log in</button>
+</div>
+
+<form id="signupForm">
+<label>Display name</label>
+<input id="displayName" type="text" maxlength="40" required placeholder="Your display name">
+
+<label>Email address</label>
+<input id="signupEmail" type="email" required placeholder="you@example.com">
+
+<label>Create password</label>
+<input id="signupPassword" type="password" minlength="8" required placeholder="At least 8 characters">
+
+<button class="primary" type="submit">Create account</button>
+</form>
+
+<form id="loginForm" class="hidden">
+<label>Email address</label>
+<input id="loginEmail" type="email" required placeholder="you@example.com">
+
+<label>Password</label>
+<input id="loginPassword" type="password" required placeholder="Your password">
+
+<button class="primary" type="submit">Log in</button>
+</form>
+
+<p id="status" class="status"></p>
+<p class="small">Never share your password. Email confirmation may be required.</p>
+</main>
+
+<script type="module">
+import {createClient} from
+"https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+// OFFICIALBURAY LIVE SUPABASE CONNECTION
+const SUPABASE_URL="https://zinbassxezlkipoiphgg.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="PASTE_YOUR_SB_PUBLISHABLE_KEY_HERE";
+
+const statusBox=document.getElementById("status");
+const signupForm=document.getElementById("signupForm");
+const loginForm=document.getElementById("loginForm");
+const signupTab=document.getElementById("signupTab");
+const loginTab=document.getElementById("loginTab");
+
+function showStatus(message){
+statusBox.textContent=message;
+}
+
+function switchMode(mode){
+const signup=mode==="signup";
+signupForm.classList.toggle("hidden",!signup);
+loginForm.classList.toggle("hidden",signup);
+signupTab.classList.toggle("active",signup);
+loginTab.classList.toggle("active",!signup);
+showStatus("");
+}
+
+signupTab.addEventListener("click",()=>switchMode("signup"));
+loginTab.addEventListener("click",()=>switchMode("login"));
+
+let supabase=null;
+
+if(SUPABASE_PUBLISHABLE_KEY!=="PASTE_YOUR_SB_PUBLISHABLE_KEY_HERE"){
+supabase=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+}
+
+signupForm.addEventListener("submit",async(event)=>{
+event.preventDefault();
+
+if(!supabase){
+showStatus("Setup needed: add your Supabase Publishable key.");
+return;
+}
+
+const displayName=document.getElementById("displayName").value.trim();
+const email=document.getElementById("signupEmail").value.trim();
+const password=document.getElementById("signupPassword").value;
+
+showStatus("Creating your account...");
+
+const {data,error}=await supabase.auth.signUp({
+email,
+password,
+options:{data:{display_name:displayName}}
+});
+
+if(error){
+showStatus(error.message);
+}else if(data.session){
+showStatus("Account created. You are signed in.");
+}else{
+showStatus("Registration received. Check your email for confirmation.");
+}
+});
+
+loginForm.addEventListener("submit",async(event)=>{
+event.preventDefault();
+
+if(!supabase){
+showStatus("Setup needed: add your Supabase Publishable key.");
+return;
+}
+
+const email=document.getElementById("loginEmail").value.trim();
+const password=document.getElementById("loginPassword").value;
+
+showStatus("Signing in...");
+
+const {error}=await supabase.auth.signInWithPassword({
+email,password
+});
+
+if(error){
+showStatus(error.message);
+}else{
+showStatus("Welcome back. You are signed in.");
+}
+});
+</script>
+</body>
+</html>
