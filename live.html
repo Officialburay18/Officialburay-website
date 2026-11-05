@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090711">
+<title>OFFICIALBURAY LIVE</title>
+<style>
+:root{--bg:#090711;--panel:#151220;--panel2:#20182d;--purple:#8b45e8;--gold:#e5bd58;--muted:#aaa3b7;--white:#fff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--white);font-family:Arial,Helvetica,sans-serif}
+button,input{font:inherit}
+.top{position:sticky;top:0;z-index:5;background:#0d0a16f2;backdrop-filter:blur(12px);border-bottom:1px solid #30233e;padding:14px 16px}
+.toprow{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:900px;margin:auto}
+.brand{font-weight:900;letter-spacing:.4px;font-size:19px}.brand span{color:var(--gold)}
+.tag{font-size:10px;color:#d6c7ec;letter-spacing:2px;margin-top:4px}
+.top-actions{display:flex;gap:8px}
+.smallbtn,.tab{border:1px solid #443452;background:#21172d;color:white;border-radius:20px;padding:9px 12px}
+.smallbtn.gold{background:var(--gold);color:#1b1320;border:0;font-weight:800}
+main{max-width:900px;margin:auto;padding:18px 14px 95px}
+.tabs{display:flex;gap:8px;overflow:auto;padding:3px 0 16px;scrollbar-width:none}
+.tab{white-space:nowrap;cursor:pointer;color:#d4cbdc}.tab.active{background:var(--purple);border-color:var(--purple);color:white;font-weight:bold}
+.hero{background:linear-gradient(125deg,#32145b,#171025 60%,#3c2b16);border:1px solid #64418a;border-radius:20px;padding:20px;margin-bottom:22px;position:relative;overflow:hidden}
+.hero:after{content:"LIVE";position:absolute;right:18px;top:18px;color:#ffffff18;font-size:42px;font-weight:900}
+.hero h1{font-size:27px;line-height:1.12;margin:0 0 9px;max-width:470px}
+.hero p{color:#e0d5ec;line-height:1.5;margin:0 0 16px;max-width:500px;font-size:14px}
+.primary{background:var(--gold);color:#1a1220;border:0;border-radius:24px;padding:12px 18px;font-weight:900;cursor:pointer}
+.sectionhead{display:flex;align-items:center;justify-content:space-between;margin:22px 2px 12px}
+.sectionhead h2{font-size:18px;margin:0}.sectionhead span{font-size:12px;color:var(--muted)}
+.livegrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.creator{background:var(--panel);border:1px solid #30263d;border-radius:16px;overflow:hidden;cursor:pointer}
+.thumb{height:150px;display:flex;align-items:center;justify-content:center;position:relative;background:linear-gradient(145deg,#52248c,#1d1630 60%,#9a6b32)}
+.thumb.alt{background:linear-gradient(145deg,#153e52,#332044 65%,#8c3c60)}
+.thumb.third{background:linear-gradient(145deg,#5a3218,#25152f 60%,#633a8e)}
+.avatar{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:#ffffff20;border:2px solid #ffffff9c;font-size:23px;font-weight:bold}
+.livepill{position:absolute;left:9px;top:9px;background:#e93b58;color:white;border-radius:5px;padding:4px 7px;font-size:10px;font-weight:900}
+.viewers{position:absolute;right:9px;top:9px;background:#08060bbd;border-radius:5px;padding:4px 7px;font-size:10px}
+.creatorinfo{padding:11px}.creatorinfo strong{display:block;font-size:14px;margin-bottom:5px}.creatorinfo small{color:var(--muted);font-size:12px}
+.follow{float:right;background:#2c1d40;color:#e8d7ff;border:1px solid #68449a;border-radius:16px;padding:5px 9px;font-size:10px}
+.empty{display:none;color:var(--muted);text-align:center;padding:30px}
+.bottom{position:fixed;bottom:0;left:0;right:0;z-index:6;background:#100c19f5;border-top:1px solid #30233e;display:flex;justify-content:center}
+.bottominner{width:100%;max-width:650px;display:flex;justify-content:space-around;padding:10px 6px calc(10px + env(safe-area-inset-bottom))}
+.navitem{background:none;border:0;color:#aaa3b7;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;min-width:58px}
+.navitem b{font-size:19px;font-weight:500}.navitem.active{color:var(--gold)}
+.notice{background:#1a1423;border:1px solid #49345e;border-radius:12px;padding:12px;color:#cfc2dc;font-size:12px;line-height:1.5;margin-top:20px}
+.page{display:none}.page.active{display:block}
+.search{width:100%;background:#171220;border:1px solid #443452;border-radius:12px;padding:13px;color:white;margin:4px 0 14px;outline:none}
+@media(min-width:650px){.thumb{height:190px}.hero{padding:28px}.hero h1{font-size:34px}}
+@media(max-width:380px){.livegrid{gap:8px}.thumb{height:125px}.creatorinfo{padding:9px}.brand{font-size:16px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="toprow">
+    <div><div class="brand">OFFICIALBURAY <span>LIVE</span></div><div class="tag">GO LIVE · CONNECT · INSPIRE</div></div>
+    <div class="top-actions"><button class="smallbtn" onclick="showPage('search')">⌕ Search</button><button class="smallbtn gold" onclick="goLive()">＋ Go Live</button></div>
+  </div>
+</header>
+<main>
+  <div class="tabs" aria-label="Live categories">
+    <button class="tab active" onclick="filterTab(this,'For You')">For You</button>
+    <button class="tab" onclick="filterTab(this,'Following')">Following</button>
+    <button class="tab" onclick="filterTab(this,'Music')">Music</button>
+    <button class="tab" onclick="filterTab(this,'Chat')">Chat</button>
+    <button class="tab" onclick="filterTab(this,'Gaming')">Gaming</button>
+  </div>
+
+  <section class="page active" id="home">
+    <div class="hero">
+      <h1>Your stage.<br>Your community.</h1>
+      <p>Discover creators, join conversations and share positive moments. Your OFFICIALBURAY LIVE community starts here.</p>
+      <button class="primary" onclick="goLive()">＋ Start your LIVE journey</button>
+    </div>
+    <div class="sectionhead"><h2>🔴 Live now</h2><span id="count">3 creators</span></div>
+    <div class="livegrid" id="livegrid">
+      <article class="creator" data-category="Music" onclick="preview('Ama Vibes')">
+        <div class="thumb"><span class="livepill">● LIVE</span><span class="viewers">1.2K watching</span><div class="avatar">AV</div></div>
+        <div class="creatorinfo"><button class="follow" onclick="event.stopPropagation();follow(this)">＋ Follow</button><strong>Ama Vibes</strong><small>Music · Good energy</small></div>
+      </article>
+      <article class="creator" data-category="Chat" onclick="preview('Kojo Talks')">
+        <div class="thumb alt"><span class="livepill">● LIVE</span><span class="viewers">856 watching</span><div class="avatar">KT</div></div>
+        <div class="creatorinfo"><button class="follow" onclick="event.stopPropagation();follow(this)">＋ Follow</button><strong>Kojo Talks</strong><small>Chat · Let's connect</small></div>
+      </article>
+      <article class="creator" data-category="Gaming" onclick="preview('Nana Plays')">
+        <div class="thumb third"><span class="livepill">● LIVE</span><span class="viewers">420 watching</span><div class="avatar">NP</div></div>
+        <div class="creatorinfo"><button class="follow" onclick="event.stopPropagation();follow(this)">＋ Follow</button><strong>Nana Plays</strong><small>Gaming · Playing together</small></div>
+      </article>
+    </div>
+    <div class="empty" id="empty">No sample creators in this category yet.</div>
+    <div class="notice">Prototype preview: these are sample creator cards, not real broadcasts. Live video, chat, gifts, accounts and payments will be connected in later development stages.</div>
+  </section>
+
+  <section class="page" id="search">
+    <div class="sectionhead"><h2>Discover creators</h2></div>
+    <input class="search" id="searchbox" placeholder="Search creators..." oninput="searchCreators(this.value)">
+    <p style="color:#aaa3b7;font-size:13px">Search the sample creators shown on the home screen.</p>
+  </section>
+
+  <section class="page" id="inbox">
+    <div class="sectionhead"><h2>Inbox</h2></div>
+    <div class="notice">Your messages and LIVE notifications will appear here when accounts and messaging are connected.</div>
+  </section>
+
+  <section class="page" id="profile">
+    <div class="sectionhead"><h2>Your profile</h2></div>
+    <div class="hero"><div class="avatar">OB</div><h2 style="margin:12px 0 5px">OFFICIALBURAY LIVE</h2><p>Creator profile preview</p><button class="primary" onclick="alert('Account registration will be added in the next stage.')">Create account</button></div>
+    <div class="notice">Your profile, followers and creator dashboard will be connected after account registration is built.</div>
+  </section>
+</main>
+<nav class="bottom"><div class="bottominner">
+  <button class="navitem active" onclick="nav(this,'home')"><b>⌂</b>Home</button>
+  <button class="navitem" onclick="nav(this,'search')"><b>⌕</b>Discover</button>
+  <button class="navitem" onclick="goLive()"><b style="color:#e5bd58">＋</b>Go LIVE</button>
+  <button class="navitem" onclick="nav(this,'inbox')"><b>♧</b>Inbox</button>
+  <button class="navitem" onclick="nav(this,'profile')"><b>◉</b>Profile</button>
+</div></nav>
+<script>
+function nav(btn,id){document.querySelectorAll('.navitem').forEach(x=>x.classList.remove('active'));btn.classList.add('active');showPage(id)}
+function showPage(id){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function goLive(){alert('The Go LIVE screen is planned for Stage 3. This prototype does not broadcast video yet.')}
+function preview(name){alert(name+' is a sample creator card. Real live video will be connected in Stage 3.')}
+function follow(btn){btn.textContent=btn.textContent.includes('Follow')?'✓ Following':'＋ Follow'}
+function filterTab(btn,category){
+ document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));btn.classList.add('active');
+ const cards=[...document.querySelectorAll('.creator')];let shown=0;
+ cards.forEach(card=>{const ok=category==='For You'||category==='Following'||card.dataset.category===category;card.style.display=ok?'block':'none';if(ok)shown++});
+ document.getElementById('empty').style.display=shown?'none':'block';
+ document.getElementById('count').textContent=shown+' creators';
+}
+function searchCreators(q){
+ const term=q.toLowerCase();showPage('search');
+ document.querySelectorAll('.creator').forEach(card=>{card.style.display=card.innerText.toLowerCase().includes(term)?'block':'none'});
+}
+</script>
+</body>
+</html>
