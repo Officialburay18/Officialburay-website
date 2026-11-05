@@ -1,0 +1,273 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#10091b">
+<title>OFFICIALBURAY LIVE</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:#10091b;
+  color:white;
+  font-family:Arial,sans-serif;
+  padding-bottom:85px;
+}
+header{
+  padding:18px 16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid #352447;
+  position:sticky;
+  top:0;
+  background:#10091b;
+  z-index:5;
+}
+.logo{color:#f2d078;font-size:20px;font-weight:bold}
+.tagline{font-size:10px;color:#bca9ce;margin-top:4px}
+.avatar{
+  background:#6943a0;
+  border-radius:50%;
+  width:38px;height:38px;
+  display:grid;place-items:center;
+  font-weight:bold;
+}
+main{max-width:650px;margin:auto;padding:16px}
+h2{font-size:21px;margin:12px 0}
+.subtitle{color:#b9a9c9;font-size:13px}
+.live-card{
+  background:linear-gradient(135deg,#48266d,#1d1230);
+  border:1px solid #68458c;
+  border-radius:17px;
+  padding:20px;
+  margin:18px 0;
+}
+.live-label{color:#ff7777;font-size:12px;font-weight:bold}
+.live-card h2{font-size:24px}
+button{
+  border:0;border-radius:10px;
+  padding:12px 16px;
+  font-weight:bold;cursor:pointer;
+}
+.gold{background:#e8c66d;color:#20142b}
+.purple{background:#68449a;color:white}
+.outline{
+  background:transparent;
+  border:1px solid #72528e;
+  color:white;
+}
+.section-title{
+  display:flex;justify-content:space-between;
+  align-items:center;margin-top:25px;
+}
+.stream-card{
+  background:#21152e;
+  border:1px solid #49335f;
+  border-radius:15px;
+  overflow:hidden;
+  margin:14px 0;
+}
+.stream-cover{
+  height:155px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,#613d88,#24132f);
+  font-size:42px;
+}
+.stream-info{padding:13px}
+.stream-info p{color:#bcaaca;font-size:13px}
+.live-dot{color:#ff7373;font-weight:bold;font-size:12px}
+.follow{
+  float:right;
+  background:#e8c66d;color:#20142b;
+  padding:8px 12px;
+}
+.page{display:none}
+.page.active{display:block}
+nav{
+  position:fixed;
+  bottom:0;left:0;right:0;
+  display:flex;
+  justify-content:space-around;
+  background:#1b1027;
+  border-top:1px solid #49335f;
+  padding:10px 2px;
+  z-index:10;
+}
+nav button{
+  background:transparent;color:#bcaaca;
+  padding:7px 5px;font-size:11px;
+}
+nav button.active{color:#f2d078}
+nav span{display:block;font-size:19px;margin-bottom:4px}
+.profile-box{
+  background:#21152e;
+  border-radius:16px;
+  padding:22px;
+  text-align:center;
+  margin-top:20px;
+}
+.big-avatar{
+  width:75px;height:75px;border-radius:50%;
+  background:#6943a0;
+  display:grid;place-items:center;
+  font-size:28px;margin:auto;
+}
+.notice{
+  color:#cbbbd8;font-size:12px;
+  line-height:1.6;margin-top:18px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div>
+    <div class="logo">OFFICIALBURAY LIVE</div>
+    <div class="tagline">GO LIVE · CONNECT · INSPIRE</div>
+  </div>
+  <div class="avatar">OB</div>
+</header>
+
+<main>
+
+<section id="home" class="page active">
+  <h2>Welcome to OFFICIALBURAY LIVE</h2>
+  <p class="subtitle">Connect with creators and discover live entertainment.</p>
+
+  <div class="live-card">
+    <div class="live-label">● YOUR LIVE STAGE</div>
+    <h2>Ready to go LIVE?</h2>
+    <p class="subtitle">Share your talent, ideas and creativity.</p>
+    <button class="gold" onclick="goLive()">＋ Go LIVE</button>
+  </div>
+
+  <div class="section-title">
+    <h2>Popular creators</h2>
+    <span class="subtitle">Discover</span>
+  </div>
+
+  <div class="stream-card">
+    <div class="stream-cover">🎤</div>
+    <div class="stream-info">
+      <span class="live-dot">● LIVE DEMO</span>
+      <button class="follow" onclick="follow(this)">Follow</button>
+      <h3>Music & Entertainment</h3>
+      <p>Creator showcase · Sample stream</p>
+    </div>
+  </div>
+
+  <div class="stream-card">
+    <div class="stream-cover">🎮</div>
+    <div class="stream-info">
+      <span class="live-dot">● LIVE DEMO</span>
+      <button class="follow" onclick="follow(this)">Follow</button>
+      <h3>Gaming Corner</h3>
+      <p>Gaming community · Sample stream</p>
+    </div>
+  </div>
+</section>
+
+<section id="discover" class="page">
+  <h2>Discover</h2>
+  <p class="subtitle">Explore creators and communities.</p>
+
+  <div class="stream-card">
+    <div class="stream-cover">😂</div>
+    <div class="stream-info">
+      <h3>Comedy & Fun</h3>
+      <p>Discover funny creators and entertaining content.</p>
+    </div>
+  </div>
+
+  <div class="stream-card">
+    <div class="stream-cover">🎵</div>
+    <div class="stream-info">
+      <h3>Music & Talent</h3>
+      <p>Explore music and creative performances.</p>
+    </div>
+  </div>
+
+  <div class="stream-card">
+    <div class="stream-cover">🌍</div>
+    <div class="stream-info">
+      <h3>Community</h3>
+      <p>Connect with people and share positive ideas.</p>
+    </div>
+  </div>
+</section>
+
+<section id="inbox" class="page">
+  <h2>Inbox</h2>
+  <p class="subtitle">Your messages and notifications will appear here.</p>
+  <div class="live-card">
+    <h3>Welcome to OFFICIALBURAY LIVE!</h3>
+    <p class="subtitle">Your inbox is ready for future updates.</p>
+  </div>
+</section>
+
+<section id="profile" class="page">
+  <h2>My Profile</h2>
+  <div class="profile-box">
+    <div class="big-avatar">OB</div>
+    <h2>OFFICIALBURAY</h2>
+    <p class="subtitle">Creator on OFFICIALBURAY LIVE</p>
+    <button class="outline" onclick="alert('Profile editing will be added in a future update.')">
+      Edit profile
+    </button>
+  </div>
+</section>
+
+</main>
+
+<nav>
+  <button class="active" onclick="showPage('home',this)">
+    <span>⌂</span>Home
+  </button>
+  <button onclick="showPage('discover',this)">
+    <span>⌕</span>Discover
+  </button>
+  <button onclick="goLive()">
+    <span>＋</span>Go LIVE
+  </button>
+  <button onclick="showPage('inbox',this)">
+    <span>✉</span>Inbox
+  </button>
+  <button onclick="showPage('profile',this)">
+    <span>●</span>Profile
+  </button>
+</nav>
+
+<script>
+function showPage(page,button){
+  document.querySelectorAll('.page').forEach(p=>{
+    p.classList.remove('active');
+  });
+
+  document.getElementById(page).classList.add('active');
+
+  document.querySelectorAll('nav button').forEach(b=>{
+    b.classList.remove('active');
+  });
+
+  button.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function goLive(){
+  alert('The LIVE broadcasting feature is coming soon. Camera and streaming services still need to be connected.');
+}
+
+function follow(button){
+  button.textContent =
+    button.textContent === 'Follow' ? 'Following' : 'Follow';
+}
+</script>
+
+</body>
+</html>
