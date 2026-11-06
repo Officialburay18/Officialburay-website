@@ -1,152 +1,474 @@
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#12091f">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090711">
 <title>OFFICIALBURAY LIVE</title>
 <style>
+:root {
+--bg:#090711;
+--panel:#171220;
+--purple:#8b45e8;
+--gold:#e5bd58;
+--white:#fff;
+--muted:#aaa3b7;
+}
 *{box-sizing:border-box}
 body{
-margin:0;min-height:100vh;padding:24px 16px;
-display:grid;place-items:center;
-background:radial-gradient(circle at top,#39205c,#12091f 55%,#08060d);
-color:white;font-family:Arial,sans-serif
+margin:0;
+background:var(--bg);
+color:white;
+font-family:Arial,sans-serif;
 }
-.panel{
-width:100%;max-width:430px;padding:28px 22px;
-background:#190f25;border:1px solid #63458b;
-border-radius:22px
+button,input{font:inherit}
+button{cursor:pointer}
+header{
+position:sticky;
+top:0;
+z-index:10;
+background:#100c19;
+padding:15px;
+border-bottom:1px solid #382a49;
 }
-.brand{text-align:center;margin-bottom:22px}
-.brand h1{color:#f5d77b;font-size:25px}
-.brand p{color:#c9bdd8;font-size:13px;letter-spacing:2px}
-.tabs{display:flex;gap:8px;margin:22px 0}
-.tabs button{
-flex:1;padding:12px;border:1px solid #6c5489;
-border-radius:10px;background:#241833;color:white;font-weight:bold
+.top{
+max-width:900px;
+margin:auto;
+display:flex;
+justify-content:space-between;
+align-items:center;
 }
-.tabs button.active{background:#d7b65d;color:#1b1125}
-label{display:block;margin:14px 0 7px;font-size:13px}
-input{
-width:100%;padding:13px;border-radius:10px;
-border:1px solid #57436f;background:#100b18;color:white;
-font-size:15px
+.brand{font-size:19px;font-weight:900}
+.brand span{color:var(--gold)}
+.tag{font-size:9px;letter-spacing:2px;color:#ccc}
+.btn{
+padding:10px 14px;
+border-radius:22px;
+border:1px solid #68449a;
+background:#241833;
+color:white;
 }
+.gold{
+background:var(--gold);
+color:#17101e;
+font-weight:bold;
+border:0;
+}
+main{
+max-width:900px;
+margin:auto;
+padding:18px 14px 100px;
+}
+.page{display:none}
+.page.active{display:block}
+.hero{
+padding:23px;
+border:1px solid #65418b;
+border-radius:19px;
+background:linear-gradient(125deg,#32145b,#171025 65%,#493019);
+margin-bottom:20px;
+}
+.eyebrow{
+font-size:10px;
+letter-spacing:2px;
+color:#e7ce91;
+}
+h1{font-size:30px;line-height:1.2}
+.hero p{color:#ded3e9;line-height:1.5}
 .primary{
-width:100%;margin-top:20px;padding:14px;border:0;
-border-radius:10px;background:#e4c46d;color:#1a1020;
-font-weight:bold;font-size:15px
+background:var(--gold);
+color:#17101e;
+border:0;
+border-radius:25px;
+padding:12px 18px;
+font-weight:bold;
 }
-.status{min-height:42px;color:#d9cde5;font-size:13px;line-height:1.5}
-.small{color:#aa9bb9;font-size:11px;line-height:1.5}
-.hidden{display:none}
+.sectionhead{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin:22px 2px 12px;
+}
+.sectionhead h2{font-size:18px}
+.sectionhead small{color:var(--muted)}
+.chips{
+display:flex;
+gap:8px;
+overflow-x:auto;
+padding-bottom:14px;
+}
+.chip{
+background:#21182d;
+color:white;
+border:1px solid #49345e;
+border-radius:20px;
+padding:9px 14px;
+}
+.chip.active{background:var(--purple)}
+.grid{
+display:grid;
+grid-template-columns:repeat(2,minmax(0,1fr));
+gap:12px;
+}
+.creator{
+background:var(--panel);
+border:1px solid #34273f;
+border-radius:15px;
+overflow:hidden;
+}
+.thumb{
+height:145px;
+display:grid;
+place-items:center;
+background:linear-gradient(140deg,#55258d,#1c142a,#9a6b32);
+position:relative;
+}
+.blue{background:linear-gradient(140deg,#16485a,#30203e,#8b3b60)}
+.orange{background:linear-gradient(140deg,#603719,#281633,#71429a)}
+.avatar{
+width:61px;
+height:61px;
+border-radius:50%;
+display:grid;
+place-items:center;
+background:#ffffff20;
+border:2px solid white;
+font-weight:bold;
+}
+.demo{
+position:absolute;
+top:8px;
+left:8px;
+font-size:9px;
+background:#17101e;
+padding:5px;
+}
+.info{padding:12px}
+.info strong{display:block;font-size:13px}
+.info small{color:var(--muted)}
+.follow{
+float:right;
+background:#2c1d40;
+color:white;
+border:1px solid #68449a;
+border-radius:15px;
+padding:5px 8px;
+}
+.notice{
+background:#1a1423;
+border:1px solid #49345e;
+border-radius:12px;
+padding:12px;
+color:#d2c5df;
+font-size:12px;
+line-height:1.5;
+margin:16px 0;
+}
+.creategrid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+}
+.createcard{
+background:var(--panel);
+border:1px solid #49345e;
+border-radius:16px;
+padding:18px 13px;
+text-align:left;
+min-height:145px;
+color:white;
+}
+.createicon{font-size:27px}
+.createcard strong{display:block;margin:10px 0}
+.createcard small{color:var(--muted)}
+.form{
+background:var(--panel);
+border:1px solid #382a49;
+border-radius:15px;
+padding:18px;
+}
+.field{display:block;margin:14px 0}
+.field span{display:block;margin-bottom:7px;font-size:12px}
+.field input,.searchbox{
+width:100%;
+padding:13px;
+border-radius:10px;
+background:#0d0a16;
+color:white;
+border:1px solid #49345e;
+}
+.previewvideo{
+width:100%;
+max-height:320px;
+background:black;
+border-radius:12px;
+margin-top:12px;
+display:none;
+}
+.bottom{
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+z-index:12;
+background:#100c19;
+border-top:1px solid #382a49;
+padding:10px 4px;
+}
+.bottominner{
+display:flex;
+justify-content:space-around;
+max-width:650px;
+margin:auto;
+}
+.nav{
+background:none;
+border:0;
+color:#aaa3b7;
+font-size:11px;
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:4px;
+}
+.nav b{font-size:21px}
+.nav.active{color:var(--gold)}
+.nav.create b{
+background:var(--gold);
+color:#17101e;
+padding:3px 12px;
+border-radius:8px;
+}
+@media(min-width:650px){
+.grid{grid-template-columns:repeat(3,1fr)}
+.thumb{height:185px}
+}
 </style>
 </head>
 <body>
-<main class="panel">
-<div class="brand">
-<h1>OFFICIALBURAY LIVE</h1>
-<p>GO LIVE · CONNECT · INSPIRE</p>
+
+<header>
+<div class="top">
+<div>
+<div class="brand">OFFICIALBURAY <span>LIVE</span></div>
+<div class="tag">GO LIVE · CONNECT · INSPIRE</div>
+</div>
+<button class="btn gold" onclick="openPage('create')">＋ Create</button>
+</div>
+</header>
+
+<main>
+
+<section id="home" class="page active">
+<div class="hero">
+<div class="eyebrow">WELCOME TO YOUR COMMUNITY</div>
+<h1>Your stage.<br>Your community.</h1>
+<p>Discover creators, explore new ideas and connect through positive LIVE experiences.</p>
+<button class="primary" onclick="openPage('create')">＋ Start creating</button>
 </div>
 
-<div class="tabs">
-<button id="signupTab" class="active" type="button">Create account</button>
-<button id="loginTab" type="button">Log in</button>
+<div class="sectionhead">
+<h2>Explore LIVE creators</h2>
+<small>Sample profiles</small>
 </div>
 
-<form id="signupForm">
-<label>Display name</label>
-<input id="displayName" type="text" maxlength="40" required placeholder="Your display name">
+<div class="chips">
+<button class="chip active" onclick="filterCreators(this,'all')">For You</button>
+<button class="chip" onclick="filterCreators(this,'Music')">Music</button>
+<button class="chip" onclick="filterCreators(this,'Chat')">Chat</button>
+<button class="chip" onclick="filterCreators(this,'Gaming')">Gaming</button>
+</div>
 
-<label>Email address</label>
-<input id="signupEmail" type="email" required placeholder="you@example.com">
+<div class="grid" id="creatorGrid">
+<article class="creator" data-category="Music">
+<div class="thumb"><span class="demo">DEMO PROFILE</span><div class="avatar">AV</div></div>
+<div class="info">
+<button class="follow" onclick="toggleFollow(this)">＋ Follow</button>
+<strong>Ama Vibes</strong>
+<small>Music · Good energy</small>
+</div>
+</article>
 
-<label>Create password</label>
-<input id="signupPassword" type="password" minlength="8" required placeholder="At least 8 characters">
+<article class="creator" data-category="Chat">
+<div class="thumb blue"><span class="demo">DEMO PROFILE</span><div class="avatar">KT</div></div>
+<div class="info">
+<button class="follow" onclick="toggleFollow(this)">＋ Follow</button>
+<strong>Kojo Talks</strong>
+<small>Chat · Let's connect</small>
+</div>
+</article>
 
-<button class="primary" type="submit">Create account</button>
-</form>
+<article class="creator" data-category="Gaming">
+<div class="thumb orange"><span class="demo">DEMO PROFILE</span><div class="avatar">NP</div></div>
+<div class="info">
+<button class="follow" onclick="toggleFollow(this)">＋ Follow</button>
+<strong>Nana Plays</strong>
+<small>Gaming · Play together</small>
+</div>
+</article>
+</div>
 
-<form id="loginForm" class="hidden">
-<label>Email address</label>
-<input id="loginEmail" type="email" required placeholder="you@example.com">
+<div class="notice">
+This is a visual prototype. These are sample profiles, not real users or active broadcasts. Live video, chat, accounts, gifts and payments are not connected yet.
+</div>
+</section>
 
-<label>Password</label>
-<input id="loginPassword" type="password" required placeholder="Your password">
+<section id="discover" class="page">
+<div class="sectionhead"><h2>Discover creators</h2></div>
+<input class="searchbox" placeholder="Search creators..." oninput="searchCreators(this.value)">
+<div id="searchResults" class="grid"></div>
+</section>
 
-<button class="primary" type="submit">Log in</button>
-</form>
+<section id="create" class="page">
+<div class="sectionhead"><h2>Create</h2><small>Choose an option</small></div>
+<div class="creategrid">
+<button class="createcard" onclick="openPage('golive')">
+<div class="createicon">🔴</div>
+<strong>Go LIVE</strong>
+<small>Start a live broadcast when streaming is connected.</small>
+</button>
+<button class="createcard" onclick="openPage('upload')">
+<div class="createicon">🎬</div>
+<strong>Upload video</strong>
+<small>Choose a video from your phone to preview.</small>
+</button>
+</div>
+<div class="notice">Broadcasting and publishing are not connected yet.</div>
+</section>
 
-<p id="status" class="status"></p>
-<p class="small">Never share your password. Email confirmation may be required.</p>
+<section id="golive" class="page">
+<div class="hero">
+<div class="eyebrow">COMING SOON</div>
+<h1>Your LIVE room starts here.</h1>
+<p>Camera broadcasting, viewer chat and moderation will be connected in a later stage.</p>
+<button class="primary" onclick="alert('LIVE broadcasting is not connected yet.')">LIVE setup preview</button>
+</div>
+<button class="btn" onclick="openPage('create')">← Back</button>
+</section>
+
+<section id="upload" class="page">
+<div class="sectionhead"><h2>Upload a video</h2></div>
+<div class="form">
+<button class="primary" onclick="document.getElementById('videoPicker').click()">Choose video</button>
+<button class="btn" onclick="document.getElementById('cameraPicker').click()">Open camera</button>
+
+<input id="videoPicker" type="file" accept="video/*" hidden onchange="showVideo(this)">
+<input id="cameraPicker" type="file" accept="video/*" capture="environment" hidden onchange="showVideo(this)">
+
+<p id="fileStatus" class="notice">No video selected yet.</p>
+<video id="videoPreview" class="previewvideo" controls playsinline></video>
+<button id="clearVideo" class="btn" style="display:none" onclick="clearVideo()">Remove preview</button>
+</div>
+<div class="notice">You can preview the selected video. It is not published or sent to a server.</div>
+<button class="btn" onclick="openPage('create')">← Back to Create</button>
+</section>
+
+<section id="inbox" class="page">
+<div class="sectionhead"><h2>Inbox</h2></div>
+<div class="notice">Messages and LIVE notifications will appear here after secure messaging is connected.</div>
+</section>
+
+<section id="profile" class="page">
+<div class="hero">
+<div class="avatar">OB</div>
+<h2>OFFICIALBURAY LIVE</h2>
+<p>Creator profile preview</p>
+<button class="primary" onclick="openPage('signup')">Create account</button>
+</div>
+<div class="notice">Account registration is not connected yet. Do not enter real passwords in this prototype.</div>
+</section>
+
+<section id="signup" class="page">
+<div class="form">
+<h2>Create account</h2>
+<label class="field"><span>Display name</span><input placeholder="Display name"></label>
+<label class="field"><span>Email</span><input type="email" placeholder="Email address"></label>
+<div class="notice">Account registration is not connected yet.</div>
+<button class="btn" onclick="openPage('profile')">Back to profile</button>
+</div>
+</section>
+
 </main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script >
-const SUPABASE_URL = "https://zinbassxezlkipoiphgg.supabase.co";
-const SUPABASE_KEY = "sb_publishable__YCk0PKBL2dl7iHZhN6iCA_xP5_jOu5";
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-const statusBox = document.getElementById("status");
-const signupForm = document.getElementById("signupForm");
-const loginForm = document.getElementById("loginForm");
 
-document.getElementById("signupTab").onclick = function() {
-  signupForm.classList.remove("hidden");
-  loginForm.classList.add("hidden");
-  statusBox.textContent = "";
-};
+<nav class="bottom">
+<div class="bottominner">
+<button class="nav active" onclick="navTo(this,'home')"><b>⌂</b>Home</button>
+<button class="nav" onclick="navTo(this,'discover')"><b>⌕</b>Discover</button>
+<button class="nav create" onclick="navTo(this,'create')"><b>＋</b>Create</button>
+<button class="nav" onclick="navTo(this,'inbox')"><b>♧</b>Inbox</button>
+<button class="nav" onclick="navTo(this,'profile')"><b>◉</b>Profile</button>
+</div>
+</nav>
 
-document.getElementById("loginTab").onclick = function() {
-  loginForm.classList.remove("hidden");
-  signupForm.classList.add("hidden");
-  statusBox.textContent = "";
-};
-signupForm.addEventListener("submit", async function(event) {
-  event.preventDefault();
-  statusBox.textContent = "Creating account...";
+<script>
+let currentVideoUrl='';
 
-  try {
-    const { data, error } = await supabaseClient.auth.signUp({
-      email: document.getElementById("signupEmail").value.trim(),
-      password: document.getElementById("signupPassword").value,
-      options: {
-        data: {
-          display_name: document.getElementById("displayName").value.trim()
-        }
-      }
-    });
+function openPage(id){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+const target=document.getElementById(id);
+if(target)target.classList.add('active');
+window.scrollTo(0,0);
+if(id==='discover')searchCreators('');
+}
 
-    if (error) throw error;
+function navTo(button,id){
+document.querySelectorAll('.nav').forEach(n=>n.classList.remove('active'));
+button.classList.add('active');
+openPage(id);
+}
 
-    statusBox.textContent = data.session
-      ? "Account created successfully!"
-      : "Check your email to confirm your account.";
+function toggleFollow(button){
+button.textContent=button.textContent.includes('Follow')?'✓ Following':'＋ Follow';
+}
 
-  } catch (error) {
-    statusBox.textContent = "Error: " + error.message;
-  }
+function filterCreators(button,category){
+document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+button.classList.add('active');
+document.querySelectorAll('#creatorGrid .creator').forEach(card=>{
+card.style.display=category==='all'||card.dataset.category===category?'block':'none';
 });
+}
 
-loginForm.addEventListener("submit", async function(event) {
-  event.preventDefault();
-  statusBox.textContent = "Signing in...";
-
-  try {
-    const { data, error } = await supabaseClient.auth.signInWithPassword({
-      email: document.getElementById("loginEmail").value.trim(),
-      password: document.getElementById("loginPassword").value
-    });
-
-    if (error) throw error;
-
-    statusBox.textContent = "Welcome back!";
-    window.location.href = "stream-home.html";
-
-  } catch (error) {
-    statusBox.textContent = "Error: " + error.message;
-  }
+function searchCreators(query){
+const result=document.getElementById('searchResults');
+const term=query.toLowerCase();
+result.innerHTML='';
+document.querySelectorAll('#creatorGrid .creator').forEach(card=>{
+if(card.innerText.toLowerCase().includes(term)){
+result.appendChild(card.cloneNode(true));
+}
 });
+}
+
+function showVideo(input){
+const file=input.files&&input.files[0];
+if(!file)return;
+if(!file.type.startsWith('video/')){
+document.getElementById('fileStatus').textContent='Please select a video file.';
+return;
+}
+if(currentVideoUrl)URL.revokeObjectURL(currentVideoUrl);
+currentVideoUrl=URL.createObjectURL(file);
+const video=document.getElementById('videoPreview');
+video.src=currentVideoUrl;
+video.style.display='block';
+document.getElementById('fileStatus').textContent='Selected: '+file.name+' · Local preview only';
+document.getElementById('clearVideo').style.display='inline-block';
+}
+
+function clearVideo(){
+if(currentVideoUrl)URL.revokeObjectURL(currentVideoUrl);
+currentVideoUrl='';
+const video=document.getElementById('videoPreview');
+video.removeAttribute('src');
+video.load();
+video.style.display='none';
+document.getElementById('fileStatus').textContent='No video selected yet.';
+document.getElementById('clearVideo').style.display='none';
+document.getElementById('videoPicker').value='';
+document.getElementById('cameraPicker').value='';
+}
 </script>
 </body>
 </html>
