@@ -56,7 +56,35 @@ video{
 <p>Share your videos with the world.</p>
 
 <input id="videoFile" type="file" accept="video/mp4,video/webm">
+<div style="margin-top:20px">
+  <button type="button" id="cameraButton">
+    📷 OPEN CAMERA
+  </button>
 
+  <video id="cameraPreview"
+    autoplay muted playsinline
+    style="display:none;width:100%;margin-top:15px">
+  </video>
+
+  <button type="button" id="startRecording" style="display:none">
+    🔴 START RECORDING
+  </button>
+
+  <button type="button" id="stopRecording" style="display:none">
+    STOP RECORDING
+  </button>
+
+  <p id="recordingStatus"></p>
+
+  <video id="recordedPreview"
+    controls playsinline
+    style="display:none;width:100%;margin-top:15px">
+  </video>
+
+  <button type="button" id="useRecording" style="display:none">
+    USE THIS VIDEO
+  </button>
+</div>
 <input id="title" type="text" placeholder="Video title">
 
 <textarea id="caption" placeholder="Write your video caption..."></textarea>
