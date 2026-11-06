@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#12091f">
+<title>Upload Video | OFFICIALBURAY LIVE</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  padding:25px 16px;
+  min-height:100vh;
+  background:#12091f;
+  color:white;
+  font-family:Arial,sans-serif;
+}
+.container{
+  max-width:500px;
+  margin:35px auto;
+  background:#211333;
+  padding:25px;
+  border-radius:18px;
+}
+h1{text-align:center;color:#d8a5ff}
+p{text-align:center;color:#c9bad8}
+input,textarea,button{
+  width:100%;
+  padding:14px;
+  margin-top:15px;
+  border-radius:10px;
+  border:0;
+}
+textarea{height:100px}
+input[type=file]{background:white;color:black}
+button{
+  background:#a855f7;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+#status{text-align:center;margin-top:18px}
+video{
+  width:100%;
+  margin-top:15px;
+  border-radius:12px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+<h1>OFFICIALBURAY LIVE</h1>
+<p>Share your videos with the world.</p>
+
+<input id="videoFile" type="file" accept="video/mp4,video/webm">
+
+<input id="title" type="text" placeholder="Video title">
+
+<textarea id="caption" placeholder="Write your video caption..."></textarea>
+
+<button id="uploadButton">UPLOAD VIDEO</button>
+
+<p id="status">Choose a video to begin.</p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://zinbassxezlkipoiphgg.supabase.co";
+
+// Replace this with the SAME publishable key already used in live.html.
+// Never put a secret/service-role key here.
+const SUPABASE_KEY = "PASTE_YOUR_EXISTING_PUBLISHABLE_KEY_HERE";
+
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+const uploadButton = document.getElementById("uploadButton");
+const statusBox = document.getElementById("status");
+
+uploadButton.addEventListener("click", async () => {
+  const file = document.getElementById("videoFile").files[0];
+  const title = document.getElementById("title").value.trim();
+  const caption = document.getElementById("caption").value.trim();
+
+  if (!file) {
+    statusBox.textContent = "Please choose a video.";
+    return;
+  }
+
+  if (!["video/mp4", "video/webm"].includes(file.type)) {
+    statusBox.textContent = "Please choose an MP4 or WebM video.";
+    return;
+  }
+
+  if (file.size > 50 * 1024 * 1024) {
+    statusBox.textContent = "Video must be 50 MB or smaller.";
+    return;
+  }
+
+  if (!title) {
+    statusBox.textContent = "Please enter a video title.";
+    return;
+  }
+
+  uploadButton.disabled = true;
+  statusBox.textContent = "Checking your account...";
+
+  try {
+    const { data: authData, error: authError } =
+      await supabaseClient.auth.getUser();
+
+    if (authError || !authData.user) {
+      throw new Error("Please log in before uploading.");
+    }
+
+    const user = authData.user;
+
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+    const filePath = user.id + "/" + Date.now() + "_" + safeName;
+
+    statusBox.textContent = "Uploading your video...";
+
+    const { error: storageError } = await supabaseClient
+      .storage
+      .from("videos")
+      .upload(filePath, file, {
+        contentType: file.type,
+        upsert: false
+      });
+
+    if (storageError) throw storageError;
+
+    statusBox.textContent = "Saving video details...";
+
+    const { error: databaseError } = await supabaseClient
+      .from("Videos")
+      .insert({
+        user_id: user.id,
+        title: title,
+        caption: caption,
+        file_path: filePath
+      });
+
+    if (databaseError) {
+      await supabaseClient.storage.from("videos").remove([filePath]);
+      throw databaseError;
+    }
+
+    statusBox.textContent = "Video uploaded successfully!";
+
+    document.getElementById("videoFile").value = "";
+    document.getElementById("title").value = "";
+    document.getElementById("caption").value = "";
+
+  } catch (error) {
+    statusBox.textContent = "Upload failed: " + error.message;
+  } finally {
+    uploadButton.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
