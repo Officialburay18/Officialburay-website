@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#12091f">
+<title>OFFICIALBURAY LIVE | Login</title>
+<style>
+*{box-sizing:border-box}
+body{
+margin:0;min-height:100vh;padding:20px;
+display:grid;place-items:center;
+background:radial-gradient(circle at top,#39205c,#12091f 60%,#08060d);
+color:white;font-family:Arial,sans-serif
+}
+.panel{
+width:100%;max-width:430px;padding:27px 22px;
+background:#190f25;border:1px solid #63458b;border-radius:22px
+}
+.brand{text-align:center;margin-bottom:22px}
+.brand h1{color:#f5d77b;font-size:25px}
+.brand p{color:#c9bdd8;font-size:12px;letter-spacing:2px}
+.tabs{display:flex;gap:8px;margin:22px 0}
+.tabs button{
+flex:1;padding:12px;border:1px solid #6c5489;
+border-radius:10px;background:#241833;color:white;font-weight:bold
+}
+.tabs button.active{background:#d7b65d;color:#1b1125}
+label{display:block;margin:14px 0 7px;font-size:13px}
+input{
+width:100%;padding:13px;border-radius:10px;
+border:1px solid #57436f;background:#100b18;color:white;font-size:15px
+}
+.primary{
+width:100%;margin-top:20px;padding:14px;border:0;
+border-radius:10px;background:#e4c46d;color:#1a1020;
+font-weight:bold;font-size:15px
+}
+.status{min-height:42px;color:#d9cde5;font-size:13px;line-height:1.5}
+.small{color:#aa9bb9;font-size:11px;line-height:1.5}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<main class="panel">
+<div class="brand">
+<h1>OFFICIALBURAY LIVE</h1>
+<p>GO LIVE · CONNECT · INSPIRE</p>
+</div>
+
+<div class="tabs">
+<button id="signupTab" class="active" type="button">Create account</button>
+<button id="loginTab" type="button">Log in</button>
+</div>
+
+<form id="signupForm">
+<label>Display name</label>
+<input id="displayName" maxlength="40" required placeholder="Your display name">
+
+<label>Email address</label>
+<input id="signupEmail" type="email" required placeholder="you@example.com">
+
+<label>Create password</label>
+<input id="signupPassword" type="password" minlength="8" required placeholder="At least 8 characters">
+
+<button class="primary" type="submit">Create account</button>
+</form>
+
+<form id="loginForm" class="hidden">
+<label>Email address</label>
+<input id="loginEmail" type="email" required placeholder="Email address">
+
+<label>Password</label>
+<input id="loginPassword" type="password" required placeholder="Your password">
+
+<button class="primary" type="submit">Log in</button>
+</form>
+
+<p id="status" class="status"></p>
+<p class="small">Keep your password private. Email confirmation may be required.</p>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL="https://zinbassxezlkipoiphgg.supabase.co";
+const SUPABASE_KEY="sb_publishable__YCk0PKBL2dl7iHZhN6iCA_xP5_jOu5";
+const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+const statusBox=document.getElementById("status");
+const signupForm=document.getElementById("signupForm");
+const loginForm=document.getElementById("loginForm");
+
+document.getElementById("signupTab").onclick=()=>{
+signupForm.classList.remove("hidden");
+loginForm.classList.add("hidden");
+document.getElementById("signupTab").classList.add("active");
+document.getElementById("loginTab").classList.remove("active");
+statusBox.textContent="";
+};
+
+document.getElementById("loginTab").onclick=()=>{
+loginForm.classList.remove("hidden");
+signupForm.classList.add("hidden");
+document.getElementById("loginTab").classList.add("active");
+document.getElementById("signupTab").classList.remove("active");
+statusBox.textContent="";
+};
+
+signupForm.addEventListener("submit",async(event)=>{
+event.preventDefault();
+statusBox.textContent="Creating account...";
+
+try{
+const {data,error}=await supabaseClient.auth.signUp({
+email:document.getElementById("signupEmail").value.trim(),
+password:document.getElementById("signupPassword").value,
+options:{
+data:{
+display_name:document.getElementById("displayName").value.trim()
+}
+}
+});
+if(error)throw error;
+
+statusBox.textContent=data.session
+?"Account created! Opening OFFICIALBURAY LIVE..."
+:"Check your email to confirm your account before logging in.";
+
+if(data.session){
+setTimeout(()=>location.href="live.html",1000);
+}
+}catch(error){
+statusBox.textContent="Error: "+error.message;
+}
+});
+
+loginForm.addEventListener("submit",async(event)=>{
+event.preventDefault();
+statusBox.textContent="Signing in...";
+
+try{
+const {error}=await supabaseClient.auth.signInWithPassword({
+email:document.getElementById("loginEmail").value.trim(),
+password:document.getElementById("loginPassword").value
+});
+if(error)throw error;
+
+statusBox.textContent="Welcome back!";
+location.href="live.html";
+}catch(error){
+statusBox.textContent="Error: "+error.message;
+}
+});
+</script>
+</body>
+</html>
