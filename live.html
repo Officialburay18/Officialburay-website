@@ -186,7 +186,62 @@ small{color:#b7adbf}
  </div>
 </section>
 
+
 <section id="profile" class="page">
+ <div class="hero">
+  <div class="avatar" id="profileAvatar">OB</div>
+  <img id="profilePicture" class="hidden"
+       style="width:110px;height:110px;border-radius:50%;object-fit:cover;margin:12px auto"
+       alt="Profile picture">
+
+  <h2 id="profileName">OFFICIALBURAY LIVE</h2>
+  <p id="profileUsername" class="muted">@username</p>
+  <p id="profileBio">Welcome to my creator profile!</p>
+
+  <div class="row">
+   <div class="panel" style="flex:1">
+    <b id="postCount">0</b><br><small>Posts</small>
+   </div>
+   <div class="panel" style="flex:1">
+    <b>0</b><br><small>Followers</small>
+   </div>
+   <div class="panel" style="flex:1">
+    <b>0</b><br><small>Following</small>
+   </div>
+  </div>
+
+  <div id="signedOut">
+   <button class="primary" onclick="location.href='login.html'">Create account / Log in</button>
+  </div>
+  <div id="signedIn" class="hidden">
+   <button class="primary" onclick="showProfileEditor()">Edit profile</button>
+   <button class="danger" onclick="logout()">Log out</button>
+  </div>
+ </div>
+
+ <div id="profileEditor" class="panel hidden">
+  <h3>Edit your profile</h3>
+  <label>Profile picture</label>
+  <input type="file" id="avatarFile" accept="image/*">
+  <label>Display name</label>
+  <input id="editDisplayName" maxlength="40" placeholder="Your name">
+  <label>Username</label>
+  <input id="editUsername" maxlength="24" placeholder="yourusername">
+  <label>Bio</label>
+  <textarea id="editBio" maxlength="160"
+    placeholder="Write something about yourself..."
+    style="width:100%;min-height:90px;padding:12px;background:#100d17;color:white;border:1px solid #493b54;border-radius:9px"></textarea>
+  <button class="primary" onclick="saveProfile()">Save profile</button>
+  <button class="secondary" onclick="hideProfileEditor()">Cancel</button>
+  <p id="profileMessage" class="muted"></p>
+ </div>
+
+ <div class="panel">
+  <h3>My posts</h3>
+  <div id="myPosts" class="muted">Your uploaded posts will appear here.</div>
+ </div>
+</section>
+
  <div class="hero">
   <div class="avatar">OB</div>
   <h2 id="profileName">OFFICIALBURAY LIVE</h2>
@@ -348,6 +403,145 @@ function sendComment(){
  document.getElementById('comments').appendChild(line);
  input.value='';
 }
+ 
+async function updateProfile(){
+ const {data:{user},error:userError}=await supabaseClient.auth.getUser();
+
+ const signedIn=!!user;
+ document.getElementById('signedOut').classList.toggle('hidden',signedIn);
+ document.getElementById('signedIn').classList.toggle('hidden',!signedIn);
+
+ if(!user){
+  document.getElementById('profileName').textContent='OFFICIALBURAY LIVE';
+  document.getElementById('profileUsername').textContent='@username';
+  document.getElementById('profileBio').textContent='Welcome to my creator profile!';
+  document.getElementById('profileAvatar').classList.remove('hidden');
+  document.getElementById('profilePicture').classList.add('hidden');
+  return;
+ }
+
+ const {data:profile,error}=await supabaseClient
+  .from('profiles')
+  .select('*')
+  .eq('id',user.id)
+  .maybeSingle();
+
+ const displayName=profile?.display_name ||
+  user.user_metadata?.display_name ||
+  user.email?.split('@')[0] || 'Creator';
+
+ document.getElementById('profileName').textContent=displayName;
+ document.getElementById('profileUsername').textContent=
+  profile?.username ? '@'+profile.username : '@choose_username';
+ document.getElementById('profileBio').textContent=
+  profile?.bio || 'Welcome to my creator profile!';
+
+ document.getElementById('editDisplayName').value=displayName;
+ document.getElementById('editUsername').value=profile?.username || '';
+ document.getElementById('editBio').value=profile?.bio || '';
+
+ if(profile?.avatar_url){
+  document.getElementById('profilePicture').src=profile.avatar_url;
+  document.getElementById('profilePicture').classList.remove('hidden');
+  document.getElementById('profileAvatar').classList.add('hidden');
+ }else{
+  document.getElementById('profilePicture').classList.add('hidden');
+  document.getElementById('profileAvatar').classList.remove('hidden');
+ }
+}
+
+function showProfileEditor(){
+ document.getElementById('profileEditor').classList.remove('hidden');
+ document.getElementById('profileMessage').textContent='';
+}
+
+function hideProfileEditor(){
+ document.getElementById('profileEditor').classList.add('hidden');
+}
+
+async function saveProfile(){
+ const message=document.getElementById('profileMessage');
+ const {data:{user}}=await supabaseClient.auth.getUser();
+
+ if(!user){
+  message.textContent='Please log in first.';
+  return;
+ }
+
+ const displayName=document.getElementById('editDisplayName').value.trim();
+ const username=document.getElementById('editUsername').value.trim().toLowerCase().replace(/^@/,'');
+ const bio=document.getElementById('editBio').value.trim();
+ const file=document.getElementById('avatarFile').files[0];
+
+ if(!displayName || !username){
+  message.textContent='Enter your display name and username.';
+  return;
+ }
+
+ if(!/^[a-z0-9_]{3,24}$/.test(username)){
+  message.textContent='Username must be 3–24 characters: letters, numbers or underscores.';
+  return;
+ }
+
+ if(file && !file.type.startsWith('image/')){
+  message.textContent='Please choose an image file.';
+  return;
+ }
+
+ if(file && file.size>5*1024*1024){
+  message.textContent='Image must be smaller than 5 MB.';
+  return;
+ }
+
+ message.textContent='Saving profile...';
+
+ let avatarUrl=null;
+
+ if(file){
+  const extension=file.name.split('.').pop().toLowerCase();
+  const filePath=user.id+'/avatar.'+extension;
+
+  const {error:uploadError}=await supabaseClient.storage
+   .from('avatars')
+   .upload(filePath,file,{upsert:true,contentType:file.type});
+
+  if(uploadError){
+   message.textContent='Picture upload failed: '+uploadError.message;
+   return;
+  }
+
+  const {data:publicData}=supabaseClient.storage
+   .from('avatars')
+   .getPublicUrl(filePath);
+
+  avatarUrl=publicData.publicUrl+'?v='+Date.now();
+ }
+
+ const profileData={
+  id:user.id,
+  username:username,
+  display_name:displayName,
+  bio:bio
+ };
+
+ if(avatarUrl){
+  profileData.avatar_url=avatarUrl;
+ }
+
+ const {error:saveError}=await supabaseClient
+  .from('profiles')
+  .upsert(profileData,{onConflict:'id'});
+
+ if(saveError){
+  message.textContent='Could not save: '+saveError.message;
+  return;
+ }
+
+ document.getElementById('avatarFile').value='';
+ message.textContent='Profile saved successfully!';
+ await updateProfile();
+}
+
 </script>
 </body>
 </html>
