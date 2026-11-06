@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#12091f">
 <title>OFFICIALBURAY LIVE | Login</title>
+
 <style>
 *{box-sizing:border-box}
 body{
@@ -30,20 +30,24 @@ border-radius:10px;background:#241833;color:white;font-weight:bold
 label{display:block;margin:14px 0 7px;font-size:13px}
 input{
 width:100%;padding:13px;border-radius:10px;
-border:1px solid #57436f;background:#100b18;color:white;font-size:15px
+border:1px solid #57436f;background:#100b18;
+color:white;font-size:15px
 }
 .primary{
 width:100%;margin-top:20px;padding:14px;border:0;
 border-radius:10px;background:#e4c46d;color:#1a1020;
 font-weight:bold;font-size:15px
 }
+.primary:disabled{opacity:.6}
 .status{min-height:42px;color:#d9cde5;font-size:13px;line-height:1.5}
 .small{color:#aa9bb9;font-size:11px;line-height:1.5}
 .hidden{display:none}
 </style>
 </head>
+
 <body>
 <main class="panel">
+
 <div class="brand">
 <h1>OFFICIALBURAY LIVE</h1>
 <p>GO LIVE · CONNECT · INSPIRE</p>
@@ -54,104 +58,192 @@ font-weight:bold;font-size:15px
 <button id="loginTab" type="button">Log in</button>
 </div>
 
-<form id="signupForm">
-<label>Display name</label>
-<input id="displayName" maxlength="40" required placeholder="Your display name">
+<form id="signupForm" novalidate>
+<label for="displayName">Display name</label>
+<input id="displayName" name="displayName"
+type="text" maxlength="40" required
+autocomplete="name" placeholder="Your display name">
 
-<label>Email address</label>
-<input id="signupEmail" type="email" required placeholder="you@example.com">
+<label for="signupEmail">Email address</label>
+<input id="signupEmail" name="email"
+type="email" required autocomplete="email"
+placeholder="you@example.com">
 
-<label>Create password</label>
-<input id="signupPassword" type="password" minlength="8" required placeholder="At least 8 characters">
+<label for="signupPassword">Create password</label>
+<input id="signupPassword" name="password"
+type="password" minlength="8" required
+autocomplete="new-password" placeholder="At least 8 characters">
 
-<button class="primary" type="submit">Create account</button>
+<button class="primary" id="signupButton" type="submit">
+Create account
+</button>
 </form>
 
-<form id="loginForm" class="hidden">
-<label>Email address</label>
-<input id="loginEmail" type="email" required placeholder="Email address">
+<form id="loginForm" class="hidden" novalidate>
+<label for="loginEmail">Email address</label>
+<input id="loginEmail" name="email"
+type="email" required autocomplete="email"
+placeholder="Email address">
 
-<label>Password</label>
-<input id="loginPassword" type="password" required placeholder="Your password">
+<label for="loginPassword">Password</label>
+<input id="loginPassword" name="password"
+type="password" required autocomplete="current-password"
+placeholder="Your password">
 
-<button class="primary" type="submit">Log in</button>
+<button class="primary" id="loginButton" type="submit">
+Log in
+</button>
 </form>
 
-<p id="status" class="status"></p>
+<p id="status" class="status" role="status"></p>
 <p class="small">Keep your password private. Email confirmation may be required.</p>
+
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
 const SUPABASE_URL = "https://icrskxhuwiyczxlxgmkq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_tEfKo-LGH0LArx6KBaBNVQ_hDOtk4WD";
-const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-const statusBox=document.getElementById("status");
-const signupForm=document.getElementById("signupForm");
-const loginForm=document.getElementById("loginForm");
+const statusBox = document.getElementById("status");
+const signupForm = document.getElementById("signupForm");
+const loginForm = document.getElementById("loginForm");
 
-document.getElementById("signupTab").onclick=()=>{
+const signupButton = document.getElementById("signupButton");
+const loginButton = document.getElementById("loginButton");
+
+let supabaseClient = null;
+
+function showStatus(message) {
+statusBox.textContent = message;
+}
+
+function setLoading(button, loading, normalText) {
+button.disabled = loading;
+button.textContent = loading ? "Please wait..." : normalText;
+}
+
+function showSignup() {
 signupForm.classList.remove("hidden");
 loginForm.classList.add("hidden");
 document.getElementById("signupTab").classList.add("active");
 document.getElementById("loginTab").classList.remove("active");
-statusBox.textContent="";
-};
+showStatus("");
+}
 
-document.getElementById("loginTab").onclick=()=>{
+function showLogin() {
 loginForm.classList.remove("hidden");
 signupForm.classList.add("hidden");
 document.getElementById("loginTab").classList.add("active");
 document.getElementById("signupTab").classList.remove("active");
-statusBox.textContent="";
-};
+showStatus("");
+}
 
-signupForm.addEventListener("submit",async(event)=>{
+document.getElementById("signupTab").addEventListener("click", showSignup);
+document.getElementById("loginTab").addEventListener("click", showLogin);
+
+if (window.supabase && window.supabase.createClient) {
+supabaseClient = window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+} else {
+showStatus("Connection library did not load. Check your internet connection and reload this page.");
+}
+
+signupForm.addEventListener("submit", async function(event) {
 event.preventDefault();
-statusBox.textContent="Creating account...";
 
-try{
-const {data,error}=await supabaseClient.auth.signUp({
-email:document.getElementById("signupEmail").value.trim(),
-password:document.getElementById("signupPassword").value,
-options:{
-data:{
-display_name:document.getElementById("displayName").value.trim()
+const displayName = document.getElementById("displayName").value.trim();
+const email = document.getElementById("signupEmail").value.trim();
+const password = document.getElementById("signupPassword").value;
+
+if (!displayName || !email || !password) {
+showStatus("Please complete all three fields.");
+return;
+}
+
+if (password.length < 8) {
+showStatus("Your password must have at least 8 characters.");
+return;
+}
+
+if (!supabaseClient) {
+showStatus("Supabase connection is not ready. Reload the page and try again.");
+return;
+}
+
+setLoading(signupButton, true, "Create account");
+showStatus("Creating your account...");
+
+try {
+const { data, error } = await supabaseClient.auth.signUp({
+email: email,
+password: password,
+options: {
+data: {
+display_name: displayName
 }
 }
 });
-if(error)throw error;
 
-statusBox.textContent=data.session
-?"Account created! Opening OFFICIALBURAY LIVE..."
-:"Check your email to confirm your account before logging in.";
+if (error) throw error;
 
-if(data.session){
-setTimeout(()=>location.href="live.html",1000);
+if (data.session) {
+showStatus("Account created successfully! Opening OFFICIALBURAY LIVE...");
+window.location.href = "live.html";
+} else {
+showStatus("Signup received! Check your email for a confirmation message before logging in.");
 }
-}catch(error){
-statusBox.textContent="Error: "+error.message;
+
+} catch (error) {
+showStatus("Signup error: " + error.message);
+} finally {
+setLoading(signupButton, false, "Create account");
 }
 });
 
-loginForm.addEventListener("submit",async(event)=>{
+loginForm.addEventListener("submit", async function(event) {
 event.preventDefault();
-statusBox.textContent="Signing in...";
 
-try{
-const {error}=await supabaseClient.auth.signInWithPassword({
-email:document.getElementById("loginEmail").value.trim(),
-password:document.getElementById("loginPassword").value
+const email = document.getElementById("loginEmail").value.trim();
+const password = document.getElementById("loginPassword").value;
+
+if (!email || !password) {
+showStatus("Please enter your email and password.");
+return;
+}
+
+if (!supabaseClient) {
+showStatus("Supabase connection is not ready. Reload the page and try again.");
+return;
+}
+
+setLoading(loginButton, true, "Log in");
+showStatus("Signing in...");
+
+try {
+const { error } = await supabaseClient.auth.signInWithPassword({
+email: email,
+password: password
 });
-if(error)throw error;
 
-statusBox.textContent="Welcome back!";
-location.href="live.html";
-}catch(error){
-statusBox.textContent="Error: "+error.message;
+if (error) throw error;
+
+showStatus("Welcome back! Opening OFFICIALBURAY LIVE...");
+window.location.href = "live.html";
+
+} catch (error) {
+showStatus("Login error: " + error.message);
+} finally {
+setLoading(loginButton, false, "Log in");
 }
 });
 </script>
+
 </body>
 </html>
+
+
+
