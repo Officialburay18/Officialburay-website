@@ -188,59 +188,7 @@ small{color:#b7adbf}
 
 
 <section id="profile" class="page">
- <div class="hero">
-  <div class="avatar" id="profileAvatar">OB</div>
-  <img id="profilePicture" class="hidden"
-       style="width:110px;height:110px;border-radius:50%;object-fit:cover;margin:12px auto"
-       alt="Profile picture">
 
-  <h2 id="profileName">OFFICIALBURAY LIVE</h2>
-  <p id="profileUsername" class="muted">@username</p>
-  <p id="profileBio">Welcome to my creator profile!</p>
-
-  <div class="row">
-   <div class="panel" style="flex:1">
-    <b id="postCount">0</b><br><small>Posts</small>
-   </div>
-   <div class="panel" style="flex:1">
-    <b>0</b><br><small>Followers</small>
-   </div>
-   <div class="panel" style="flex:1">
-    <b>0</b><br><small>Following</small>
-   </div>
-  </div>
-
-  <div id="signedOut">
-   <button class="primary" onclick="location.href='login.html'">Create account / Log in</button>
-  </div>
-  <div id="signedIn" class="hidden">
-   <button class="primary" onclick="showProfileEditor()">Edit profile</button>
-   <button class="danger" onclick="logout()">Log out</button>
-  </div>
- </div>
-
- <div id="profileEditor" class="panel hidden">
-  <h3>Edit your profile</h3>
-  <label>Profile picture</label>
-  <input type="file" id="avatarFile" accept="image/*">
-  <label>Display name</label>
-  <input id="editDisplayName" maxlength="40" placeholder="Your name">
-  <label>Username</label>
-  <input id="editUsername" maxlength="24" placeholder="yourusername">
-  <label>Bio</label>
-  <textarea id="editBio" maxlength="160"
-    placeholder="Write something about yourself..."
-    style="width:100%;min-height:90px;padding:12px;background:#100d17;color:white;border:1px solid #493b54;border-radius:9px"></textarea>
-  <button class="primary" onclick="saveProfile()">Save profile</button>
-  <button class="secondary" onclick="hideProfileEditor()">Cancel</button>
-  <p id="profileMessage" class="muted"></p>
- </div>
-
- <div class="panel">
-  <h3>My posts</h3>
-  <div id="myPosts" class="muted">Your uploaded posts will appear here.</div>
- </div>
-</section>
 
  <div class="hero">
   <div class="avatar">OB</div>
