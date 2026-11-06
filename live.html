@@ -1,473 +1,352 @@
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#090711">
 <title>OFFICIALBURAY LIVE</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root {
---bg:#090711;
---panel:#171220;
---purple:#8b45e8;
---gold:#e5bd58;
---white:#fff;
---muted:#aaa3b7;
-}
 *{box-sizing:border-box}
-body{
-margin:0;
-background:var(--bg);
-color:white;
-font-family:Arial,sans-serif;
-}
-button,input{font:inherit}
-button{cursor:pointer}
-header{
-position:sticky;
-top:0;
-z-index:10;
-background:#100c19;
-padding:15px;
-border-bottom:1px solid #382a49;
-}
-.top{
-max-width:900px;
-margin:auto;
-display:flex;
-justify-content:space-between;
-align-items:center;
-}
-.brand{font-size:19px;font-weight:900}
-.brand span{color:var(--gold)}
-.tag{font-size:9px;letter-spacing:2px;color:#ccc}
-.btn{
-padding:10px 14px;
-border-radius:22px;
-border:1px solid #68449a;
-background:#241833;
-color:white;
-}
-.gold{
-background:var(--gold);
-color:#17101e;
-font-weight:bold;
-border:0;
-}
-main{
-max-width:900px;
-margin:auto;
-padding:18px 14px 100px;
-}
-.page{display:none}
+body{margin:0;background:#090711;color:white;font-family:Arial,sans-serif;padding-bottom:85px}
+header{padding:17px;background:#171220;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}
+.logo{font-size:19px;font-weight:bold;color:#d7a8ff}
+.logo span{color:#f5c85b}
+button{border:0;border-radius:10px;padding:12px;color:white;background:#702bd1;font-weight:bold;cursor:pointer}
+button:disabled{opacity:.5}
+.page{display:none;padding:17px}
 .page.active{display:block}
-.hero{
-padding:23px;
-border:1px solid #65418b;
-border-radius:19px;
-background:linear-gradient(125deg,#32145b,#171025 65%,#493019);
-margin-bottom:20px;
-}
-.eyebrow{
-font-size:10px;
-letter-spacing:2px;
-color:#e7ce91;
-}
-h1{font-size:30px;line-height:1.2}
-.hero p{color:#ded3e9;line-height:1.5}
-.primary{
-background:var(--gold);
-color:#17101e;
-border:0;
-border-radius:25px;
-padding:12px 18px;
-font-weight:bold;
-}
-.sectionhead{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin:22px 2px 12px;
-}
-.sectionhead h2{font-size:18px}
-.sectionhead small{color:var(--muted)}
-.chips{
-display:flex;
-gap:8px;
-overflow-x:auto;
-padding-bottom:14px;
-}
-.chip{
-background:#21182d;
-color:white;
-border:1px solid #49345e;
-border-radius:20px;
-padding:9px 14px;
-}
-.chip.active{background:var(--purple)}
-.grid{
-display:grid;
-grid-template-columns:repeat(2,minmax(0,1fr));
-gap:12px;
-}
-.creator{
-background:var(--panel);
-border:1px solid #34273f;
-border-radius:15px;
-overflow:hidden;
-}
-.thumb{
-height:145px;
-display:grid;
-place-items:center;
-background:linear-gradient(140deg,#55258d,#1c142a,#9a6b32);
-position:relative;
-}
-.blue{background:linear-gradient(140deg,#16485a,#30203e,#8b3b60)}
-.orange{background:linear-gradient(140deg,#603719,#281633,#71429a)}
-.avatar{
-width:61px;
-height:61px;
-border-radius:50%;
-display:grid;
-place-items:center;
-background:#ffffff20;
-border:2px solid white;
-font-weight:bold;
-}
-.demo{
-position:absolute;
-top:8px;
-left:8px;
-font-size:9px;
-background:#17101e;
-padding:5px;
-}
-.info{padding:12px}
-.info strong{display:block;font-size:13px}
-.info small{color:var(--muted)}
-.follow{
-float:right;
-background:#2c1d40;
-color:white;
-border:1px solid #68449a;
-border-radius:15px;
-padding:5px 8px;
-}
-.notice{
-background:#1a1423;
-border:1px solid #49345e;
-border-radius:12px;
-padding:12px;
-color:#d2c5df;
-font-size:12px;
-line-height:1.5;
-margin:16px 0;
-}
-.creategrid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:12px;
-}
-.createcard{
-background:var(--panel);
-border:1px solid #49345e;
-border-radius:16px;
-padding:18px 13px;
-text-align:left;
-min-height:145px;
-color:white;
-}
-.createicon{font-size:27px}
-.createcard strong{display:block;margin:10px 0}
-.createcard small{color:var(--muted)}
-.form{
-background:var(--panel);
-border:1px solid #382a49;
-border-radius:15px;
-padding:18px;
-}
-.field{display:block;margin:14px 0}
-.field span{display:block;margin-bottom:7px;font-size:12px}
-.field input,.searchbox{
-width:100%;
-padding:13px;
-border-radius:10px;
-background:#0d0a16;
-color:white;
-border:1px solid #49345e;
-}
-.previewvideo{
-width:100%;
-max-height:320px;
-background:black;
-border-radius:12px;
-margin-top:12px;
-display:none;
-}
-.bottom{
-position:fixed;
-bottom:0;
-left:0;
-right:0;
-z-index:12;
-background:#100c19;
-border-top:1px solid #382a49;
-padding:10px 4px;
-}
-.bottominner{
-display:flex;
-justify-content:space-around;
-max-width:650px;
-margin:auto;
-}
-.nav{
-background:none;
-border:0;
-color:#aaa3b7;
-font-size:11px;
-display:flex;
-flex-direction:column;
-align-items:center;
-gap:4px;
-}
-.nav b{font-size:21px}
-.nav.active{color:var(--gold)}
-.nav.create b{
-background:var(--gold);
-color:#17101e;
-padding:3px 12px;
-border-radius:8px;
-}
-@media(min-width:650px){
-.grid{grid-template-columns:repeat(3,1fr)}
-.thumb{height:185px}
-}
+h2{margin-top:8px}
+.panel{background:#171220;padding:17px;border-radius:16px;margin:14px 0}
+.muted{color:#b7adbf;font-size:13px}
+.primary{background:linear-gradient(120deg,#792be0,#bd48a8)}
+.secondary{background:#30263a}
+.danger{background:#a52c43}
+input{width:100%;padding:13px;border-radius:9px;border:1px solid #493b54;background:#100d17;color:white;margin:8px 0}
+nav{position:fixed;bottom:0;left:0;right:0;background:#171220;display:flex;justify-content:space-around;padding:10px 3px;z-index:10;border-top:1px solid #35283e}
+nav button{background:transparent;padding:8px 5px;font-size:11px;color:#ddd}
+nav button.active{color:#d6a2ff}
+.hero{text-align:center;padding:25px 12px}
+.avatar{width:75px;height:75px;border-radius:50%;background:linear-gradient(130deg,#792be0,#e1a94d);display:grid;place-items:center;font-size:25px;font-weight:bold;margin:12px auto}
+.row{display:flex;gap:9px;flex-wrap:wrap}
+.row button{flex:1}
+.creator{display:flex;align-items:center;gap:12px;padding:12px;background:#21192a;border-radius:12px;margin:9px 0}
+.creator .avatar{width:45px;height:45px;margin:0;font-size:15px}
+.video-box{background:#08060c;border:1px solid #493653;border-radius:15px;min-height:180px;display:grid;place-items:center;text-align:center;padding:15px;position:relative;overflow:hidden}
+.video-box video{width:100%;max-height:350px;object-fit:cover}
+.tag{background:#a92345;padding:5px 9px;border-radius:6px;font-size:11px}
+.guest-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+.guest{background:#21192a;border:1px solid #493653;border-radius:12px;min-height:125px;display:grid;place-items:center;text-align:center;padding:12px}
+.guest strong{display:block;margin-bottom:7px}
+.score{font-size:28px;font-weight:bold;color:#f4c65d}
+.hidden{display:none!important}
+small{color:#b7adbf}
 </style>
 </head>
 <body>
 
 <header>
-<div class="top">
-<div>
-<div class="brand">OFFICIALBURAY <span>LIVE</span></div>
-<div class="tag">GO LIVE · CONNECT · INSPIRE</div>
-</div>
-<button class="btn gold" onclick="openPage('create')">＋ Create</button>
-</div>
+ <div class="logo">OFFICIALBURAY <span>LIVE</span></div>
+ <span class="tag">● LIVE APP</span>
 </header>
 
-<main>
-
 <section id="home" class="page active">
-<div class="hero">
-<div class="eyebrow">WELCOME TO YOUR COMMUNITY</div>
-<h1>Your stage.<br>Your community.</h1>
-<p>Discover creators, explore new ideas and connect through positive LIVE experiences.</p>
-<button class="primary" onclick="openPage('create')">＋ Start creating</button>
-</div>
-
-<div class="sectionhead">
-<h2>Explore LIVE creators</h2>
-<small>Sample profiles</small>
-</div>
-
-<div class="chips">
-<button class="chip active" onclick="filterCreators(this,'all')">For You</button>
-<button class="chip" onclick="filterCreators(this,'Music')">Music</button>
-<button class="chip" onclick="filterCreators(this,'Chat')">Chat</button>
-<button class="chip" onclick="filterCreators(this,'Gaming')">Gaming</button>
-</div>
-
-<div class="grid" id="creatorGrid">
-<article class="creator" data-category="Music">
-<div class="thumb"><span class="demo">DEMO PROFILE</span><div class="avatar">AV</div></div>
-<div class="info">
-<button class="follow" onclick="toggleFollow(this)">＋ Follow</button>
-<strong>Ama Vibes</strong>
-<small>Music · Good energy</small>
-</div>
-</article>
-
-<article class="creator" data-category="Chat">
-<div class="thumb blue"><span class="demo">DEMO PROFILE</span><div class="avatar">KT</div></div>
-<div class="info">
-<button class="follow" onclick="toggleFollow(this)">＋ Follow</button>
-<strong>Kojo Talks</strong>
-<small>Chat · Let's connect</small>
-</div>
-</article>
-
-<article class="creator" data-category="Gaming">
-<div class="thumb orange"><span class="demo">DEMO PROFILE</span><div class="avatar">NP</div></div>
-<div class="info">
-<button class="follow" onclick="toggleFollow(this)">＋ Follow</button>
-<strong>Nana Plays</strong>
-<small>Gaming · Play together</small>
-</div>
-</article>
-</div>
-
-<div class="notice">
-This is a visual prototype. These are sample profiles, not real users or active broadcasts. Live video, chat, accounts, gifts and payments are not connected yet.
-</div>
+ <h2>For You</h2>
+ <p class="muted">Welcome to OFFICIALBURAY LIVE.</p>
+ <div class="panel">
+  <h3>Discover creators</h3>
+  <p class="muted">Watch, connect and share your creativity.</p>
+  <button class="primary" onclick="go('discover')">Explore creators</button>
+ </div>
+ <div class="panel">
+  <h3>Start your LIVE</h3>
+  <p class="muted">Create a LIVE room, invite guests and meet your audience.</p>
+  <button class="primary" onclick="go('golive')">Go LIVE</button>
+ </div>
+ <div class="panel">
+  <h3>Creator features</h3>
+  <p>🎥 Video creation</p>
+  <p>🎙️ Guest boxes and co-hosting</p>
+  <p>⚔️ One-on-one LIVE matches</p>
+  <p>💬 Community chat</p>
+ </div>
 </section>
 
 <section id="discover" class="page">
-<div class="sectionhead"><h2>Discover creators</h2></div>
-<input class="searchbox" placeholder="Search creators..." oninput="searchCreators(this.value)">
-<div id="searchResults" class="grid"></div>
+ <h2>Discover</h2>
+ <input id="search" placeholder="Search creators..." oninput="searchCreators()">
+ <div id="creatorList">
+  <div class="creator"><div class="avatar">OB</div><div><b>OFFICIALBURAY</b><br><small>Creator</small></div></div>
+  <div class="creator"><div class="avatar">A</div><div><b>Creator A</b><br><small>Community creator</small></div></div>
+  <div class="creator"><div class="avatar">B</div><div><b>Creator B</b><br><small>Community creator</small></div></div>
+ </div>
 </section>
 
 <section id="create" class="page">
-<div class="sectionhead"><h2>Create</h2><small>Choose an option</small></div>
-<div class="creategrid">
-<button class="createcard" onclick="openPage('golive')">
-<div class="createicon">🔴</div>
-<strong>Go LIVE</strong>
-<small>Start a live broadcast when streaming is connected.</small>
-</button>
-<button class="createcard" onclick="openPage('upload')">
-<div class="createicon">🎬</div>
-<strong>Upload video</strong>
-<small>Choose a video from your phone to preview.</small>
-</button>
-</div>
-<div class="notice">Broadcasting and publishing are not connected yet.</div>
+ <h2>Create</h2>
+ <div class="panel">
+  <h3>What would you like to create?</h3>
+  <button class="primary" onclick="go('golive')">🎙️ Go LIVE</button>
+  <button class="secondary" onclick="go('upload')">🎬 Upload a video</button>
+ </div>
+</section>
+
+<section id="upload" class="page">
+ <h2>Video creator</h2>
+ <div class="panel">
+  <label>Select a video</label>
+  <input type="file" id="videoFile" accept="video/*" onchange="previewVideo(event)">
+  <label>Or open your camera</label>
+  <input type="file" id="cameraFile" accept="video/*" capture="user" onchange="previewVideo(event)">
+  <div class="video-box" id="videoPreview">Your video preview will appear here.</div>
+  <button class="secondary" onclick="clearVideo()">Remove video</button>
+  <p class="muted">This currently previews a video on your phone. Uploading it to a shared feed will be connected later.</p>
+ </div>
 </section>
 
 <section id="golive" class="page">
+ <h2>OFFICIALBURAY LIVE ROOM</h2>
+ <div class="panel">
+  <div class="row">
+   <span class="tag">● LIVE ROOM PREVIEW</span>
+   <span class="muted">Viewer count: <b id="viewers">0</b></span>
+  </div>
+  <div class="video-box" style="margin-top:12px">
+   <div>
+    <div class="avatar">OB</div>
+    <b id="hostName">Your LIVE room</b>
+    <p class="muted">Host video will appear here when streaming is connected.</p>
+   </div>
+  </div>
+  <div class="row" style="margin-top:12px">
+   <button class="primary" onclick="startRoom()">Start room preview</button>
+   <button class="danger" onclick="endRoom()">End room</button>
+  </div>
+ </div>
 
+ <div class="panel">
+  <h3>Guest boxes</h3>
+  <p class="muted">Invite guests or review requests to join your room.</p>
+  <div class="guest-grid" id="guestGrid">
+   <div class="guest"><strong>HOST</strong><small>You</small></div>
+   <div class="guest"><strong>EMPTY BOX</strong><small>Waiting for guest</small></div>
+   <div class="guest"><strong>EMPTY BOX</strong><small>Waiting for guest</small></div>
+   <div class="guest"><strong>EMPTY BOX</strong><small>Waiting for guest</small></div>
+  </div>
+  <div class="row" style="margin-top:12px">
+   <button onclick="guestRequest()">Simulate guest request</button>
+   <button class="secondary" onclick="inviteGuest()">Invite guest</button>
+  </div>
+  <div id="guestStatus" class="muted" style="margin-top:12px">No guest requests yet.</div>
+ </div>
 
-<section id="upload" class="page">
-<div class="sectionhead"><h2>Upload a video</h2></div>
-<div class="form">
-<button class="primary" onclick="document.getElementById('videoPicker').click()">Choose video</button>
-<button class="btn" onclick="document.getElementById('cameraPicker').click()">Open camera</button>
+ <div class="panel">
+  <h3>Co-host together</h3>
+  <p class="muted">Two creators can share a LIVE room when the real video connection is added.</p>
+  <div class="guest-grid">
+   <div class="guest"><strong>CREATOR 1</strong><small>Host</small></div>
+   <div class="guest"><strong>CREATOR 2</strong><small>Co-host slot</small></div>
+  </div>
+  <button class="primary" style="margin-top:12px;width:100%" onclick="cohost()">Preview co-host layout</button>
+  <div id="cohostStatus" class="muted"></div>
+ </div>
 
-<input id="videoPicker" type="file" accept="video/*" hidden onchange="showVideo(this)">
-<input id="cameraPicker" type="file" accept="video/*" capture="environment" hidden onchange="showVideo(this)">
+ <div class="panel">
+  <h3>One-on-one LIVE match</h3>
+  <div class="guest-grid">
+   <div class="guest"><strong>YOU</strong><div class="score" id="scoreA">0</div></div>
+   <div class="guest"><strong>OPPONENT</strong><div class="score" id="scoreB">0</div></div>
+  </div>
+  <div style="text-align:center;margin:15px">
+   <div class="score" id="countdown">VS</div>
+   <small id="matchStatus">Ready for a match preview</small>
+  </div>
+  <div class="row">
+   <button class="primary" onclick="startMatch()">Start match preview</button>
+   <button class="secondary" onclick="addPoint()">Add demo point</button>
+  </div>
+ </div>
 
-<p id="fileStatus" class="notice">No video selected yet.</p>
-<video id="videoPreview" class="previewvideo" controls playsinline></video>
-<button id="clearVideo" class="btn" style="display:none" onclick="clearVideo()">Remove preview</button>
-</div>
-<div class="notice">You can preview the selected video. It is not published or sent to a server.</div>
-<button class="btn" onclick="openPage('create')">← Back to Create</button>
+ <div class="panel">
+  <h3>LIVE comments</h3>
+  <div id="comments" class="muted">Comments will appear here when real-time chat is connected.</div>
+  <input id="commentInput" placeholder="Write a demo comment...">
+  <button onclick="sendComment()">Post demo comment</button>
+ </div>
+ <p class="muted">Demo controls only: other people cannot join or see this room until live streaming and real-time services are connected.</p>
 </section>
 
 <section id="inbox" class="page">
-<div class="sectionhead"><h2>Inbox</h2></div>
-<div class="notice">Messages and LIVE notifications will appear here after secure messaging is connected.</div>
+ <h2>Inbox</h2>
+ <div class="panel">
+  <p>💬 Messages</p>
+  <p>🔔 Notifications</p>
+  <p class="muted">Real-time messaging will be connected in a later step.</p>
+ </div>
 </section>
 
 <section id="profile" class="page">
-<div class="hero">
-<div class="avatar">OB</div>
-<h2>OFFICIALBURAY LIVE</h2>
-<p>Creator profile preview</p>
-<button class="primary" onclick="location.href='login.html'">Create account</button>
-</div>
-</section>
-<div class="hero">
-<div class="avatar">OB</div>
-<h2>OFFICIALBURAY LIVE</h2>
-<p>Creator profile preview</p>
-<button class="primary" onclick="location.href='login.html'">Create account</button>
-</div>
-
-</section>
-
-<section id="signup" class="page">
-<div class="form">
-<h2>Create account</h2>
-<label class="field"><span>Display name</span><input placeholder="Display name"></label>
-<label class="field"><span>Email</span><input type="email" placeholder="Email address"></label>
-
-<button class="btn" onclick="openPage('profile')">Back to profile</button>
-</div>
+ <div class="hero">
+  <div class="avatar">OB</div>
+  <h2 id="profileName">OFFICIALBURAY LIVE</h2>
+  <p class="muted" id="profileEmail">Creator profile</p>
+  <div id="signedOut">
+   <button class="primary" onclick="location.href='login.html'">Create account / Log in</button>
+  </div>
+  <div id="signedIn" class="hidden">
+   <p class="muted">Your account is connected.</p>
+   <button class="danger" onclick="logout()">Log out</button>
+  </div>
+ </div>
+ <div class="panel">
+  <h3>Creator profile</h3>
+  <p>OFFICIALBURAY LIVE</p>
+  <p class="muted">Your creator space.</p>
+ </div>
 </section>
 
-</main>
-
-<nav class="bottom">
-<div class="bottominner">
-<button class="nav active" onclick="navTo(this,'home')"><b>⌂</b>Home</button>
-<button class="nav" onclick="navTo(this,'discover')"><b>⌕</b>Discover</button>
-<button class="nav create" onclick="navTo(this,'create')"><b>＋</b>Create</button>
-<button class="nav" onclick="navTo(this,'inbox')"><b>♧</b>Inbox</button>
-<button class="nav" onclick="navTo(this,'profile')"><b>◉</b>Profile</button>
-</div>
+<nav>
+ <button class="active" data-page="home" onclick="go('home')">⌂<br>Home</button>
+ <button data-page="discover" onclick="go('discover')">⌕<br>Discover</button>
+ <button data-page="create" onclick="go('create')">＋<br>Create</button>
+ <button data-page="inbox" onclick="go('inbox')">✉<br>Inbox</button>
+ <button data-page="profile" onclick="go('profile')">◉<br>Profile</button>
 </nav>
 
 <script>
-let currentVideoUrl='';
+const SUPABASE_URL = "https://icrskxhuwiyczxlxgmkq.supabase.co";
+const SUPABASE_KEY = "sb_publishable_tEfKo-LGH0LArx6KBaBNVQ_hDOtk4WD";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-function openPage(id){
-document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-const target=document.getElementById(id);
-if(target)target.classList.add('active');
-window.scrollTo(0,0);
-if(id==='discover')searchCreators('');
-}
-
-function navTo(button,id){
-document.querySelectorAll('.nav').forEach(n=>n.classList.remove('active'));
-button.classList.add('active');
-openPage(id);
+function go(page){
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ document.getElementById(page).classList.add('active');
+ document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
 }
 
-function toggleFollow(button){
-button.textContent=button.textContent.includes('Follow')?'✓ Following':'＋ Follow';
+async function updateProfile(){
+ const {data,error}=await supabaseClient.auth.getUser();
+ const user=data?.user;
+ document.getElementById('signedOut').classList.toggle('hidden',!!user);
+ document.getElementById('signedIn').classList.toggle('hidden',!user);
+ if(user){
+  document.getElementById('profileName').textContent=
+   user.user_metadata?.display_name || user.email?.split('@')[0] || 'Creator';
+  document.getElementById('profileEmail').textContent=user.email || '';
+ }else{
+  document.getElementById('profileName').textContent='OFFICIALBURAY LIVE';
+  document.getElementById('profileEmail').textContent='Creator profile';
+ }
 }
 
-function filterCreators(button,category){
-document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-button.classList.add('active');
-document.querySelectorAll('#creatorGrid .creator').forEach(card=>{
-card.style.display=category==='all'||card.dataset.category===category?'block':'none';
-});
+async function logout(){
+ const {error}=await supabaseClient.auth.signOut();
+ if(error){alert(error.message);return}
+ await updateProfile();
+ go('profile');
 }
 
-function searchCreators(query){
-const result=document.getElementById('searchResults');
-const term=query.toLowerCase();
-result.innerHTML='';
-document.querySelectorAll('#creatorGrid .creator').forEach(card=>{
-if(card.innerText.toLowerCase().includes(term)){
-result.appendChild(card.cloneNode(true));
-}
-});
+supabaseClient.auth.onAuthStateChange(()=>updateProfile());
+updateProfile();
+
+function searchCreators(){
+ const q=document.getElementById('search').value.toLowerCase();
+ document.querySelectorAll('#creatorList .creator').forEach(c=>{
+  c.style.display=c.textContent.toLowerCase().includes(q)?'flex':'none';
+ });
 }
 
-function showVideo(input){
-const file=input.files&&input.files[0];
-if(!file)return;
-if(!file.type.startsWith('video/')){
-document.getElementById('fileStatus').textContent='Please select a video file.';
-return;
+let videoURL=null;
+function previewVideo(event){
+ const file=event.target.files[0];
+ if(!file)return;
+ if(videoURL)URL.revokeObjectURL(videoURL);
+ videoURL=URL.createObjectURL(file);
+ document.getElementById('videoPreview').innerHTML='';
+ const video=document.createElement('video');
+ video.src=videoURL;video.controls=true;video.playsInline=true;
+ document.getElementById('videoPreview').appendChild(video);
 }
-if(currentVideoUrl)URL.revokeObjectURL(currentVideoUrl);
-currentVideoUrl=URL.createObjectURL(file);
-const video=document.getElementById('videoPreview');
-video.src=currentVideoUrl;
-video.style.display='block';
-document.getElementById('fileStatus').textContent='Selected: '+file.name+' · Local preview only';
-document.getElementById('clearVideo').style.display='inline-block';
-}
-
 function clearVideo(){
-if(currentVideoUrl)URL.revokeObjectURL(currentVideoUrl);
-currentVideoUrl='';
-const video=document.getElementById('videoPreview');
-video.removeAttribute('src');
-video.load();
-video.style.display='none';
-document.getElementById('fileStatus').textContent='No video selected yet.';
-document.getElementById('clearVideo').style.display='none';
-document.getElementById('videoPicker').value='';
-document.getElementById('cameraPicker').value='';
+ if(videoURL)URL.revokeObjectURL(videoURL);
+ videoURL=null;
+ document.getElementById('videoFile').value='';
+ document.getElementById('cameraFile').value='';
+ document.getElementById('videoPreview').textContent='Your video preview will appear here.';
+}
+
+let roomStarted=false;
+let guestCount=0;
+function startRoom(){
+ roomStarted=true;
+ document.getElementById('viewers').textContent='1';
+ document.getElementById('guestStatus').textContent='Your room preview has started.';
+}
+function endRoom(){
+ roomStarted=false;guestCount=0;
+ document.getElementById('viewers').textContent='0';
+ document.getElementById('guestStatus').textContent='Room preview ended.';
+ document.getElementById('guestGrid').innerHTML=
+ '<div class="guest"><strong>HOST</strong><small>You</small></div>'+
+ '<div class="guest"><strong>EMPTY BOX</strong><small>Waiting for guest</small></div>'+
+ '<div class="guest"><strong>EMPTY BOX</strong><small>Waiting for guest</small></div>'+
+ '<div class="guest"><strong>EMPTY BOX</strong><small>Waiting for guest</small></div>';
+}
+function guestRequest(){
+ document.getElementById('guestStatus').innerHTML=
+ 'A demo guest is requesting to join. <button onclick="acceptGuest()">Accept</button> <button class="danger" onclick="rejectGuest()">Reject</button>';
+}
+function acceptGuest(){
+ if(!roomStarted){alert('Start the room preview first.');return}
+ if(guestCount>=3){alert('All demo guest boxes are full.');return}
+ guestCount++;
+ const boxes=document.querySelectorAll('#guestGrid .guest');
+ boxes[guestCount].innerHTML='<strong>GUEST '+guestCount+'</strong><small>Demo guest box</small>';
+ document.getElementById('guestStatus').textContent='Demo guest accepted. This is not a real remote guest.';
+}
+function rejectGuest(){
+ document.getElementById('guestStatus').textContent='Demo guest request rejected.';
+}
+function inviteGuest(){
+ alert('Guest invitations will work when accounts and real-time rooms are connected.');
+}
+function cohost(){
+ document.getElementById('cohostStatus').textContent='Co-host layout preview selected. Real co-host video needs the streaming connection.';
+}
+
+let a=0,b=0;
+function startMatch(){
+ a=0;b=0;
+ document.getElementById('scoreA').textContent=a;
+ document.getElementById('scoreB').textContent=b;
+ let n=3;
+ const count=document.getElementById('countdown');
+ const status=document.getElementById('matchStatus');
+ count.textContent=n;
+ status.textContent='Match countdown preview';
+ const timer=setInterval(()=>{
+  n--;
+  if(n>0){count.textContent=n}
+  else{
+   clearInterval(timer);
+   count.textContent='VS';
+   status.textContent='Demo match started';
+  }
+ },1000);
+}
+function addPoint(){
+ if(Math.random()>.5){a++}else{b++}
+ document.getElementById('scoreA').textContent=a;
+ document.getElementById('scoreB').textContent=b;
+}
+function sendComment(){
+ const input=document.getElementById('commentInput');
+ if(!input.value.trim())return;
+ const line=document.createElement('p');
+ line.textContent='You: '+input.value.trim();
+ document.getElementById('comments').appendChild(line);
+ input.value='';
 }
 </script>
 </body>
