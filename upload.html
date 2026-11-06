@@ -319,6 +319,88 @@ uploadButton.addEventListener("click", async () => {
     uploadButton.disabled = false;
   }
 });
+  
+// OFFICIALBURAY LIVE VIDEO STUDIO
+
+const editor = document.getElementById("videoEditor");
+const editorPreview = document.getElementById("editorPreview");
+const effectChoice = document.getElementById("effectChoice");
+const overlayText = document.getElementById("overlayText");
+const editorOverlay = document.getElementById("editorOverlay");
+const textColor = document.getElementById("textColor");
+const stickerButtons = document.querySelectorAll(".sticker");
+
+function openVideoEditor(file) {
+  if (!file) return;
+
+  const videoURL = URL.createObjectURL(file);
+  editorPreview.src = videoURL;
+  editor.style.display = "block";
+}
+
+videoFileInput.addEventListener("change", function () {
+  const file = this.files && this.files[0];
+  openVideoEditor(file);
+});
+
+// Preview filters
+const filterEffects = {
+  none: "none",
+  vintage: "sepia(0.5) contrast(1.1)",
+  dreamy: "brightness(1.2) saturate(1.3)",
+  cinematic: "contrast(1.3) saturate(0.8)",
+  bw: "grayscale(1)",
+  warm: "sepia(0.25) saturate(1.3)",
+  studio: "brightness(1.1) contrast(1.1)",
+  bigmouth: "none",
+  bigbody: "none"
+};
+
+effectChoice.addEventListener("change", function () {
+  editorPreview.style.filter =
+    filterEffects[this.value] || "none";
+});
+
+// Text overlay
+overlayText.addEventListener("input", function () {
+  editorOverlay.textContent = this.value;
+});
+
+textColor.addEventListener("input", function () {
+  editorOverlay.style.color = this.value;
+});
+
+// Stickers
+stickerButtons.forEach(function (button) {
+  button.addEventListener("click", function () {
+    editorOverlay.textContent += " " + this.textContent;
+  });
+});
+
+// Preview a selected trim start time
+document.getElementById("trimStart").addEventListener("change", function () {
+  const start = Math.max(0, Number(this.value) || 0);
+  if (Number.isFinite(editorPreview.duration)) {
+    editorPreview.currentTime = Math.min(start, editorPreview.duration);
+  }
+});
+
+// Also show a recorded video in the editor
+useRecording.addEventListener("click", function () {
+  if (recordedFile) {
+    openVideoEditor(recordedFile);
+  }
+});
+ody>
+<div class="container">
+<h1>OFFICIALBURAY LIVE</h1>
+<p>Share your videos with the world.</p>
+
+<input id="videoFile" type="file" accept="video/mp4,video/webm">
+<div style="margin-top:20px">
+  <button type="button" id="cameraButton">
+    📷 OPEN CAMERA
+  </bu
 </script>
 </body>
 </html>
