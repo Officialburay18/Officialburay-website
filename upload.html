@@ -110,7 +110,124 @@ const supabaseClient = supabase.createClient(
 
 const uploadButton = document.getElementById("uploadButton");
 const statusBox = document.getElementById("status");
+const videoFileInput = document.getElementById("videoFile");
+const cameraButton = document.getElementById("cameraButton");
+const cameraPreview = document.getElementById("cameraPreview");
+const startRecording = document.getElementById("startRecording");
+const stopRecording = document.getElementById("stopRecording");
+const recordedPreview = document.getElementById("recordedPreview");
+const useRecording = document.getElementById("useRecording");
+const recordingStatus = document.getElementById("recordingStatus");
 
+let cameraStream = null;
+let mediaRecorder = null;
+let recordedChunks = [];
+let recordedFile = null;
+
+cameraButton.addEventListener("click", async () => {
+  try {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      throw new Error("Camera is not supported in this browser.");
+    }
+
+    cameraStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: "user" },
+      audio: true
+    });
+
+    cameraPreview.srcObject = cameraStream;
+    cameraPreview.style.display = "block";
+    startRecording.style.display = "block";
+    cameraButton.style.display = "none";
+
+    recordingStatus.textContent = "Camera is ready!";
+  } catch (error) {
+    recordingStatus.textContent =
+      "Camera error: " + error.message;
+  }
+});
+
+startRecording.addEventListener("click", () => {
+  if (!window.MediaRecorder) {
+    recordingStatus.textContent =
+      "Video recording is not supported in this browser.";
+    return;
+  }
+
+  recordedChunks = [];
+
+  let options = {};
+
+  if (MediaRecorder.isTypeSupported("video/webm;codecs=vp8,opus")) {
+    options.mimeType = "video/webm;codecs=vp8,opus";
+  } else if (MediaRecorder.isTypeSupported("video/webm")) {
+    options.mimeType = "video/webm";
+  }
+
+  mediaRecorder = new MediaRecorder(cameraStream, options);
+
+  mediaRecorder.ondataavailable = event => {
+    if (event.data.size > 0) {
+      recordedChunks.push(event.data);
+    }
+  };
+
+  mediaRecorder.onstop = () => {
+    const blob = new Blob(recordedChunks, {
+      type: mediaRecorder.mimeType || "video/webm"
+    });
+
+    const extension = blob.type.includes("mp4") ? "mp4" : "webm";
+
+    recordedFile = new File(
+      [blob],
+      "OFFICIALBURAY_" + Date.now() + "." + extension,
+      { type: blob.type }
+    );
+
+    recordedPreview.src = URL.createObjectURL(blob);
+    recordedPreview.style.display = "block";
+    useRecording.style.display = "block";
+
+    recordingStatus.textContent = "Recording finished! Preview your video.";
+    startRecording.style.display = "block";
+  };
+
+  mediaRecorder.start();
+
+  startRecording.style.display = "none";
+  stopRecording.style.display = "block";
+  recordingStatus.textContent = "Recording...";
+});
+
+stopRecording.addEventListener("click", () => {
+  if (mediaRecorder && mediaRecorder.state === "recording") {
+    mediaRecorder.stop();
+  }
+
+  stopRecording.style.display = "none";
+
+  if (cameraStream) {
+    cameraStream.getTracks().forEach(track => track.stop());
+    cameraStream = null;
+  }
+
+  cameraPreview.style.display = "none";
+  cameraButton.style.display = "block";
+});
+
+useRecording.addEventListener("click", () => {
+  if (!recordedFile) return;
+
+  const transfer = new DataTransfer();
+  transfer.items.add(recordedFile);
+  videoFileInput.files = transfer.files;
+
+  recordingStatus.textContent =
+    "Video selected! Add your title and caption, then upload.";
+
+  useRecording.style.display = "none";
+});
 uploadButton.addEventListener("click", async () => {
   const file = document.getElementById("videoFile").files[0];
   const title = document.getElementById("title").value.trim();
