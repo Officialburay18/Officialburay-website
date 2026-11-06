@@ -120,6 +120,38 @@ nav span{display:block;font-size:19px;margin-bottom:4px}
 .notice{
   color:#cbbbd8;font-size:12px;
   line-height:1.6;margin-top:18px;
+}.create-menu{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.7);
+  z-index:100;
+  align-items:flex-end;
+  justify-content:center;
+}
+.create-menu.show{
+  display:flex;
+}
+.create-box{
+  background:#241533;
+  width:100%;
+  max-width:500px;
+  padding:25px;
+  border-radius:22px 22px 0 0;
+  border:1px solid #68449a;
+}
+.create-box h2{
+  color:#f2d078;
+  text-align:center;
+}
+.create-option{
+  display:block;
+  width:100%;
+  margin:12px 0;
+  padding:17px;
+  background:#68449a;
+  color:white;
+  font-size:15px;
 }
 </style>
 </head>
