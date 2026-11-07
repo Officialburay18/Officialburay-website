@@ -354,7 +354,7 @@ let matchA=0,matchB=0;
 let liveMode="Not selected";
 
 function go(page){
- stopCamera();
+ if(page !== "golive") stopCamera();
  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
  document.getElementById(page)?.classList.add("active");
  if(page === "discover") loadCreators();
