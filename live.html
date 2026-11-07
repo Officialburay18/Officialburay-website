@@ -8,989 +8,393 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#090711;color:#fff;font-family:Arial,sans-serif;padding-bottom:85px}
-header{padding:16px;background:#171220;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}
-.logo{font-size:18px;font-weight:bold;color:#d7a8ff}
-.logo span{color:#f5c85b}
-button{border:0;border-radius:10px;padding:12px;color:white;background:#702bd1;font-weight:bold;cursor:pointer;margin:3px}
+body{margin:0;background:#090711;color:#fff;font-family:Arial,sans-serif;padding-bottom:75px}
+body.live-open{padding:0;overflow:hidden}
+header{padding:14px 16px;background:#171220;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}
+.logo{font-size:18px;font-weight:bold;color:#d7a8ff}.logo span{color:#f5c85b}
+button{border:0;border-radius:10px;padding:11px;color:white;background:#702bd1;font-weight:bold;cursor:pointer;margin:3px}
 button:disabled{opacity:.5}
 input,textarea,select{width:100%;padding:12px;border-radius:9px;border:1px solid #493b54;background:#100d17;color:white;margin:7px 0}
 textarea{min-height:75px}
-.page{display:none;padding:15px}
-.page.active{display:block}
-.panel{background:#171220;padding:16px;border-radius:15px;margin:13px 0}
+.page{display:none;padding:15px}.page.active{display:block}
+.panel{background:#171220;padding:15px;border-radius:15px;margin:12px 0}
 .hero{text-align:center;padding:20px 10px}
 .muted,small{color:#b7adbf;font-size:13px}
 .primary{background:linear-gradient(120deg,#792be0,#bd48a8)}
-.secondary{background:#30263a}
-.danger{background:#a52c43}
-.gold{background:#a77b24}
+.secondary{background:#30263a}.danger{background:#a52c43}.gold{background:#a77b24}
 .tag{background:#a92345;padding:5px 9px;border-radius:6px;font-size:11px}
-.row{display:flex;gap:7px;flex-wrap:wrap}
-.row button{flex:1}
+.row{display:flex;gap:7px;flex-wrap:wrap}.row button{flex:1}
 .avatar{width:75px;height:75px;border-radius:50%;background:linear-gradient(130deg,#792be0,#e1a94d);display:grid;place-items:center;font-size:24px;font-weight:bold;margin:12px auto}
 .creator{display:flex;align-items:center;gap:12px;padding:12px;background:#21192a;border-radius:12px;margin:9px 0}
 .video-box{background:#08060c;border:1px solid #493653;border-radius:15px;min-height:190px;display:grid;place-items:center;text-align:center;padding:12px;overflow:hidden}
 .video-box video{width:100%;max-height:350px;object-fit:cover}
 .mode-buttons button{min-width:85px}
-.guest-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:12px}
-.guest{background:#21192a;border:1px solid #493653;border-radius:12px;min-height:110px;display:grid;place-content:center;text-align:center;padding:10px}
-.gift-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.gift{background:#251a31;border:1px solid #493653;border-radius:12px;padding:12px;text-align:center}
-.gift button{width:100%;padding:9px 3px}
+.guest-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.guest{background:#21192a;border:1px solid #493653;border-radius:12px;min-height:100px;display:grid;place-content:center;text-align:center;padding:8px;overflow:hidden}
+.gift-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.gift{background:#251a31;border:1px solid #493653;border-radius:12px;padding:9px 5px;text-align:center}
+.gift .emoji{font-size:26px}.gift button{width:100%;padding:8px 2px;font-size:12px}
 .score{font-size:28px;font-weight:bold;color:#f4c65d}
 .hidden{display:none!important}
-nav{position:fixed;bottom:0;left:0;right:0;background:#171220;display:flex;justify-content:space-around;padding:9px 2px;z-index:10;border-top:1px solid #35283e}
+nav{position:fixed;bottom:0;left:0;right:0;background:#171220;display:flex;justify-content:space-around;padding:8px 2px;z-index:10;border-top:1px solid #35283e}
 nav button{background:transparent;padding:7px 3px;font-size:11px;color:#ddd;margin:0}
 nav button.active{color:#d6a2ff}
-hr{border:0;border-top:1px solid #493b54;margin:15px 0}
+hr{border:0;border-top:1px solid #493b54;margin:13px 0}
+.level-chip{display:inline-flex;align-items:center;gap:4px;background:#332348;border:1px solid #a66be2;border-radius:20px;padding:3px 8px;color:#f1d8ff;font-size:11px;font-weight:bold}
+.progress{height:8px;background:#392d43;border-radius:20px;overflow:hidden;margin:7px 0}
+.progress>span{display:block;height:100%;background:linear-gradient(90deg,#8a42e8,#f2c45c);width:0}
+#liveStage{position:relative;background:#050408;border:1px solid #493653;border-radius:16px;overflow:hidden;min-height:56vh}
+#hostPreview{position:absolute;inset:0;border:0;border-radius:0;padding:0;min-height:0;background:radial-gradient(circle at 50% 35%,#32203f,#090711 65%);display:grid;place-items:center}
+#hostPreview video{width:100%;height:100%;max-height:none;object-fit:cover}
+.live-top{position:absolute;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;align-items:center;z-index:2;gap:6px}
+.live-pill{background:#b51f43;padding:6px 10px;border-radius:8px;font-size:12px;font-weight:bold}
+.viewer-pill{background:#171220d9;padding:6px 10px;border-radius:8px;font-size:12px}
+.live-host-label{position:absolute;left:12px;bottom:86px;background:#171220c9;padding:7px 10px;border-radius:9px;z-index:2;font-size:12px}
+.live-toolbar{position:absolute;bottom:9px;left:8px;right:8px;display:flex;justify-content:space-around;gap:5px;z-index:3}
+.live-toolbar button{flex:1;margin:0;padding:11px 3px;background:#251a31eF;border:1px solid #665078;font-size:12px}
+.live-toolbar button.highlight{background:#9a2acb}
+.live-overlay{position:fixed;inset:0;background:#090711f5;z-index:30;padding:16px;overflow:auto}
+.overlay-head{display:flex;justify-content:space-between;align-items:center;position:sticky;top:-16px;background:#090711;padding:8px 0;z-index:2}
+.chat-feed{position:absolute;left:10px;bottom:68px;max-width:72%;max-height:28%;overflow:hidden;z-index:2;font-size:12px;text-shadow:0 1px 3px #000}
+.chat-feed p{margin:4px 0;background:#100d17a8;border-radius:8px;padding:5px 8px;overflow-wrap:anywhere}
+.battle-stage{display:grid;grid-template-columns:1fr 1fr;gap:5px;position:relative;min-height:52vh}
+.team{min-height:52vh;border-radius:12px;display:flex;flex-direction:column;justify-content:space-between;padding:10px;position:relative;overflow:hidden;background:linear-gradient(160deg,#142d61,#080b18);border:2px solid #3477ff}
+.team.red{background:linear-gradient(160deg,#641b2b,#18090e);border-color:#ed405a}
+.team video{width:100%;height:32vh;object-fit:cover;border-radius:9px}
+.team-score{font-size:34px;font-weight:bold;text-align:center}
+.float-hearts{position:absolute;right:12px;bottom:80px;font-size:24px;z-index:3}
+@media(min-width:700px){#liveStage{min-height:70vh;max-width:600px;margin:auto}.live-overlay{max-width:650px;left:50%;transform:translateX(-50%);width:100%}}
 </style>
 </head>
 <body>
-
-<header>
- <div class="logo">OFFICIALBURAY <span>LIVE</span></div>
- <span class="tag">● LIVE APP</span>
-</header>
+<header id="mainHeader"><div class="logo">OFFICIALBURAY <span>LIVE</span></div><span class="tag">● LIVE APP</span></header>
 
 <section id="home" class="page active">
- <h2>Welcome to OFFICIALBURAY LIVE</h2>
- <p class="muted">Watch, create and connect.</p>
- <div class="panel">
-  <h3>Discover creators</h3>
-  <p class="muted">Find creators and explore the community.</p>
-  <button class="primary" onclick="go('discover')">Explore creators</button>
- </div>
- <div class="panel">
-  <h3>Start creating</h3>
-  <p class="muted">Make a post, record a video or prepare a LIVE.</p>
-  <button class="primary" onclick="openCreate()">＋ Create</button>
- </div>
- <div class="panel">
-  <h3>Creator features</h3>
-  <p>🎥 Video creation</p>
-  <p>🎙️ Guest boxes and co-hosting</p>
-  <p>🎁 Virtual gift gallery</p>
-  <p>⚔️ One-on-one match preview</p>
- </div>
+ <h2>Welcome to OFFICIALBURAY LIVE</h2><p class="muted">Watch, create and connect.</p>
+ <div class="panel"><h3>Discover creators</h3><p class="muted">Find creators and explore the community.</p><button class="primary" onclick="go('discover')">Explore creators</button></div>
+ <div class="panel"><h3>Start creating</h3><p class="muted">Make a post, record a video or prepare a LIVE.</p><button class="primary" onclick="openCreate()">＋ Create</button></div>
+ <div class="panel"><h3>Creator features</h3><p>🎥 Video creation</p><p>🎙️ Guest boxes and co-hosting</p><p>🎁 Demo gift gallery and supporter levels</p><p>⚔️ One-on-one match preview</p></div>
 </section>
 
-<section id="discover" class="page">
- <h2>Discover</h2>
- <input id="search" placeholder="Search creators..." oninput="searchCreators()">
- <div id="creatorList">
-  <div class="creator"><div class="avatar">OB</div><div><b>OFFICIALBURAY</b><br><small>Creator</small></div></div>
-  <div class="creator"><div class="avatar">A</div><div><b>Creator A</b><br><small>Community creator</small></div></div>
-  <div class="creator"><div class="avatar">B</div><div><b>Creator B</b><br><small>Community creator</small></div></div>
- </div>
- <p class="muted">These are sample creator profiles until community accounts are connected.</p>
-</section>
+<section id="discover" class="page"><h2>Discover</h2><input id="search" placeholder="Search creators..." oninput="searchCreators()"><div id="creatorList">
+ <div class="creator"><div class="avatar">OB</div><div><b>OFFICIALBURAY</b><br><small>Creator</small></div></div>
+ <div class="creator"><div class="avatar">A</div><div><b>Creator A</b><br><small>Community creator</small></div></div>
+ <div class="creator"><div class="avatar">B</div><div><b>Creator B</b><br><small>Community creator</small></div></div>
+ </div><p class="muted">Sample creator profiles appear until community accounts are connected.</p></section>
 
 <section id="create" class="page">
- <h2>Create</h2>
- <div class="panel">
-  <div class="row mode-buttons">
-   <button id="postTab" class="primary" onclick="setCreateMode('post')">POST</button>
-   <button id="videoTab" class="secondary" onclick="setCreateMode('video')">VIDEO</button>
-   <button id="liveTab" class="secondary" onclick="setCreateMode('live')">LIVE</button>
-  </div>
-
-  <div id="postMode">
-   <h3>Create a post</h3>
-   <input type="file" id="photoFile" accept="image/*" onchange="previewPhoto(event)">
-   <div class="video-box" id="photoPreview">Your photo preview appears here.</div>
-   <textarea id="postCaption" placeholder="Write a caption..."></textarea>
-   <button class="primary" onclick="makePost()">Preview post</button>
-   <p id="postMessage" class="muted"></p>
-  </div>
-
-  <div id="videoMode" class="hidden">
-   <h3>Create a video</h3>
-   <input type="file" id="videoFile" accept="video/*" onchange="previewVideo(event)">
-   <button class="secondary" onclick="document.getElementById('cameraFile').click()">Open phone camera</button>
-   <input class="hidden" type="file" id="cameraFile" accept="video/*" capture="user" onchange="previewVideo(event)">
-   <div class="video-box" id="videoPreview">Your video preview appears here.</div>
-   <textarea id="videoCaption" placeholder="Write a video caption..."></textarea>
-   <button class="primary" onclick="previewVideoPost()">Preview video post</button>
-   <p id="videoMessage" class="muted"></p>
-  </div>
-
-  <div id="liveMode" class="hidden">
-   <h3>Choose your LIVE mode</h3>
-   <div class="panel">
-    <h3>🎙️ Voice LIVE</h3>
-    <p class="muted">Audio-focused LIVE preview without camera video.</p>
-    <button class="primary" onclick="startLiveMode('voice')">Choose Voice LIVE</button>
-   </div>
-   <div class="panel">
-    <h3>📷 Camera LIVE</h3>
-    <p class="muted">Use your phone camera for a camera preview.</p>
-    <button class="primary" onclick="startLiveMode('camera')">Choose Camera LIVE</button>
-   </div>
-   <div class="panel">
-    <h3>🎮 Gaming LIVE</h3>
-    <p class="muted">Screen-sharing support depends on your browser and device.</p>
-    <button class="primary" onclick="startLiveMode('gaming')">Choose Gaming LIVE</button>
-   </div>
-   <p class="muted">These modes prepare local previews. Public broadcasting requires a streaming service.</p>
-  </div>
+ <h2>Create</h2><div class="panel"><div class="row mode-buttons">
+ <button id="postTab" class="primary" onclick="setCreateMode('post')">POST</button><button id="videoTab" class="secondary" onclick="setCreateMode('video')">VIDEO</button><button id="liveTab" class="secondary" onclick="setCreateMode('live')">LIVE</button></div>
+ <div id="postMode"><h3>Create a post</h3><input type="file" id="photoFile" accept="image/*" onchange="previewPhoto(event)"><div class="video-box" id="photoPreview">Your photo preview appears here.</div><textarea id="postCaption" placeholder="Write a caption..."></textarea><button class="primary" onclick="makePost()">Preview post</button><p id="postMessage" class="muted"></p></div>
+ <div id="videoMode" class="hidden"><h3>Create a video</h3><input type="file" id="videoFile" accept="video/*" onchange="previewVideo(event)"><button class="secondary" onclick="document.getElementById('cameraFile').click()">Open phone camera</button><input class="hidden" type="file" id="cameraFile" accept="video/*" capture="user" onchange="previewVideo(event)"><div class="video-box" id="videoPreview">Your video preview appears here.</div><textarea id="videoCaption" placeholder="Write a video caption..."></textarea><button class="primary" onclick="previewVideoPost()">Preview video post</button><p id="videoMessage" class="muted"></p></div>
+ <div id="liveMode" class="hidden"><h3>Choose your LIVE mode</h3>
+ <div class="panel"><h3>🎙️ Voice LIVE</h3><p class="muted">Audio-focused LIVE preview.</p><button class="primary" onclick="startLiveMode('voice')">Choose Voice LIVE</button></div>
+ <div class="panel"><h3>📷 Camera LIVE</h3><p class="muted">Use your phone camera for a preview.</p><button class="primary" onclick="startLiveMode('camera')">Choose Camera LIVE</button></div>
+ <div class="panel"><h3>🎮 Gaming LIVE</h3><p class="muted">Screen-sharing support depends on your browser and device.</p><button class="primary" onclick="startLiveMode('gaming')">Choose Gaming LIVE</button></div>
+ <p class="muted">These modes prepare local previews only. Public broadcasting requires a streaming service.</p></div>
  </div>
 </section>
 
 <section id="golive" class="page">
- <h2>OFFICIALBURAY LIVE ROOM</h2>
-
- <div class="panel">
-  <span class="tag">● PRE-LIVE PREVIEW</span>
-  <p class="muted">Mode: <b id="liveModeName">Not selected</b></p>
-  <div class="video-box" id="hostPreview">
-   <div>
-    <div class="avatar">OB</div>
-    <b id="hostName">Your LIVE room</b>
-    <p class="muted">Your local preview appears here.</p>
+ <div class="row" style="align-items:center;justify-content:space-between"><h2 style="margin:5px 0">OFFICIALBURAY LIVE</h2><button class="danger" onclick="endRoom()">End LIVE</button></div>
+ <p class="muted">Mode: <b id="liveModeName">Not selected</b> · <span id="roomState">PREVIEW</span></p>
+ <div id="liveStage">
+  <div class="live-top"><span id="liveBadge" class="live-pill">● PREVIEW</span><span class="viewer-pill">👁 <b id="viewers">0</b></span></div>
+  <div class="video-box" id="hostPreview"><div><div class="avatar">OB</div><b id="hostName">Your LIVE room</b><p class="muted">Camera preview appears here.</p></div></div>
+  <div class="live-host-label">OFFICIALBURAY · Host</div>
+  <div id="chatFeed" class="chat-feed"></div><div id="floatHearts" class="float-hearts"></div>
+  <div class="live-toolbar">
+   <button onclick="openOverlay('guestOverlay')">👥 Guests</button>
+   <button class="highlight" onclick="openOverlay('giftOverlay')">🎁 Gift</button>
+   <button onclick="sendHeart()">❤️ Like</button>
+   <button onclick="shareRoom()">↗ Share</button>
+   <button onclick="openOverlay('toolsOverlay')">••• More</button>
+  </div>
+ </div>
+ <div id="preLiveActions" class="panel"><p class="muted">Check your camera preview, then start your local LIVE room.</p><div class="row"><button class="primary" onclick="startRoom()">Start LIVE</button><button class="secondary" onclick="shareRoom()">Share LIVE</button></div></div>
+ <div id="liveAfterStart" class="hidden">
+  <div class="panel"><b>Supporter level</b><div id="hostLevelLine" class="muted">Level 0 · New Supporter</div><div class="progress"><span id="hostLevelProgress"></span></div><small id="hostLevelNext">Send demo gifts to progress through levels.</small></div>
+  <div class="panel"><h3>LIVE comments</h3><div id="comments" class="muted">No comments yet.</div><div class="row"><input id="commentInput" placeholder="Write a comment..." style="flex:3"><button onclick="sendComment()">Send</button></div></div>
+  <div class="panel"><h3>⚔️ One-on-one PK Match</h3><p class="muted">Two-team battle preview · Blue Team A vs Red Team B</p>
+   <div class="battle-stage">
+    <div class="team"><b>🔵 TEAM A · YOU</b><div class="team-score" id="scoreA">0</div><small>Host side</small></div>
+    <div class="team red"><b>🔴 TEAM B · OPPONENT</b><div class="team-score" id="scoreB">0</div><small>Opponent side</small></div>
    </div>
+   <div style="text-align:center;padding:10px"><div class="score" id="countdown">VS</div><small id="matchStatus">Ready for match preview</small></div>
+   <div class="row"><button class="primary" onclick="startMatch()">Start PK preview</button><button class="secondary" onclick="addPoint()">Add demo point</button></div>
   </div>
-  <p class="muted">Room viewers: <b id="viewers">0</b></p>
-  <div class="row">
-   <button class="primary" onclick="startRoom()">Start LIVE</button>
-   <button class="danger" onclick="endRoom()">End LIVE</button>
-  </div>
-  <button class="secondary" onclick="shareRoom()">Share LIVE</button>
  </div>
-
- <div id="liveControls" class="hidden">
-
- <div class="panel">
-  <h3>Guest boxes</h3>
-  <p class="muted">One host and 10 guest positions.</p>
-  <div class="guest-grid" id="guestGrid"></div>
-  <div class="row">
-   <button onclick="guestRequest()">Simulate guest request</button>
-   <button class="secondary" onclick="inviteGuest()">Invite guest</button>
-  </div>
-  <div id="guestStatus" class="muted">No guest requests yet.</div>
- </div>
-
- <div class="panel">
-  <h3>Co-host together</h3>
-  <p class="muted">Preview a two-creator layout.</p>
-  <div class="guest-grid">
-   <div class="guest"><b>CREATOR 1</b><small>Host</small></div>
-   <div class="guest"><b>CREATOR 2</b><small>Co-host</small></div>
-  </div>
-  <button class="primary" onclick="cohost()">Preview co-host layout</button>
-  <p id="cohostStatus" class="muted"></p>
- </div>
-
- <div class="panel">
-  <h3>One-on-one LIVE match</h3>
-  <div class="guest-grid">
-   <div class="guest"><b>YOU</b><div class="score" id="scoreA">0</div></div>
-   <div class="guest"><b>OPPONENT</b><div class="score" id="scoreB">0</div></div>
-  </div>
-  <div style="text-align:center;padding:12px">
-   <div class="score" id="countdown">VS</div>
-   <small id="matchStatus">Ready for match preview</small>
-  </div>
-  <button class="primary" onclick="startMatch()">Start match preview</button>
-  <button class="secondary" onclick="addPoint()">Add demo point</button>
- </div>
-
- <div class="panel">
-  <h3>🎁 Gift box</h3>
-  <p class="muted">Demo gift gallery. No real coins or money are used.</p>
-  <p>Demo coin balance: <b id="coinBalance">1000</b></p>
-  <div class="gift-grid" id="giftGallery">
-   <div class="gift"><div>🌹</div><b>Rose</b><small>1 demo coin</small><button onclick="sendGift('Rose','🌹',1)">Send</button></div>
-   <div class="gift"><div>⭐</div><b>Star</b><small>5 demo coins</small><button onclick="sendGift('Star','⭐',5)">Send</button></div>
-   <div class="gift"><div>💎</div><b>Diamond</b><small>20 demo coins</small><button onclick="sendGift('Diamond','💎',20)">Send</button></div>
-   <div class="gift"><div>👑</div><b>Crown</b><small>100 demo coins</small><button onclick="sendGift('Crown','👑',100)">Send</button></div>
-   <div class="gift"><div>🚀</div><b>Rocket</b><small>50 demo coins</small><button onclick="sendGift('Rocket','🚀',50)">Send</button></div>
-   <div class="gift"><div>🏆</div><b>Trophy</b><small>200 demo coins</small><button onclick="sendGift('Trophy','🏆',200)">Send</button></div>
-  </div>
-  <p id="giftStatus" class="muted">Choose a demo gift to preview it.</p>
-  <p>Demo creator reward: <b id="creatorReward">0</b> coins</p>
- </div>
-
- <div class="panel">
-  <h3>LIVE comments</h3>
-  <div id="comments" class="muted">No comments yet.</div>
-  <input id="commentInput" placeholder="Write a demo comment...">
-  <button onclick="sendComment()">Post comment</button>
- </div>
-
- <div class="panel">
-  <h3>Moderation</h3>
-  <p class="muted">Local demonstration controls.</p>
-  <div class="row">
-   <button class="secondary" onclick="toggleMute()">Mute comments</button>
-   <button class="secondary" onclick="removeDemoGuest()">Remove demo guest</button>
-  </div>
-  <div class="row">
-   <button class="danger" onclick="blockDemoUser()">Block demo user</button>
-   <button class="danger" onclick="reportDemoUser()">Report demo user</button>
-  </div>
-  <p id="moderationStatus" class="muted">Comments are enabled.</p>
- </div>
-
- <div class="panel">
-  <h3>LIVE settings</h3>
-  <label><input type="checkbox" id="allowComments" checked> Allow comments</label>
-  <label><input type="checkbox" id="allowGuests" checked> Allow guest requests</label>
-  <label><input type="checkbox" id="privateRoom"> Private room preview</label>
-  <button class="primary" onclick="saveLiveSettings()">Save settings</button>
-  <p id="settingsStatus" class="muted"></p>
- </div>
-
- <p class="muted">Important: This is a local demo room. Other people cannot watch or join yet. Real-time video, remote guests, public chat and payments need separate services and approval.</p>
- </div>
+ <p class="muted">Demo notice: this page previews the LIVE experience on this device. Other people cannot watch or join yet. Remote video, guest audio, public chat and cross-account gift levels need a real-time backend. Demo coins have no cash value.</p>
 </section>
 
-<section id="inbox" class="page">
- <h2>Inbox</h2>
- <div class="panel">
-  <p>💬 Messages</p>
-  <p>🔔 Notifications</p>
-  <p class="muted">Real-time messaging will be connected later.</p>
- </div>
-</section>
-
-<section id="profile" class="page">
- <div class="hero">
-  <div id="profileAvatar" class="avatar">OB</div>
-  <img id="profilePicture" class="avatar hidden" alt="Profile picture">
-  <h2 id="profileName">OFFICIALBURAY LIVE</h2>
-  <p id="profileUsername" class="muted">@username</p>
-  <p id="profileBio" class="muted">Welcome to my creator profile!</p>
-  <div class="row" style="justify-content:space-around;text-align:center;margin:20px 0">
- <div><b id="followingCount">0</b><br><small>Following</small></div>
- <div><b id="followersCount">0</b><br><small>Followers</small></div>
- <div><b id="likesCount">0</b><br><small>Likes</small></div>
-  </div>
-  <p id="profileEmail" class="muted"></p>
-  <div id="signedOut">
-   <button class="primary" onclick="location.href='login.html'">Create account / Log in</button>
-  </div>
-  <div id="signedIn" class="hidden">
-   <button class="primary" onclick="showProfileEditor()">Edit profile</button>
-   <button class="secondary" onclick="toggleProfileMenu()">⋮ More</button>
-   <button class="danger" onclick="logout()">Log out</button>
-  <div id="profileMenu" class="panel hidden">
-  <h3>OFFICIALBURAY MENU</h3>
-  <button class="secondary" onclick="openProfileTool('Balance')">🪙 Balance</button>
-  <button class="secondary" onclick="openProfileTool('Activity Centre')">📊 Activity Centre</button>
-  <button class="secondary" onclick="openProfileTool('Offline Videos')">📥 Offline Videos</button>
-  <button class="secondary" onclick="openProfileTool('Your QR Code')">▦ Your QR Code</button>
-  <button class="secondary" onclick="openProfileTool('OFFICIALBURAY Studio')">🎬 OFFICIALBURAY Studio</button>
-  <button class="secondary" onclick="openProfileTool('Promote')">📣 Promote</button>
-  <button class="secondary" onclick="openProfileTool('Settings and Privacy')">⚙️ Settings and Privacy</button>
-  <button class="danger" onclick="toggleProfileMenu()">Close Menu</button>
-  </div>
-  </div>
- </div>
-
-<div id="otherProfile" class="panel hidden">
-  <div class="hero">
-    <div id="otherAvatar" class="avatar">OB</div>
-    <img id="otherPicture" class="avatar hidden" alt="Creator picture">
-    <h2 id="otherName">Creator</h2>
-    <p id="otherUsername" class="muted">@username</p>
-    <p id="otherBio" class="muted"></p>
-    <div class="row" style="justify-content:space-around;text-align:center;margin:20px 0">
-      <div><b id="otherFollowing">0</b><br><small>Following</small></div>
-      <div><b id="otherFollowers">0</b><br><small>Followers</small></div>
-      <div><b id="otherLikes">0</b><br><small>Likes</small></div>
-    </div>
-    <button id="followButton" class="primary" onclick="toggleFollow()">Follow</button>
-    <button class="secondary" onclick="closeOtherProfile()">Back to my profile</button>
-  </div>
+<!-- Guest overlay -->
+<div id="guestOverlay" class="live-overlay hidden"><div class="overlay-head"><h2>Guest room</h2><button class="danger" onclick="closeOverlay('guestOverlay')">Close</button></div>
+ <p class="muted">Host and moderator controls · Local guest request demonstration.</p>
+ <div class="guest-grid" id="guestGrid"></div>
+ <div class="panel"><h3>Guest requests</h3><p id="guestStatus" class="muted">No guest requests yet.</p><div class="row"><button class="primary" onclick="guestRequest()">Create sample request</button><button class="secondary" onclick="inviteGuest()">Invite preview</button></div></div>
+ <div class="panel"><h3>Co-host layout</h3><p class="muted">Two creator boxes side by side.</p><div class="guest-grid"><div class="guest">HOST<br><small>Team A</small></div><div class="guest">CO-HOST<br><small>Guest slot</small></div></div><p id="cohostStatus" class="muted"></p><button onclick="cohost()">Preview co-host layout</button></div>
 </div>
 
- <div id="profileEditor" class="panel hidden">
-  <h3>Edit creator profile</h3>
-  <label>Display name</label>
-  <input id="editDisplayName" placeholder="Your display name">
-  <label>Username</label>
-  <input id="editUsername" placeholder="your_username">
-  <label>Bio</label>
-  <textarea id="editBio" placeholder="Write your bio"></textarea>
-  <label>Profile picture</label>
-  <input id="avatarFile" type="file" accept="image/*">
-  <button class="primary" onclick="saveProfile()">Save profile</button>
-  <button class="secondary" onclick="hideProfileEditor()">Cancel</button>
-  <p id="profileMessage" class="muted"></p>
- </div>
+<!-- Gift overlay -->
+<div id="giftOverlay" class="live-overlay hidden"><div class="overlay-head"><h2>Gift gallery</h2><button class="danger" onclick="closeOverlay('giftOverlay')">Close</button></div>
+ <p class="muted">All gifts below use demo coins only. No top-ups or purchases.</p>
+ <div class="panel"><div>Demo coin balance: <b id="coinBalance">1000</b></div><div id="viewerLevel" class="level-chip">🏅 Level 0 · New Supporter</div><div class="progress"><span id="levelProgress"></span></div><small id="levelNext">Your next level starts at 1 cumulative demo gift coin.</small></div>
+ <div class="gift-grid" id="giftGallery"></div>
+ <p id="giftStatus" class="muted">Choose a demo gift to preview it.</p><p>Demo creator reward: <b id="creatorReward">0</b> coins</p>
+ <div class="panel"><h3>Gift levels</h3><div id="levelDetails" class="muted"></div></div>
+</div>
 
- <div class="panel">
-  <h3>Creator wallet</h3>
-  <p>Demo coin balance: <b id="profileCoins">1000</b></p>
-  <p class="muted">Demo wallet only. No real-money purchases, earnings or withdrawals are enabled.</p>
- </div>
+<!-- More tools overlay -->
+<div id="toolsOverlay" class="live-overlay hidden"><div class="overlay-head"><h2>LIVE controls</h2><button class="danger" onclick="closeOverlay('toolsOverlay')">Close</button></div>
+ <div class="panel"><h3>Sound effects</h3><p class="muted">Local preview sounds only. No music is broadcast to guests.</p><div class="row"><button onclick="playEffect('👏')">👏 Clap</button><button onclick="playEffect('😂')">😂 Laugh</button><button onclick="playEffect('🎉')">🎉 Cheer</button></div><p id="soundStatus" class="muted">Sound effects are optional local previews.</p></div>
+ <div class="panel"><h3>Moderation</h3><div class="row"><button class="secondary" onclick="toggleMute()">Mute comments</button><button class="secondary" onclick="removeDemoGuest()">Remove guest</button></div><div class="row"><button class="danger" onclick="blockDemoUser()">Block demo user</button><button class="danger" onclick="reportDemoUser()">Report demo user</button></div><p id="moderationStatus" class="muted">Comments are enabled.</p></div>
+ <div class="panel"><h3>LIVE settings</h3><label><input type="checkbox" id="allowComments" checked> Allow comments</label><label><input type="checkbox" id="allowGuests" checked> Allow guest requests</label><label><input type="checkbox" id="privateRoom"> Private room preview</label><button class="primary" onclick="saveLiveSettings()">Save settings</button><p id="settingsStatus" class="muted"></p></div>
+</div>
+
+<section id="inbox" class="page"><h2>Inbox</h2><div class="panel"><p>💬 Messages</p><p>🔔 Notifications</p><p class="muted">Real-time messaging will be connected later.</p></div></section>
+
+<section id="profile" class="page">
+ <div class="hero"><div id="profileAvatar" class="avatar">OB</div><img id="profilePicture" class="avatar hidden" alt="Profile picture"><h2 id="profileName">OFFICIALBURAY LIVE</h2><p id="profileUsername" class="muted">@username</p><p id="profileBio" class="muted">Welcome to my creator profile!</p>
+ <div class="row" style="justify-content:space-around;text-align:center;margin:20px 0"><div><b id="followingCount">0</b><br><small>Following</small></div><div><b id="followersCount">0</b><br><small>Followers</small></div><div><b id="likesCount">0</b><br><small>Likes</small></div></div>
+ <p id="profileEmail" class="muted"></p><div id="signedOut"><button class="primary" onclick="location.href='login.html'">Create account / Log in</button></div>
+ <div id="signedIn" class="hidden"><button class="primary" onclick="showProfileEditor()">Edit profile</button><button class="secondary" onclick="toggleProfileMenu()">⋮ More</button><button class="danger" onclick="logout()">Log out</button>
+ <div id="profileMenu" class="panel hidden"><h3>OFFICIALBURAY MENU</h3><button class="secondary" onclick="openProfileTool('Balance')">🪙 Balance</button><button class="secondary" onclick="openProfileTool('Activity Centre')">📊 Activity Centre</button><button class="secondary" onclick="openProfileTool('Offline Videos')">📥 Offline Videos</button><button class="secondary" onclick="openProfileTool('Your QR Code')">▦ Your QR Code</button><button class="secondary" onclick="openProfileTool('OFFICIALBURAY Studio')">🎬 OFFICIALBURAY Studio</button><button class="secondary" onclick="openProfileTool('Promote')">📣 Promote</button><button class="secondary" onclick="openProfileTool('Settings and Privacy')">⚙️ Settings and Privacy</button><button class="danger" onclick="toggleProfileMenu()">Close Menu</button></div></div></div>
+ <div id="otherProfile" class="panel hidden"><div class="hero"><div id="otherAvatar" class="avatar">OB</div><img id="otherPicture" class="avatar hidden" alt="Creator picture"><h2 id="otherName">Creator</h2><p id="otherUsername" class="muted">@username</p><p id="otherBio" class="muted"></p><div class="row" style="justify-content:space-around;text-align:center;margin:20px 0"><div><b id="otherFollowing">0</b><br><small>Following</small></div><div><b id="otherFollowers">0</b><br><small>Followers</small></div><div><b id="otherLikes">0</b><br><small>Likes</small></div></div><button id="followButton" class="primary" onclick="toggleFollow()">Follow</button><button class="secondary" onclick="closeOtherProfile()">Back to my profile</button></div></div>
+ <div id="profileEditor" class="panel hidden"><h3>Edit creator profile</h3><label>Display name</label><input id="editDisplayName" placeholder="Your display name"><label>Username</label><input id="editUsername" placeholder="your_username"><label>Bio</label><textarea id="editBio" placeholder="Write your bio"></textarea><label>Profile picture</label><input id="avatarFile" type="file" accept="image/*"><button class="primary" onclick="saveProfile()">Save profile</button><button class="secondary" onclick="hideProfileEditor()">Cancel</button><p id="profileMessage" class="muted"></p></div>
+ <div class="panel"><h3>Creator wallet</h3><p>Demo coin balance: <b id="profileCoins">1000</b></p><p class="muted">Demo wallet only. No real-money purchases, earnings or withdrawals are enabled.</p><hr><h3>Your gift level</h3><div id="profileGiftLevel" class="level-chip">🏅 Level 0 · New Supporter</div><div class="progress"><span id="profileLevelProgress"></span></div><small id="profileLevelNext">Cumulative demo gift coins sent: 0</small></div>
 </section>
 
-<nav>
- <button class="active" data-page="home" onclick="go('home')">⌂<br>Home</button>
- <button data-page="discover" onclick="go('discover')">⌕<br>Discover</button>
- <button data-page="create" onclick="openCreate()">＋<br>Create</button>
- <button data-page="inbox" onclick="go('inbox')">✉<br>Inbox</button>
- <button data-page="profile" onclick="go('profile')">◉<br>Profile</button>
-</nav>
+<nav id="mainNav"><button class="active" data-page="home" onclick="go('home')">⌂<br>Home</button><button data-page="discover" onclick="go('discover')">⌕<br>Discover</button><button data-page="create" onclick="openCreate()">＋<br>Create</button><button data-page="inbox" onclick="go('inbox')">✉<br>Inbox</button><button data-page="profile" onclick="go('profile')">◉<br>Profile</button></nav>
 
 <script>
 const SUPABASE_URL="https://icrskxhuwiyczxlxgmkq.supabase.co";
 const SUPABASE_KEY="sb_publishable_tEfKo-LGH0LArx6KBaBNVQ_hDOtk4WD";
 const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-let cameraStream=null;
-let videoURL=null;
-let photoURL=null;
-let roomStarted=false;
-let guestCount=0;
-let coins=1000;
-let creatorReward=0;
-let commentsMuted=false;
-let matchTimer=null;
-let matchA=0,matchB=0;
-let liveMode="Not selected";
+let cameraStream=null,videoURL=null,photoURL=null,roomStarted=false,guestCount=0;
+let coins=1000,creatorReward=0,commentsMuted=false,matchTimer=null,matchA=0,matchB=0;
+let liveMode="Not selected",totalGiftCoins=0,heartCount=0;
+let demoGuestRequestPending=false;
+
+const giftLevels=[
+ {min:0,name:"New Supporter",badge:"🌱"},
+ {min:1,name:"Supporter",badge:"🥉"},
+ {min:8,name:"Super Supporter",badge:"🥈"},
+ {min:28,name:"VIP Supporter",badge:"🥇"},
+ {min:88,name:"Star Supporter",badge:"⭐"},
+ {min:188,name:"Elite Supporter",badge:"💎"},
+ {min:388,name:"Royal Supporter",badge:"👑"},
+ {min:888,name:"Legend Supporter",badge:"🏆"},
+ {min:1888,name:"Diamond Legend",badge:"💠"},
+ {min:3888,name:"Icon Supporter",badge:"🔥"},
+ {min:8888,name:"Super Icon",badge:"🌟"},
+ {min:18888,name:"Grand Champion",badge:"🚀"},
+ {min:50000,name:"OFFICIALBURAY Legend",badge:"🏅"}
+];
+const gifts=[
+ ["Rose","🌹",1],["Heart","❤️",2],["Star","⭐",5],["Coffee","☕",8],["Chocolate","🍫",10],["Flower","🌸",15],
+ ["Diamond","💎",20],["Party Popper","🎉",30],["Rocket","🚀",50],["Crown","👑",100],["Teddy","🧸",150],["Trophy","🏆",200],
+ ["Butterfly","🦋",300],["Sports Car","🏎️",500],["Lion","🦁",800],["Castle","🏰",1000],["Fireworks","🎆",2000],
+ ["Golden Jet","✈️",5000],["Royal Palace","🏯",10000],["Galaxy","🌌",20000],["Universe","🌠",50000]
+];
 
 function go(page){
- if(page !== "golive") stopCamera();
+ if(page!=="golive")stopCamera();
  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
  document.getElementById(page)?.classList.add("active");
- if(page === "discover") loadCreators();
+ if(page==="discover")loadCreators();
  document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
 }
-
-function openCreate(){
- go("create");
- setCreateMode("post");
-}
-
+function openCreate(){go("create");setCreateMode("post")}
 function setCreateMode(mode){
- ["post","video","live"].forEach(m=>{
-  document.getElementById(m+"Mode").classList.toggle("hidden",m!==mode);
-  document.getElementById(m+"Tab").className=m===mode?"primary":"secondary";
- });
+ ["post","video","live"].forEach(m=>{document.getElementById(m+"Mode").classList.toggle("hidden",m!==mode);document.getElementById(m+"Tab").className=m===mode?"primary":"secondary"});
  if(mode!=="video")stopCamera();
 }
-
-function searchCreators(){
- const q=document.getElementById("search").value.toLowerCase();
- document.querySelectorAll("#creatorList .creator").forEach(c=>{
-  c.style.display=c.textContent.toLowerCase().includes(q)?"flex":"none";
- });
-}
-
-function previewPhoto(event){
- const file=event.target.files[0];
- if(!file)return;
- if(photoURL)URL.revokeObjectURL(photoURL);
- photoURL=URL.createObjectURL(file);
- const img=document.createElement("img");
- img.src=photoURL;img.style.maxWidth="100%";img.style.maxHeight="300px";
- const box=document.getElementById("photoPreview");
- box.textContent="";box.appendChild(img);
-}
-
-function makePost(){
- document.getElementById("postMessage").textContent=
-  "Post preview prepared on this device. Publishing to a shared feed is not connected yet.";
-}
-
-function previewVideo(event){
- const file=event.target.files[0];
- if(!file)return;
- if(videoURL)URL.revokeObjectURL(videoURL);
- videoURL=URL.createObjectURL(file);
- const video=document.createElement("video");
- video.src=videoURL;video.controls=true;video.playsInline=true;
- const box=document.getElementById("videoPreview");
- box.textContent="";box.appendChild(video);
-}
-
-function previewVideoPost(){
- document.getElementById("videoMessage").textContent=
-  "Video preview prepared. Public video uploading is not connected yet.";
-}
+function searchCreators(){const q=document.getElementById("search").value.toLowerCase();document.querySelectorAll("#creatorList .creator").forEach(c=>c.style.display=c.textContent.toLowerCase().includes(q)?"flex":"none")}
+function previewPhoto(e){const f=e.target.files[0];if(!f)return;if(photoURL)URL.revokeObjectURL(photoURL);photoURL=URL.createObjectURL(f);const img=document.createElement("img");img.src=photoURL;img.style.maxWidth="100%";img.style.maxHeight="300px";const box=document.getElementById("photoPreview");box.textContent="";box.appendChild(img)}
+function makePost(){document.getElementById("postMessage").textContent="Post preview prepared on this device. Publishing to a shared feed is not connected yet."}
+function previewVideo(e){const f=e.target.files[0];if(!f)return;if(videoURL)URL.revokeObjectURL(videoURL);videoURL=URL.createObjectURL(f);const v=document.createElement("video");v.src=videoURL;v.controls=true;v.playsInline=true;const box=document.getElementById("videoPreview");box.textContent="";box.appendChild(v)}
+function previewVideoPost(){document.getElementById("videoMessage").textContent="Video preview prepared. Public video uploading is not connected yet."}
 
 async function startLiveMode(mode){
- stopCamera();
- roomStarted=false;
- document.getElementById("liveControls").classList.add("hidden");
-
+ stopCamera();roomStarted=false;document.getElementById("liveAfterStart").classList.add("hidden");document.getElementById("preLiveActions").classList.remove("hidden");
  liveMode=mode==="voice"?"Voice LIVE":mode==="camera"?"Camera LIVE":"Gaming LIVE";
-
  if(mode==="camera"){
-  try{
-   cameraStream=await navigator.mediaDevices.getUserMedia({
-    video:{facingMode:"user"},
-    audio:true
-   });
-   showCameraPreview();
-  }catch(e){
-   cameraStream=null;
-   alert("Camera or microphone permission was not granted, or this device does not support camera access.");
-  }
- }else if(mode==="gaming"){
-  alert("Screen sharing is not supported by every Android browser. Gaming LIVE is currently a mode preview.");
- }else{
-  alert("Voice LIVE mode selected. Real audio broadcasting is not connected yet.");
- }
-
- document.getElementById("liveModeName").textContent=liveMode;
- go("golive");
+  try{cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"user"},audio:true});showCameraPreview()}
+  catch(e){cameraStream=null;alert("Camera or microphone permission was not granted, or this device does not support camera access. You can still preview the room.")}
+ }else if(mode==="gaming"){alert("Gaming LIVE is a mode preview. Screen sharing depends on browser support.")}
+ else{alert("Voice LIVE mode selected. Real audio broadcasting is not connected yet.")}
+ document.getElementById("liveModeName").textContent=liveMode;go("golive");
 }
-
-function showCameraPreview(){
- const box=document.getElementById("hostPreview");
- box.textContent="";
- const video=document.createElement("video");
- video.autoplay=true;
- video.muted=true;
- video.playsInline=true;
- video.srcObject=cameraStream;
- box.appendChild(video);
-}
-
-function stopCamera(){
- if(cameraStream){
-  cameraStream.getTracks().forEach(t=>t.stop());
-  cameraStream=null;
- }
-}
-
+function showCameraPreview(){const box=document.getElementById("hostPreview");box.textContent="";const v=document.createElement("video");v.autoplay=true;v.muted=true;v.playsInline=true;v.srcObject=cameraStream;box.appendChild(v)}
+function stopCamera(){if(cameraStream){cameraStream.getTracks().forEach(t=>t.stop());cameraStream=null}}
 function startRoom(){
- roomStarted=true;
- document.getElementById("liveControls").classList.remove("hidden");
- document.getElementById("viewers").textContent="1";
- document.getElementById("guestStatus").textContent="Your local room preview has started.";
+ roomStarted=true;document.body.classList.add("live-open");document.getElementById("mainHeader").classList.add("hidden");document.getElementById("mainNav").classList.add("hidden");
+ document.getElementById("preLiveActions").classList.add("hidden");document.getElementById("liveAfterStart").classList.remove("hidden");
+ document.getElementById("liveBadge").textContent="● LIVE DEMO";document.getElementById("roomState").textContent="LIVE PREVIEW";document.getElementById("viewers").textContent="1";
+ document.getElementById("guestStatus").textContent="No guest requests yet.";renderGuests();renderLevel();
 }
-
 function endRoom(){
- roomStarted=false;
- guestCount=0;
- document.getElementById("liveControls").classList.add("hidden");
- document.getElementById("viewers").textContent="0";
- document.getElementById("guestStatus").textContent="Room preview ended.";
- renderGuests();
- stopCamera();
-
- const box=document.getElementById("hostPreview");
- box.innerHTML='<div><div class="avatar">OB</div><b id="hostName">Your LIVE room</b><p class="muted">Your local preview appears here.</p></div>';
+ roomStarted=false;document.body.classList.remove("live-open");document.getElementById("mainHeader").classList.remove("hidden");document.getElementById("mainNav").classList.remove("hidden");
+ document.getElementById("liveAfterStart").classList.add("hidden");document.getElementById("preLiveActions").classList.remove("hidden");
+ document.getElementById("liveBadge").textContent="● PREVIEW";document.getElementById("roomState").textContent="PREVIEW";document.getElementById("viewers").textContent="0";
+ guestCount=0;demoGuestRequestPending=false;renderGuests();stopCamera();clearInterval(matchTimer);
+ closeAllOverlays();const box=document.getElementById("hostPreview");box.innerHTML='<div><div class="avatar">OB</div><b id="hostName">Your LIVE room</b><p class="muted">Camera preview appears here.</p></div>';
 }
+function openOverlay(id){if(!roomStarted){alert("Start LIVE first.");return}document.getElementById(id).classList.remove("hidden")}
+function closeOverlay(id){document.getElementById(id).classList.add("hidden")}
+function closeAllOverlays(){document.querySelectorAll(".live-overlay").forEach(x=>x.classList.add("hidden"))}
 
 function renderGuests(){
- const grid=document.getElementById("guestGrid");
- grid.textContent="";
- const host=document.createElement("div");
- host.className="guest";
- host.innerHTML="<b>HOST</b><small>You</small>";
- grid.appendChild(host);
-
- for(let i=1;i<=10;i++){
-  const box=document.createElement("div");
-  box.className="guest";
-  if(i<=guestCount){
-   box.innerHTML="<b>DEMO GUEST "+i+"</b><small>Sample guest position</small>";
-  }else{
-   box.innerHTML="<b>EMPTY BOX "+i+"</b><small>Waiting for guest</small>";
-  }
-  grid.appendChild(box);
- }
+ const grid=document.getElementById("guestGrid");if(!grid)return;grid.textContent="";
+ const host=document.createElement("div");host.className="guest";host.innerHTML="<b>HOST</b><small>You · "+levelFor(totalGiftCoins).badge+" "+levelFor(totalGiftCoins).name+"</small>";grid.appendChild(host);
+ for(let i=1;i<=10;i++){const box=document.createElement("div");box.className="guest";box.innerHTML=i<=guestCount?"<b>DEMO GUEST "+i+"</b><small>Sample guest · Level 0</small>":"<b>EMPTY BOX "+i+"</b><small>Waiting for guest</small>";grid.appendChild(box)}
 }
-
 function guestRequest(){
- if(!document.getElementById("allowGuests").checked){
-  document.getElementById("guestStatus").textContent="Guest requests are disabled in settings.";
-  return;
- }
- document.getElementById("guestStatus").innerHTML=
-  'A sample guest is requesting to join. <button onclick="acceptGuest()">Accept</button> <button class="danger" onclick="rejectGuest()">Reject</button>';
+ if(!document.getElementById("allowGuests").checked){document.getElementById("guestStatus").textContent="Guest requests are disabled in settings.";return}
+ if(demoGuestRequestPending){document.getElementById("guestStatus").textContent="A sample request is already waiting.";return}
+ demoGuestRequestPending=true;
+ document.getElementById("guestStatus").innerHTML='A sample viewer is requesting to join. <button onclick="acceptGuest()">Accept</button> <button class="danger" onclick="rejectGuest()">Reject</button>';
 }
-
-function acceptGuest(){
- if(!roomStarted){alert("Start LIVE first.");return}
- if(guestCount>=10){alert("All 10 guest boxes are full.");return}
- guestCount++;
- renderGuests();
- document.getElementById("guestStatus").textContent="Sample guest added. This is not a real remote guest.";
-}
-
-function rejectGuest(){
- document.getElementById("guestStatus").textContent="Sample guest request rejected.";
-}
-
-function inviteGuest(){
- alert("Real guest invitations will be added when accounts and real-time streaming are connected.");
-}
-
-function cohost(){
- document.getElementById("cohostStatus").textContent="Two-creator layout preview selected. Real co-host video needs a streaming connection.";
-}
+function acceptGuest(){if(!roomStarted){alert("Start LIVE first.");return}if(guestCount>=10){alert("All 10 guest boxes are full.");return}guestCount++;demoGuestRequestPending=false;renderGuests();document.getElementById("guestStatus").textContent="Sample guest accepted. This is not a real remote guest."}
+function rejectGuest(){demoGuestRequestPending=false;document.getElementById("guestStatus").textContent="Sample guest request rejected."}
+function inviteGuest(){alert("This is an invitation preview. Real guest invitations require connected accounts and real-time streaming.")}
+function cohost(){document.getElementById("cohostStatus").textContent="Two-creator layout preview selected. Real co-host video needs a streaming connection."}
 
 function startMatch(){
- clearInterval(matchTimer);
- matchA=0;matchB=0;
- document.getElementById("scoreA").textContent="0";
- document.getElementById("scoreB").textContent="0";
- let n=3;
- document.getElementById("countdown").textContent=n;
- document.getElementById("matchStatus").textContent="Match countdown preview";
- matchTimer=setInterval(()=>{
-  n--;
-  if(n>0)document.getElementById("countdown").textContent=n;
-  else{
-   clearInterval(matchTimer);
-   document.getElementById("countdown").textContent="VS";
-   document.getElementById("matchStatus").textContent="Demo match started";
-  }
- },1000);
+ clearInterval(matchTimer);matchA=0;matchB=0;document.getElementById("scoreA").textContent="0";document.getElementById("scoreB").textContent="0";
+ let n=3;document.getElementById("countdown").textContent=n;document.getElementById("matchStatus").textContent="Match countdown preview";
+ matchTimer=setInterval(()=>{n--;if(n>0)document.getElementById("countdown").textContent=n;else{clearInterval(matchTimer);document.getElementById("countdown").textContent="VS";document.getElementById("matchStatus").textContent="Demo match started"}},1000);
 }
+function addPoint(){if(!roomStarted)return;if(Math.random()>.5)matchA++;else matchB++;document.getElementById("scoreA").textContent=matchA;document.getElementById("scoreB").textContent=matchB}
 
-function addPoint(){
- if(Math.random()>.5)matchA++;else matchB++;
- document.getElementById("scoreA").textContent=matchA;
- document.getElementById("scoreB").textContent=matchB;
+function levelFor(total){let current=giftLevels[0],next=null;for(let i=0;i<giftLevels.length;i++){if(total>=giftLevels[i].min)current=giftLevels[i];else{next=giftLevels[i];break}}return {current,next}}
+function renderLevel(){
+ const result=levelFor(totalGiftCoins),cur=result.current,next=result.next;
+ const pct=next?Math.min(100,((totalGiftCoins-cur.min)/(next.min-cur.min))*100):100;
+ const chip=cur.badge+" Level "+giftLevels.indexOf(cur)+" · "+cur.name;
+ ["viewerLevel","profileGiftLevel"].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=chip});
+ ["levelProgress","profileLevelProgress","hostLevelProgress"].forEach(id=>{const el=document.getElementById(id);if(el)el.style.width=pct+"%"});
+ const line=next?"Next: "+next.min+" cumulative gift coins for "+next.name+".":"Top demo level reached!";
+ const a=document.getElementById("levelNext");if(a)a.textContent=line;
+ const b=document.getElementById("profileLevelNext");if(b)b.textContent="Cumulative demo gift coins sent: "+totalGiftCoins+" · "+line;
+ const c=document.getElementById("hostLevelLine");if(c)c.textContent=chip;
+ const d=document.getElementById("hostLevelNext");if(d)d.textContent=line;
 }
-
+function buildGiftGallery(){
+ const gallery=document.getElementById("giftGallery");gallery.textContent="";
+ gifts.forEach(([name,emoji,cost])=>{const card=document.createElement("div");card.className="gift";const em=document.createElement("div");em.className="emoji";em.textContent=emoji;const title=document.createElement("b");title.textContent=name;const price=document.createElement("small");price.textContent=cost.toLocaleString()+" demo coins";const btn=document.createElement("button");btn.textContent="Send";btn.onclick=()=>sendGift(name,emoji,cost);card.append(em,title,document.createElement("br"),price,btn);gallery.appendChild(card)});
+ document.getElementById("levelDetails").innerHTML=giftLevels.map((l,i)=>"<p>"+l.badge+" Level "+i+" · "+l.name+" — "+l.min.toLocaleString()+" cumulative coins</p>").join("");
+}
 function sendGift(name,emoji,cost){
- if(coins<cost){
-  document.getElementById("giftStatus").textContent="Not enough demo coins.";
-  return;
- }
- coins-=cost;
- const creatorShare=Math.floor(cost/2);
- creatorReward+=creatorShare;
- document.getElementById("coinBalance").textContent=coins;
- document.getElementById("profileCoins").textContent=coins;
- document.getElementById("creatorReward").textContent=creatorReward;
- document.getElementById("giftStatus").textContent=emoji+" "+name+" sent! Demo gift only. Creator demo reward: "+creatorShare+" coins.";
+ if(!roomStarted){document.getElementById("giftStatus").textContent="Start LIVE before sending demo gifts.";return}
+ if(coins<cost){document.getElementById("giftStatus").textContent="Not enough demo coins. This demo has no recharge or payment feature.";return}
+ const before=levelFor(totalGiftCoins).current;coins-=cost;totalGiftCoins+=cost;
+ const creatorShare=Math.floor(cost/2);creatorReward+=creatorShare;
+ document.getElementById("coinBalance").textContent=coins;document.getElementById("profileCoins").textContent=coins;document.getElementById("creatorReward").textContent=creatorReward;
+ const after=levelFor(totalGiftCoins).current;
+ document.getElementById("giftStatus").textContent=emoji+" "+name+" sent! +"+cost+" demo gift coins. "+(after!==before?" 🎉 LEVEL UP: "+after.badge+" Level "+giftLevels.indexOf(after)+" "+after.name+"!":"");
+ renderLevel();renderGuests();addChatLine("You sent "+emoji+" "+name+" · "+levelFor(totalGiftCoins).current.badge+" Level "+giftLevels.indexOf(after));
 }
-
+function addChatLine(message){const feed=document.getElementById("chatFeed");const p=document.createElement("p");p.textContent=message;feed.appendChild(p);while(feed.children.length>5)feed.removeChild(feed.firstChild)}
 function sendComment(){
- if(!document.getElementById("allowComments").checked||commentsMuted){
-  document.getElementById("moderationStatus").textContent="Comments are currently muted or disabled.";
-  return;
- }
- const input=document.getElementById("commentInput");
- const value=input.value.trim();
- if(!value)return;
- const line=document.createElement("p");
- line.textContent="You: "+value;
- document.getElementById("comments").appendChild(line);
- input.value="";
+ if(!document.getElementById("allowComments").checked||commentsMuted){document.getElementById("moderationStatus").textContent="Comments are currently muted or disabled.";return}
+ const input=document.getElementById("commentInput"),value=input.value.trim();if(!value)return;
+ const line=document.createElement("p");line.textContent="You · "+levelFor(totalGiftCoins).current.badge+" L"+giftLevels.indexOf(levelFor(totalGiftCoins).current)+": "+value;document.getElementById("comments").appendChild(line);addChatLine("You: "+value);input.value="";
 }
-
-function toggleMute(){
- commentsMuted=!commentsMuted;
- document.getElementById("moderationStatus").textContent=commentsMuted?"Comments muted.":"Comments enabled.";
-}
-
-function removeDemoGuest(){
- if(guestCount>0){
-  guestCount--;
-  renderGuests();
-  document.getElementById("moderationStatus").textContent="One sample guest removed.";
- }else{
-  document.getElementById("moderationStatus").textContent="There are no sample guests to remove.";
- }
-}
-
-function blockDemoUser(){
- document.getElementById("moderationStatus").textContent="Sample block action recorded locally. No real account was blocked.";
-}
-
-function reportDemoUser(){
- document.getElementById("moderationStatus").textContent="Sample report preview recorded locally. No real report was submitted.";
-}
-
-function saveLiveSettings(){
- document.getElementById("settingsStatus").textContent="Your room preview settings have been updated.";
-}
-
-async function shareRoom(){
- const url=location.href;
- if(navigator.share){
-  try{
-   await navigator.share({title:"OFFICIALBURAY LIVE",text:"Check out my LIVE room preview",url});
-  }catch(e){}
- }else if(navigator.clipboard){
-  try{
-   await navigator.clipboard.writeText(url);
-   alert("Page link copied.");
-  }catch(e){
-   alert("Sharing is not supported on this browser.");
-  }
- }else{
-  alert("Sharing is not supported on this browser.");
- }
-}
+function sendHeart(){if(!roomStarted)return;heartCount++;document.getElementById("floatHearts").textContent="❤️".repeat(Math.min(heartCount%6+1,6));addChatLine("You liked the LIVE ❤️")}
+function playEffect(emoji){document.getElementById("soundStatus").textContent=emoji+" Sound-effect preview selected. This does not broadcast audio to guests."}
+function toggleMute(){commentsMuted=!commentsMuted;document.getElementById("moderationStatus").textContent=commentsMuted?"Comments muted.":"Comments enabled."}
+function removeDemoGuest(){if(guestCount>0){guestCount--;renderGuests();document.getElementById("moderationStatus").textContent="One sample guest removed."}else document.getElementById("moderationStatus").textContent="There are no sample guests to remove."}
+function blockDemoUser(){document.getElementById("moderationStatus").textContent="Sample block action recorded locally. No real account was blocked."}
+function reportDemoUser(){document.getElementById("moderationStatus").textContent="Sample report preview recorded locally. No real report was submitted."}
+function saveLiveSettings(){document.getElementById("settingsStatus").textContent="Your room preview settings have been updated."}
+async function shareRoom(){const url=location.href;if(navigator.share){try{await navigator.share({title:"OFFICIALBURAY LIVE",text:"Check out my LIVE room preview",url})}catch(e){}}else if(navigator.clipboard){try{await navigator.clipboard.writeText(url);alert("Page link copied.")}catch(e){alert("Sharing is not supported on this browser.")}}else alert("Sharing is not supported on this browser.")}
 
 async function updateProfile(user=null){
  try{
-  if(!user){
-   document.getElementById("followingCount").textContent="0";
-   document.getElementById("followersCount").textContent="0";
-   document.getElementById("likesCount").textContent="0";
-   const result=await supabaseClient.auth.getUser();
-   user=result.data?.user||null;
-  }
-
-  document.getElementById("signedOut").classList.toggle("hidden",!!user);
-  document.getElementById("signedIn").classList.toggle("hidden",!user);
-
-  if(!user){
-   document.getElementById("profileName").textContent="OFFICIALBURAY LIVE";
-   document.getElementById("profileUsername").textContent="@username";
-   document.getElementById("profileBio").textContent="Welcome to my creator profile!";
-   document.getElementById("profileEmail").textContent="";
-   return;
-  }
-
+  if(!user){document.getElementById("followingCount").textContent="0";document.getElementById("followersCount").textContent="0";document.getElementById("likesCount").textContent="0";const result=await supabaseClient.auth.getUser();user=result.data?.user||null}
+  document.getElementById("signedOut").classList.toggle("hidden",!!user);document.getElementById("signedIn").classList.toggle("hidden",!user);
+  if(!user){document.getElementById("profileName").textContent="OFFICIALBURAY LIVE";document.getElementById("profileUsername").textContent="@username";document.getElementById("profileBio").textContent="Welcome to my creator profile!";document.getElementById("profileEmail").textContent="";return}
   document.getElementById("profileEmail").textContent=user.email||"";
-
   const {data:profile}=await supabaseClient.from("profiles").select("*").eq("id",user.id).maybeSingle();
-
   const displayName=profile?.display_name||user.user_metadata?.display_name||user.email?.split("@")[0]||"Creator";
-
   await loadProfileStats(user.id);
-
-  document.getElementById("profileName").textContent=displayName;
-  document.getElementById("profileUsername").textContent=profile?.username?"@"+profile.username:"@choose_username";
-  document.getElementById("profileBio").textContent=profile?.bio||"Welcome to my creator profile!";
-  document.getElementById("editDisplayName").value=displayName;
-  document.getElementById("editUsername").value=profile?.username||"";
-  document.getElementById("editBio").value=profile?.bio||"";
-
-  if(profile?.avatar_url){
-   document.getElementById("profilePicture").src=profile.avatar_url;
-   document.getElementById("profilePicture").classList.remove("hidden");
-   document.getElementById("profileAvatar").classList.add("hidden");
-  }else{
-   document.getElementById("profilePicture").classList.add("hidden");
-   document.getElementById("profileAvatar").classList.remove("hidden");
-  }
- }catch(e){
-  console.error("Profile error:",e);
- }
+  document.getElementById("profileName").textContent=displayName;document.getElementById("profileUsername").textContent=profile?.username?"@"+profile.username:"@choose_username";document.getElementById("profileBio").textContent=profile?.bio||"Welcome to my creator profile!";
+  document.getElementById("editDisplayName").value=displayName;document.getElementById("editUsername").value=profile?.username||"";document.getElementById("editBio").value=profile?.bio||"";
+  if(profile?.avatar_url){document.getElementById("profilePicture").src=profile.avatar_url;document.getElementById("profilePicture").classList.remove("hidden");document.getElementById("profileAvatar").classList.add("hidden")}else{document.getElementById("profilePicture").classList.add("hidden");document.getElementById("profileAvatar").classList.remove("hidden")}
+ }catch(e){console.error("Profile error:",e)}
 }
-
 let viewedCreatorId=null;
-
 async function loadProfileStats(userId){
- const [following,followers,likes]=await Promise.all([
-  supabaseClient.from("ob_follows").select("*",{count:"exact",head:true}).eq("follower_id",userId),
+ const [following,followers,likes]=await Promise.all([  supabaseClient.from("ob_follows").select("*",{count:"exact",head:true}).eq("follower_id",userId),
   supabaseClient.from("ob_follows").select("*",{count:"exact",head:true}).eq("following_id",userId),
-  supabaseClient.from("ob_likes").select("*",{count:"exact",head:true}).eq("creator_id",userId)
- ]);
-
- document.getElementById("followingCount").textContent=following.count??0;
- document.getElementById("followersCount").textContent=followers.count??0;
- document.getElementById("likesCount").textContent=likes.count??0;
+  supabaseClient.from("ob_likes").select("*",{count:"exact",head:true}).eq("creator_id",userId)]);
+ document.getElementById("followingCount").textContent=following.count??0;document.getElementById("followersCount").textContent=followers.count??0;document.getElementById("likesCount").textContent=likes.count??0;
 }
-
 async function loadCreators(){
- const list=document.getElementById("creatorList");
- list.textContent="Loading creators...";
-
- const {data,error}=await supabaseClient
-  .from("profiles")
-  .select("id,username,display_name,bio,avatar_url")
-  .order("created_at",{ascending:false});
-
- list.textContent="";
-
- if(error){
-  list.textContent="Could not load creators: "+error.message;
-  return;
- }
-
- if(!data||!data.length){
-  list.textContent="No creators have registered yet.";
-  return;
- }
-
+ const list=document.getElementById("creatorList");list.textContent="Loading creators...";
+ const {data,error}=await supabaseClient.from("profiles").select("id,username,display_name,bio,avatar_url").order("created_at",{ascending:false});
+ list.textContent="";if(error){list.textContent="Could not load creators: "+error.message;return}if(!data||!data.length){list.textContent="No creators have registered yet.";return}
  data.forEach(creator=>{
-  const item=document.createElement("div");
-  item.className="creator";
-
-  const avatar=document.createElement("div");
-  avatar.className="avatar";
-  avatar.style.width="55px";
-  avatar.style.height="55px";
-
-  if(creator.avatar_url){
-   const img=document.createElement("img");
-   img.src=creator.avatar_url;
-   img.alt="Creator picture";
-   img.style.cssText="width:55px;height:55px;border-radius:50%;object-fit:cover";
-   avatar.replaceWith(img);
-   item.appendChild(img);
-  }else{
-   avatar.textContent=(creator.display_name||"C").charAt(0);
-   item.appendChild(avatar);
-  }
-
-  const info=document.createElement("div");
-  const name=document.createElement("b");
-  name.textContent=creator.display_name||"Creator";
-
-  const username=document.createElement("small");
-  username.textContent="@"+(creator.username||"creator");
-
-  info.append(name,document.createElement("br"),username);
-
-  const button=document.createElement("button");
-  button.textContent="View profile";
-  button.onclick=()=>openCreatorProfile(creator.id);
-
-  item.append(info,button);
-  list.appendChild(item);
+  const item=document.createElement("div");item.className="creator";const avatar=document.createElement("div");avatar.className="avatar";avatar.style.width="55px";avatar.style.height="55px";
+  if(creator.avatar_url){const img=document.createElement("img");img.src=creator.avatar_url;img.alt="Creator picture";img.style.cssText="width:55px;height:55px;border-radius:50%;object-fit:cover";item.appendChild(img)}else{avatar.textContent=(creator.display_name||"C").charAt(0);item.appendChild(avatar)}
+  const info=document.createElement("div"),name=document.createElement("b"),username=document.createElement("small");name.textContent=creator.display_name||"Creator";username.textContent="@"+(creator.username||"creator");info.append(name,document.createElement("br"),username);
+  const button=document.createElement("button");button.textContent="View profile";button.onclick=()=>openCreatorProfile(creator.id);item.append(info,button);list.appendChild(item);
  });
 }
-
 async function openCreatorProfile(userId){
- const {data:creator,error}=await supabaseClient
-  .from("profiles")
-  .select("*")
-  .eq("id",userId)
-  .maybeSingle();
-
- if(error||!creator){
-  alert("Creator profile could not be found.");
-  return;
- }
-
- viewedCreatorId=userId;
-
- document.getElementById("otherName").textContent=creator.display_name||"Creator";
- document.getElementById("otherUsername").textContent="@"+(creator.username||"creator");
- document.getElementById("otherBio").textContent=creator.bio||"";
-
- const picture=document.getElementById("otherPicture");
- const avatar=document.getElementById("otherAvatar");
-
- if(creator.avatar_url){
-  picture.src=creator.avatar_url;
-  picture.classList.remove("hidden");
-  avatar.classList.add("hidden");
- }else{
-  picture.classList.add("hidden");
-  avatar.classList.remove("hidden");
-  avatar.textContent=(creator.display_name||"C").charAt(0);
- }
-
+ const {data:creator,error}=await supabaseClient.from("profiles").select("*").eq("id",userId).maybeSingle();if(error||!creator){alert("Creator profile could not be found.");return}
+ viewedCreatorId=userId;document.getElementById("otherName").textContent=creator.display_name||"Creator";document.getElementById("otherUsername").textContent="@"+(creator.username||"creator");document.getElementById("otherBio").textContent=creator.bio||"";
+ const picture=document.getElementById("otherPicture"),avatar=document.getElementById("otherAvatar");
+ if(creator.avatar_url){picture.src=creator.avatar_url;picture.classList.remove("hidden");avatar.classList.add("hidden")}else{picture.classList.add("hidden");avatar.classList.remove("hidden");avatar.textContent=(creator.display_name||"C").charAt(0)}
  const [following,followers,likes]=await Promise.all([
   supabaseClient.from("ob_follows").select("*",{count:"exact",head:true}).eq("follower_id",userId),
   supabaseClient.from("ob_follows").select("*",{count:"exact",head:true}).eq("following_id",userId),
-  supabaseClient.from("ob_likes").select("*",{count:"exact",head:true}).eq("creator_id",userId)
- ]);
-
- document.getElementById("otherFollowing").textContent=following.count??0;
- document.getElementById("otherFollowers").textContent=followers.count??0;
- document.getElementById("otherLikes").textContent=likes.count??0;
-
- const {data:{user}}=await supabaseClient.auth.getUser();
- const button=document.getElementById("followButton");
-
- if(!user){
-  button.textContent="Log in to follow";
-  button.disabled=false;
- }else if(user.id===userId){
-  button.textContent="Your profile";
-  button.disabled=true;
- }else{
-  const {data:existing}=await supabaseClient
-   .from("ob_follows")
-   .select("id")
-   .eq("follower_id",user.id)
-   .eq("following_id",userId)
-   .maybeSingle();
-
-  button.textContent=existing?"Unfollow":"Follow";
-  button.disabled=false;
- }
-
- document.getElementById("otherProfile").classList.remove("hidden");
- go("profile");
+  supabaseClient.from("ob_likes").select("*",{count:"exact",head:true}).eq("creator_id",userId)]);
+ document.getElementById("otherFollowing").textContent=following.count??0;document.getElementById("otherFollowers").textContent=followers.count??0;document.getElementById("otherLikes").textContent=likes.count??0;
+ const {data:{user}}=await supabaseClient.auth.getUser(),button=document.getElementById("followButton");
+ if(!user){button.textContent="Log in to follow";button.disabled=false}else if(user.id===userId){button.textContent="Your profile";button.disabled=true}else{const {data:existing}=await supabaseClient.from("ob_follows").select("id").eq("follower_id",user.id).eq("following_id",userId).maybeSingle();button.textContent=existing?"Unfollow":"Follow";button.disabled=false}
+ document.getElementById("otherProfile").classList.remove("hidden");go("profile");
 }
-
 async function toggleFollow(){
- const {data:{user}}=await supabaseClient.auth.getUser();
-
- if(!user){
-  alert("Please log in to follow creators.");
-  return;
- }
-
- if(!viewedCreatorId||user.id===viewedCreatorId)return;
-
- const button=document.getElementById("followButton");
- button.disabled=true;
-
- const {data:existing,error:checkError}=await supabaseClient
-  .from("ob_follows")
-  .select("id")
-  .eq("follower_id",user.id)
-  .eq("following_id",viewedCreatorId)
-  .maybeSingle();
-
- if(checkError){
-  alert(checkError.message);
-  button.disabled=false;
-  return;
- }
-
- let error;
-
- if(existing){
-  ({error}=await supabaseClient.from("ob_follows").delete().eq("id",existing.id));
- }else{
-  ({error}=await supabaseClient.from("ob_follows").insert({
-   follower_id:user.id,
-   following_id:viewedCreatorId
-  }));
- }
-
- button.disabled=false;
-
- if(error){
-  alert(error.message);
-  return;
- }
-
- await openCreatorProfile(viewedCreatorId);
-
- if(user.id===viewedCreatorId){
-  await updateProfile(user);
- }
+ const {data:{user}}=await supabaseClient.auth.getUser();if(!user){alert("Please log in to follow creators.");return}if(!viewedCreatorId||user.id===viewedCreatorId)return;
+ const button=document.getElementById("followButton");button.disabled=true;
+ const {data:existing,error:checkError}=await supabaseClient.from("ob_follows").select("id").eq("follower_id",user.id).eq("following_id",viewedCreatorId).maybeSingle();
+ if(checkError){alert(checkError.message);button.disabled=false;return}
+ let error;if(existing)({error}=await supabaseClient.from("ob_follows").delete().eq("id",existing.id));else({error}=await supabaseClient.from("ob_follows").insert({follower_id:user.id,following_id:viewedCreatorId}));
+ button.disabled=false;if(error){alert(error.message);return}await openCreatorProfile(viewedCreatorId);if(user.id===viewedCreatorId)await updateProfile(user);
 }
-
-function closeOtherProfile(){
- document.getElementById("otherProfile").classList.add("hidden");
- go("profile");
-}
-
-function toggleProfileMenu(){
- document.getElementById("profileMenu").classList.toggle("hidden");
-}
-
+function closeOtherProfile(){document.getElementById("otherProfile").classList.add("hidden");go("profile")}
+function toggleProfileMenu(){document.getElementById("profileMenu").classList.toggle("hidden")}
 function openProfileTool(name){
- document.getElementById("profileMenu").classList.add("hidden");
-
- let message="";
-
- if(name==="Balance"){
-  message="Your demo coin balance: "+coins+" coins.";
- }else if(name==="Activity Centre"){
-  message="Your activity centre is being prepared.";
- }else if(name==="Offline Videos"){
-  message="Your offline videos will appear here.";
- }else if(name==="Your QR Code"){
-  message="Your OFFICIALBURAY QR code feature is being prepared.";
- }else if(name==="OFFICIALBURAY Studio"){
-  message="Your creator studio and demo analytics are being prepared.";
- }else if(name==="Promote"){
-  message="Promotion preview only. No payments or paid advertising are enabled.";
- }else if(name==="Settings and Privacy"){
-  message="Your account settings and privacy controls are being prepared.";
- }
-
+ document.getElementById("profileMenu").classList.add("hidden");let message="";
+ if(name==="Balance")message="Your demo coin balance: "+coins+" coins.";
+ else if(name==="Activity Centre")message="Your activity centre is being prepared.";
+ else if(name==="Offline Videos")message="Your offline videos will appear here.";
+ else if(name==="Your QR Code")message="Your OFFICIALBURAY QR code feature is being prepared.";
+ else if(name==="OFFICIALBURAY Studio")message="Your creator studio and demo analytics are being prepared.";
+ else if(name==="Promote")message="Promotion preview only. No payments or paid advertising are enabled.";
+ else if(name==="Settings and Privacy")message="Your account settings and privacy controls are being prepared.";
  alert(message);
 }
-
-function showProfileEditor(){
- document.getElementById("profileEditor").classList.remove("hidden");
- document.getElementById("profileMessage").textContent="";
-}
-
-function hideProfileEditor(){
- document.getElementById("profileEditor").classList.add("hidden");
-}
-
+function showProfileEditor(){document.getElementById("profileEditor").classList.remove("hidden");document.getElementById("profileMessage").textContent=""}
+function hideProfileEditor(){document.getElementById("profileEditor").classList.add("hidden")}
 async function saveProfile(){
- const message=document.getElementById("profileMessage");
- const {data:{user}}=await supabaseClient.auth.getUser();
-
- if(!user){
-  message.textContent="Please log in first.";
-  return;
- }
-
- const displayName=document.getElementById("editDisplayName").value.trim();
- const username=document.getElementById("editUsername").value.trim().toLowerCase().replace(/^@/,"");
- const bio=document.getElementById("editBio").value.trim();
- const file=document.getElementById("avatarFile").files[0];
-
- if(!displayName||!username){
-  message.textContent="Enter your display name and username.";
-  return;
- }
-
- if(!/^[a-z0-9_]{3,24}$/.test(username)){
-  message.textContent="Username must be 3–24 characters: letters, numbers or underscores.";
-  return;
- }
-
- if(file&&(!file.type.startsWith("image/")||file.size>5*1024*1024)){
-  message.textContent="Choose an image smaller than 5 MB.";
-  return;
- }
-
- message.textContent="Saving profile...";
- let avatarUrl=null;
-
- if(file){
-  const extension=(file.name.split(".").pop()||"jpg").toLowerCase();
-  const path=user.id+"/avatar."+extension;
-
-  const {error}=await supabaseClient.storage.from("avatars").upload(path,file,{
-   upsert:true,
-   contentType:file.type
-  });
-
-  if(error){
-   message.textContent="Picture upload failed: "+error.message;
-   return;
-  }
-
-  const {data}=supabaseClient.storage.from("avatars").getPublicUrl(path);
-  avatarUrl=data.publicUrl+"?v="+Date.now();
- }
-
- const profileData={id:user.id,username,display_name:displayName,bio};
- if(avatarUrl)profileData.avatar_url=avatarUrl;
-
- const {error}=await supabaseClient.from("profiles").upsert(profileData,{onConflict:"id"});
-
- if(error){
-  message.textContent="Could not save: "+error.message;
-  return;
- }
-
- document.getElementById("avatarFile").value="";
- message.textContent="Profile saved successfully!";
- await updateProfile(user);
+ const message=document.getElementById("profileMessage"),{data:{user}}=await supabaseClient.auth.getUser();if(!user){message.textContent="Please log in first.";return}
+ const displayName=document.getElementById("editDisplayName").value.trim(),username=document.getElementById("editUsername").value.trim().toLowerCase().replace(/^@/,""),bio=document.getElementById("editBio").value.trim(),file=document.getElementById("avatarFile").files[0];
+ if(!displayName||!username){message.textContent="Enter your display name and username.";return}
+ if(!/^[a-z0-9_]{3,24}$/.test(username)){message.textContent="Username must be 3–24 characters: letters, numbers or underscores.";return}
+ if(file&&(!file.type.startsWith("image/")||file.size>5*1024*1024)){message.textContent="Choose an image smaller than 5 MB.";return}
+ message.textContent="Saving profile...";let avatarUrl=null;
+ if(file){const extension=(file.name.split(".").pop()||"jpg").toLowerCase(),path=user.id+"/avatar."+extension;const {error}=await supabaseClient.storage.from("avatars").upload(path,file,{upsert:true,contentType:file.type});if(error){message.textContent="Picture upload failed: "+error.message;return}const {data}=supabaseClient.storage.from("avatars").getPublicUrl(path);avatarUrl=data.publicUrl+"?v="+Date.now()}
+ const profileData={id:user.id,username,display_name:displayName,bio};if(avatarUrl)profileData.avatar_url=avatarUrl;
+ const {error}=await supabaseClient.from("profiles").upsert(profileData,{onConflict:"id"});if(error){message.textContent="Could not save: "+error.message;return}
+ document.getElementById("avatarFile").value="";message.textContent="Profile saved successfully!";await updateProfile(user);
 }
-
-async function logout(){
- const {error}=await supabaseClient.auth.signOut();
-
- if(error){
-  alert(error.message);
-  return;
- }
-
- await updateProfile(null);
- go("profile");
-}
-
-supabaseClient.auth.onAuthStateChange((event,session)=>{
- updateProfile(session?.user||null);
-});
-
-updateProfile();
-renderGuests();
+async function logout(){const {error}=await supabaseClient.auth.signOut();if(error){alert(error.message);return}await updateProfile(null);go("profile")}
+supabaseClient.auth.onAuthStateChange((event,session)=>{updateProfile(session?.user||null)});
+updateProfile();renderGuests();buildGiftGallery();renderLevel();
 </script>
 </body>
- </html>
+</html>
