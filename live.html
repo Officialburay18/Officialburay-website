@@ -823,7 +823,32 @@ function closeOtherProfile() {
   go("profile");
 }
 function toggleProfileMenu(){
-  alert("OFFICIALBURAY menu is opening soon!");
+  document.getElementById("profileMenu").classList.toggle("hidden");
+}
+
+function openProfileTool(name){
+  document.getElementById("profileMenu").classList.add("hidden");
+
+  let message = "";
+
+  if(name === "Balance"){
+    message = "Your demo coin balance: " + coins + " coins.";
+  } else if(name === "Activity Centre"){
+    message = "Your activity centre is being prepared.";
+  } else if(name === "Offline Videos"){
+    message = "Your offline videos will appear here.";
+  } else if(name === "Your QR Code"){
+    message = "Your OFFICIALBURAY QR code feature is being prepared.";
+  } else if(name === "OFFICIALBURAY Studio"){
+    message = "Your creator studio and demo analytics are being prepared.";
+  } else if(name === "Promote"){
+    message = "Promotion preview only. No payments or paid advertising are enabled.";
+  } else if(name === "Settings and Privacy"){
+    message = "Your account settings and privacy controls are being prepared.";
+  }
+
+  alert(message);
+}
 }
 function showProfileEditor(){
  document.getElementById("profileEditor").classList.remove("hidden");
