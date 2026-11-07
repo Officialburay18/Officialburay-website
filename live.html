@@ -570,6 +570,7 @@ document.getElementById("likesCount").textContent = "0";
   document.getElementById("profileEmail").textContent=user.email||"";
   const {data:profile}=await supabaseClient.from("profiles").select("*").eq("id",user.id).maybeSingle();
   const displayName=profile?.display_name||user.user_metadata?.display_name||user.email?.split("@")[0]||"Creator";
+  await loadProfileStats(user.id);
   document.getElementById("profileName").textContent=displayName;
   document.getElementById("profileUsername").textContent=profile?.username?"@"+profile.username:"@choose_username";
   document.getElementById("profileBio").textContent=profile?.bio||"Welcome to my creator profile!";
