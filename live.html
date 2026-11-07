@@ -583,6 +583,228 @@ async function updateProfile(user=null){
   }
  }catch(e){console.error("Profile error:",e)}
 }
+
+let viewedCreatorId = null;
+
+async function loadProfileStats(userId) {
+  const [following, followers, likes] = await Promise.all([
+    supabaseClient.from("ob_follows")
+      .select("*", {count:"exact", head:true})
+      .eq("follower_id", userId),
+
+    supabaseClient.from("ob_follows")
+      .select("*", {count:"exact", head:true})
+      .eq("following_id", userId),
+
+    supabaseClient.from("ob_likes")
+      .select("*", {count:"exact", head:true})
+      .eq("creator_id", userId)
+  ]);
+
+  document.getElementById("followingCount").textContent = following.count ?? 0;
+  document.getElementById("followersCount").textContent = followers.count ?? 0;
+  document.getElementById("likesCount").textContent = likes.count ?? 0;
+}
+
+async function loadCreators() {
+  const list = document.getElementById("creatorList");
+  list.textContent = "Loading creators...";
+
+  const {data, error} = await supabaseClient
+    .from("profiles")
+    .select("id,username,display_name,bio,avatar_url")
+    .order("created_at", {ascending:false});
+
+  list.textContent = "";
+
+  if (error) {
+    list.textContent = "Could not load creators: " + error.message;
+    return;
+  }
+
+  if (!data || !data.length) {
+    list.textContent = "No creators have registered yet.";
+    return;
+  }
+
+  data.forEach(creator => {
+    const item = document.createElement("div");
+    item.className = "creator";
+
+    const avatar = document.createElement("div");
+    avatar.className = "avatar";
+    avatar.style.width = "55px";
+    avatar.style.height = "55px";
+
+    if (creator.avatar_url) {
+      const img = document.createElement("img");
+      img.src = creator.avatar_url;
+      img.alt = "Creator picture";
+      img.style.cssText = "width:55px;height:55px;border-radius:50%;object-fit:cover";
+      avatar.replaceWith(img);
+    } else {
+      avatar.textContent = (creator.display_name || "C").charAt(0);
+      item.appendChild(avatar);
+    }
+
+    const info = document.createElement("div");
+    const name = document.createElement("b");
+    name.textContent = creator.display_name || "Creator";
+
+    const username = document.createElement("small");
+    username.textContent = "@" + (creator.username || "creator");
+
+    info.append(name, document.createElement("br"), username);
+
+    const button = document.createElement("button");
+    button.textContent = "View profile";
+    button.onclick = () => openCreatorProfile(creator.id);
+
+    item.append(info, button);
+    list.appendChild(item);
+  });
+}
+
+async function openCreatorProfile(userId) {
+  const {data:creator, error} = await supabaseClient
+    .from("profiles")
+    .select("*")
+    .eq("id", userId)
+    .maybeSingle();
+
+  if (error || !creator) {
+    alert("Creator profile could not be found.");
+    return;
+  }
+
+  viewedCreatorId = userId;
+
+  document.getElementById("otherName").textContent =
+    creator.display_name || "Creator";
+
+  document.getElementById("otherUsername").textContent =
+    "@" + (creator.username || "creator");
+
+  document.getElementById("otherBio").textContent =
+    creator.bio || "";
+
+  const picture = document.getElementById("otherPicture");
+  const avatar = document.getElementById("otherAvatar");
+
+  if (creator.avatar_url) {
+    picture.src = creator.avatar_url;
+    picture.classList.remove("hidden");
+    avatar.classList.add("hidden");
+  } else {
+    picture.classList.add("hidden");
+    avatar.classList.remove("hidden");
+    avatar.textContent = (creator.display_name || "C").charAt(0);
+  }
+
+  const [following, followers, likes] = await Promise.all([
+    supabaseClient.from("ob_follows")
+      .select("*", {count:"exact", head:true})
+      .eq("follower_id", userId),
+
+    supabaseClient.from("ob_follows")
+      .select("*", {count:"exact", head:true})
+      .eq("following_id", userId),
+
+    supabaseClient.from("ob_likes")
+      .select("*", {count:"exact", head:true})
+      .eq("creator_id", userId)
+  ]);
+
+  document.getElementById("otherFollowing").textContent = following.count ?? 0;
+  document.getElementById("otherFollowers").textContent = followers.count ?? 0;
+  document.getElementById("otherLikes").textContent = likes.count ?? 0;
+
+  const {data:{user}} = await supabaseClient.auth.getUser();
+  const button = document.getElementById("followButton");
+
+  if (!user) {
+    button.textContent = "Log in to follow";
+    button.disabled = false;
+  } else if (user.id === userId) {
+    button.textContent = "Your profile";
+    button.disabled = true;
+  } else {
+    const {data:existing} = await supabaseClient
+      .from("ob_follows")
+      .select("id")
+      .eq("follower_id", user.id)
+      .eq("following_id", userId)
+      .maybeSingle();
+
+    button.textContent = existing ? "Unfollow" : "Follow";
+    button.disabled = false;
+  }
+
+  document.getElementById("otherProfile").classList.remove("hidden");
+  go("profile");
+}
+
+async function toggleFollow() {
+  const {data:{user}} = await supabaseClient.auth.getUser();
+
+  if (!user) {
+    alert("Please log in to follow creators.");
+    return;
+  }
+
+  if (!viewedCreatorId || user.id === viewedCreatorId) return;
+
+  const button = document.getElementById("followButton");
+  button.disabled = true;
+
+  const {data:existing, error:checkError} = await supabaseClient
+    .from("ob_follows")
+    .select("id")
+    .eq("follower_id", user.id)
+    .eq("following_id", viewedCreatorId)
+    .maybeSingle();
+
+  if (checkError) {
+    alert(checkError.message);
+    button.disabled = false;
+    return;
+  }
+
+  let error;
+
+  if (existing) {
+    ({error} = await supabaseClient
+      .from("ob_follows")
+      .delete()
+      .eq("id", existing.id));
+  } else {
+    ({error} = await supabaseClient
+      .from("ob_follows")
+      .insert({
+        follower_id: user.id,
+        following_id: viewedCreatorId
+      }));
+  }
+
+  button.disabled = false;
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  await openCreatorProfile(viewedCreatorId);
+
+  if (user.id === viewedCreatorId) {
+    await updateProfile(user);
+  }
+}
+
+function closeOtherProfile() {
+  document.getElementById("otherProfile").classList.add("hidden");
+  go("profile");
+}
+
 function showProfileEditor(){
  document.getElementById("profileEditor").classList.remove("hidden");
  document.getElementById("profileMessage").textContent="";
