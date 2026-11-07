@@ -273,6 +273,25 @@ hr{border:0;border-top:1px solid #493b54;margin:15px 0}
   </div>
  </div>
 
+<div id="otherProfile" class="panel hidden">
+  <div class="hero">
+    <div id="otherAvatar" class="avatar">OB</div>
+    <img id="otherPicture" class="avatar hidden" alt="Creator picture">
+    <h2 id="otherName">Creator</h2>
+    <p id="otherUsername" class="muted">@username</p>
+    <p id="otherBio" class="muted"></p>
+
+    <div class="row" style="justify-content:space-around;text-align:center;margin:20px 0">
+      <div><b id="otherFollowing">0</b><br><small>Following</small></div>
+      <div><b id="otherFollowers">0</b><br><small>Followers</small></div>
+      <div><b id="otherLikes">0</b><br><small>Likes</small></div>
+    </div>
+
+    <button id="followButton" class="primary" onclick="toggleFollow()">Follow</button>
+    <button class="secondary" onclick="closeOtherProfile()">Back to my profile</button>
+  </div>
+</div>
+
  <div id="profileEditor" class="panel hidden">
   <h3>Edit creator profile</h3>
   <label>Display name</label>
