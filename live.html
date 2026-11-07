@@ -552,7 +552,9 @@ async function shareRoom(){
 
 async function updateProfile(user=null){
  try{
-  if(!user){
+  if(!user){ document.getElementById("followingCount").textContent = "0";
+document.getElementById("followersCount").textContent = "0";
+document.getElementById("likesCount").textContent = "0";
    const result=await supabaseClient.auth.getUser();
    user=result.data?.user||null;
   }
