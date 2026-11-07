@@ -1,87 +1,672 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#090711">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#08070c">
 <title>OFFICIALBURAY LIVE</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--bg:#090711;--panel:#171220;--panel2:#21192d;--gold:#f5c45b;--pink:#ff4f91;--muted:#a99db5;--line:#34283f;--white:#fff}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--white);font:15px system-ui,Arial,sans-serif}button,input,textarea,select{font:inherit}button{border:0;border-radius:12px;padding:11px 14px;background:var(--gold);color:#211526;font-weight:800;cursor:pointer}button.secondary{background:#30253b;color:white;border:1px solid var(--line)}button.danger{background:#8f2948;color:white}button:disabled{opacity:.45}header{position:sticky;top:0;z-index:10;background:#100c19ee;backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:12px 15px;display:flex;align-items:center;justify-content:space-between}header strong{letter-spacing:1px;color:var(--gold)}main{max-width:980px;margin:auto;padding:16px 14px 90px}.page{display:none}.page.active{display:block}.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:15px;margin:12px 0}.muted,.small{color:var(--muted)}.small{font-size:12px}.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.spread{justify-content:space-between}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px}.tile{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:12px}.tile b{display:block;margin-bottom:5px}h1,h2,h3{margin:5px 0 12px}h1{font-size:25px}h2{font-size:19px}input,textarea,select{width:100%;padding:12px;border-radius:11px;border:1px solid var(--line);background:#100c18;color:white;margin:5px 0 10px}textarea{min-height:80px}nav{position:fixed;bottom:0;left:0;right:0;z-index:20;background:#100c19f5;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 3px calc(8px + env(safe-area-inset-bottom))}nav button{background:transparent;color:#c8bdd1;padding:8px 5px;font-size:12px}nav button.active{color:var(--gold)}.tabs{display:flex;gap:8px;overflow:auto;margin:10px 0}.tabs button{white-space:nowrap}.live-stage{position:relative;min-height:360px;overflow:hidden;border-radius:20px;border:1px solid #6e3d74;background:radial-gradient(circle at 50% 25%,#53305d,#171020 55%,#090711);padding:16px}.live-stage:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 80%,#ff4f9122,transparent 35%);pointer-events:none}.stage-content{position:relative;z-index:1}.live-badge{display:inline-block;background:#e33b66;padding:5px 10px;border-radius:8px;font-weight:900}.stage-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.guest-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.guest{background:#2a2036;border:1px solid #594366;border-radius:12px;min-height:75px;padding:10px;text-align:center}.gift-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;max-height:430px;overflow:auto}.gift{background:#251c31;border:1px solid var(--line);border-radius:12px;padding:9px;text-align:center;cursor:pointer}.gift .emoji{font-size:27px;display:block}.gift small{color:var(--muted)}#giftFx{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:5}.gift-float{position:absolute;left:50%;bottom:15%;font-size:42px;text-align:center;animation:giftRise 2.8s ease-out forwards;text-shadow:0 3px 15px #000}.gift-float span{display:block;font-size:13px;font-weight:900;background:#130d1dcc;border-radius:20px;padding:4px 9px}@keyframes giftRise{0%{transform:translate(-50%,20px) scale(.5);opacity:0}15%{opacity:1;transform:translate(-50%,0) scale(1.2)}55%{transform:translate(calc(-50% + 30px),-100px) rotate(12deg) scale(1)}100%{transform:translate(calc(-50% - 20px),-260px) rotate(-15deg) scale(.7);opacity:0}}@keyframes dance{0%,100%{transform:translate(-50%,0) rotate(-8deg)}50%{transform:translate(-50%,-28px) rotate(8deg)}}.gift-float.dance{animation:giftRise 2.8s ease-out forwards,dance .35s ease-in-out 3}.chatline{background:#160f20cc;border-radius:10px;padding:6px 9px;margin:5px 0;max-width:90%}.hide{display:none!important}.status{color:#9fe3b1}.warning{color:#ffd27b}.avatar{width:54px;height:54px;border-radius:50%;object-fit:cover;background:#3b2a48}.meter{height:9px;background:#352941;border-radius:9px;overflow:hidden}.meter span{display:block;height:100%;background:linear-gradient(90deg,var(--pink),var(--gold));width:0}.footer-note{font-size:12px;color:var(--muted);line-height:1.5}.pill{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:5px 9px;color:#ddd}.sound-controls button{margin:3px}.video-box{width:100%;max-height:260px;background:#050408;border-radius:12px;object-fit:contain}.toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:#30233a;border:1px solid var(--gold);padding:10px 14px;border-radius:12px;z-index:50;display:none}
-@media(min-width:700px){.gift-grid{grid-template-columns:repeat(5,minmax(0,1fr))}.guest-grid{grid-template-columns:repeat(4,1fr)}}
+:root{--bg:#08070c;--panel:#17141f;--line:#302a39;--gold:#f5c45b;--pink:#ff397d;--muted:#aaa3b3}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#fff;font:15px Arial,system-ui,sans-serif}
+button,input,textarea{font:inherit}
+button{cursor:pointer;border:0}
+.topbar{height:54px;position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:0 15px;background:#09080de8}
+.brand{font-weight:900;color:var(--gold);letter-spacing:.7px}
+.page{display:none;min-height:100vh;padding-bottom:75px}
+.page.active{display:block}
+#home{padding:0}
+.feed-head{position:fixed;top:0;left:0;right:0;height:55px;z-index:15;display:flex;align-items:center;justify-content:center;gap:20px;background:linear-gradient(#0009,transparent)}
+.feed-head button{background:none;color:#ddd;padding:10px 3px;font-weight:700}
+.feed-head button.selected{color:white;border-bottom:2px solid white}
+.feed-head .live-link{position:absolute;left:12px;color:#fff}
+.feed{height:100dvh;overflow-y:auto;scroll-snap-type:y mandatory}
+.feed-card{height:100dvh;min-height:500px;position:relative;scroll-snap-align:start;background:linear-gradient(145deg,#392344,#15101e 55%,#09080c);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.feed-card video,.feed-card img{position:absolute;width:100%;height:100%;object-fit:cover}
+.feed-placeholder{font-size:26px;text-align:center;padding:30px;color:#fff9}
+.feed-overlay{position:absolute;inset:0;background:linear-gradient(transparent 45%,#000a 100%);pointer-events:none}
+.feed-caption{position:absolute;left:15px;right:85px;bottom:95px;z-index:2}
+.feed-caption strong{font-size:16px}
+.feed-caption p{margin:8px 0}
+.feed-actions{position:absolute;right:12px;bottom:105px;z-index:3;display:flex;flex-direction:column;align-items:center;gap:20px}
+.feed-actions button{background:#17131caa;color:white;border-radius:50%;width:48px;height:48px;font-size:21px}
+.feed-actions small{font-size:11px}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:65px;z-index:30;background:#09080df5;border-top:1px solid #282331;display:flex;justify-content:space-around;align-items:center;padding-bottom:env(safe-area-inset-bottom)}
+.bottom-nav button{background:none;color:#c8c3ce;font-size:11px;min-width:52px}
+.bottom-nav button span{display:block;font-size:22px;margin-bottom:3px}
+.bottom-nav button.active{color:var(--gold)}
+.create-plus{font-size:28px!important;color:#fff;background:linear-gradient(90deg,#23d5d5 0 15%,#fff 15% 85%,#ff397d 85%)!important;border-radius:9px!important;width:43px;height:30px;line-height:27px}
+.screen{padding:70px 15px 90px;max-width:900px;margin:auto}
+h1{font-size:25px;margin:5px 0 18px}
+h2{font-size:19px}
+.muted{color:var(--muted)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:15px;margin:12px 0}
+.action{background:#fff;color:#111;border-radius:12px;padding:12px 16px;font-weight:800}
+.gold{background:var(--gold);color:#171018}
+.dark{background:#302a39;color:#fff}
+.pink{background:var(--pink);color:#fff}
+.full{width:100%}
+input,textarea{width:100%;background:#0e0c14;color:white;border:1px solid var(--line);border-radius:11px;padding:13px;margin:7px 0}
+textarea{min-height:85px}
+.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.between{justify-content:space-between}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.choice{background:#211b2a;border:1px solid #40344c;border-radius:17px;padding:18px 12px;text-align:center;min-height:125px;color:white}
+.choice .symbol{font-size:34px;display:block;margin-bottom:9px}
+.choice b{display:block}
+.choice small{display:block;color:#aaa;margin-top:6px}
+.modal{position:fixed;inset:0;z-index:60;background:#000b;display:none;align-items:flex-end;justify-content:center}
+.modal.open{display:flex}
+.sheet{width:100%;max-width:600px;background:#17141f;border-radius:23px 23px 0 0;padding:22px 18px 35px;border:1px solid #40364a}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.close{background:#302a39;color:white;border-radius:50%;width:36px;height:36px;font-size:20px}
+.live-stage{position:relative;height:calc(100dvh - 0px);min-height:570px;background:#171020;overflow:hidden}
+#cameraVideo{width:100%;height:100%;object-fit:cover;background:#100d17}
+.camera-placeholder{position:absolute;inset:0;display:grid;place-items:center;text-align:center;background:radial-gradient(circle,#46304f,#100d17 70%)}
+.live-top{position:absolute;top:15px;left:12px;right:12px;display:flex;justify-content:space-between;z-index:4}
+.live-bottom{position:absolute;bottom:85px;left:12px;right:12px;z-index:4}
+.live-controls{position:absolute;bottom:15px;left:10px;right:10px;z-index:5;display:flex;justify-content:space-around;align-items:center}
+.live-controls button{background:#211b2dcc;color:white;border:1px solid #ffffff33;border-radius:50%;width:48px;height:48px;font-size:20px}
+.live-label{background:#f33470;padding:7px 11px;border-radius:7px;font-weight:bold}
+.guest-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.guest{background:#292231;border:1px solid #55455e;border-radius:12px;min-height:65px;padding:8px;text-align:center}
+.gift-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-height:45vh;overflow:auto}
+.gift{background:#282131;border-radius:12px;text-align:center;padding:10px;color:white}
+.gift span{display:block;font-size:27px}
+.avatar{width:85px;height:85px;border-radius:50%;object-fit:cover;background:#30283a;border:2px solid var(--gold)}
+.stats{display:flex;justify-content:space-around;text-align:center;margin:18px 0}
+.stats b{display:block;font-size:19px}
+.profile-tabs{display:flex;justify-content:space-around;border-bottom:1px solid var(--line);padding:12px}
+.profile-tabs button{background:none;color:#ddd;padding:8px}
+.profile-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+.profile-grid div{aspect-ratio:1;background:#282131;display:grid;place-items:center;font-size:25px}
+.toast{position:fixed;top:65px;left:50%;transform:translateX(-50%);background:#302a39;padding:12px 17px;border-radius:12px;z-index:100;display:none}
+.hidden{display:none!important}
+@media(min-width:700px){.feed-card{max-width:480px;margin:auto}.feed{background:#030207}.live-stage{max-width:480px;margin:auto}.gift-grid{grid-template-columns:repeat(4,1fr)}}
 </style>
 </head>
 <body>
-<header><strong>OB · OFFICIALBURAY LIVE</strong><span class="small" id="authLabel">Demo mode</span></header>
-<div class="toast" id="toast"></div>
-<main>
+
+<div class="topbar">
+ <div class="brand">OB · OFFICIALBURAY</div>
+ <div id="accountStatus" class="muted">Creator</div>
+</div>
+
+<!-- HOME VIDEO FEED -->
 <section id="home" class="page active">
- <h1>Welcome to OFFICIALBURAY LIVE</h1><p class="muted">Create, connect and enjoy creator moments.</p>
- <div class="tabs"><button onclick="homeTab('liveTab',this)">LIVE</button><button class="secondary" onclick="homeTab('forYouTab',this)">For You</button><button class="secondary" onclick="homeTab('followingTab',this)">Following</button></div>
- <div id="liveTab" class="panel"><h2>Live rooms</h2><p class="muted">Live rooms will appear here when connected to a live-stream service.</p><button onclick="go('live')">Open your LIVE studio</button></div>
- <div id="forYouTab" class="panel hide"><h2>For You</h2><p class="muted">Your video feed will appear here after video storage and feed services are connected.</p><button onclick="go('create')">Create a post</button></div>
- <div id="followingTab" class="panel hide"><h2>Following</h2><p class="muted">Posts from followed creators will appear here when the feed backend is connected.</p></div>
- <div class="grid"><div class="tile"><b>🎥 Create</b><span class="small">Posts and video previews</span></div><div class="tile"><b>🎁 Gifts</b><span class="small">2,000+ demo variations</span></div><div class="tile"><b>🎙️ LIVE</b><span class="small">Studio preview</span></div></div>
+ <div class="feed-head">
+  <button class="live-link" onclick="openLiveChoices()">LIVE</button>
+  <button onclick="switchFeed('following',this)">Following</button>
+  <button class="selected" onclick="switchFeed('foryou',this)">For You</button>
+ </div>
+ <div class="feed" id="videoFeed">
+  <article class="feed-card">
+   <div class="feed-placeholder">
+    <div style="font-size:60px">OB</div>
+    <b>OFFICIALBURAY LIVE</b>
+    <p>Welcome to your creator community.</p>
+    <small>Your video feed will display uploaded creator videos here.</small>
+   </div>
+   <div class="feed-overlay"></div>
+   <div class="feed-caption">
+    <strong>@officialburay18</strong>
+    <p>Welcome to OFFICIALBURAY LIVE. Discover creators and enjoy the community.</p>
+    <small>♫ Original creator sounds</small>
+   </div>
+   <div class="feed-actions">
+    <button onclick="feedLike(this)">♥</button><small>Like</small>
+    <button onclick="openComments()">▢</button><small>Comments</small>
+    <button onclick="shareApp()">↗</button><small>Share</small>
+    <button onclick="go('profile')">◉</button><small>Profile</small>
+   </div>
+  </article>
+ </div>
 </section>
-<section id="discover" class="page"><h1>Discover</h1><input id="creatorSearch" placeholder="Search creators" oninput="searchCreators()"><div id="creatorResults" class="panel">Creator discovery needs connected creator records.</div></section>
-<section id="create" class="page"><h1>Create</h1><div class="tabs"><button onclick="createMode('post')">Post</button><button class="secondary" onclick="createMode('video')">Video</button></div><div class="panel"><label>Caption</label><textarea id="caption" placeholder="Write something..."></textarea><label>Choose photo or video</label><input id="mediaFile" type="file" accept="image/*,video/*" onchange="previewMedia()"><video id="mediaPreview" class="video-box hide" controls playsinline></video><img id="imagePreview" class="video-box hide" alt="Selected preview"><button onclick="publishDemo()">Preview post</button><p id="createStatus" class="small muted">This is a local preview. Public uploads need storage setup.</p></div></section>
-<section id="live" class="page"><h1>LIVE Studio</h1><div class="live-stage" id="liveStage"><div id="giftFx"></div><div class="stage-content"><div class="row spread"><span class="live-badge">● LIVE PREVIEW</span><span class="pill" id="viewerCount">0 viewers</span></div><h2 style="margin-top:35px">OFFICIALBURAY</h2><p class="muted">Your creator stage</p><div id="stageChat"></div><div class="guest-grid" id="guestGrid"></div><div class="stage-actions"><button onclick="startRoom()">Start preview</button><button class="secondary" onclick="endRoom()">End</button><button class="secondary" onclick="openGifts()">🎁 Gifts</button><button class="secondary" onclick="document.getElementById('soundPanel').scrollIntoView({behavior:'smooth'})">🎵 Sound</button></div></div></div>
- <div class="panel"><h2>Guest boxes · 10 seats</h2><p class="small muted">Local layout preview only. Remote guest connections are not active yet.</p><div class="row"><button class="secondary" onclick="fillGuests()">Show sample guests</button><button class="secondary" onclick="clearGuests()">Clear boxes</button><button class="secondary" onclick="cohostPreview()">Co-host layout</button></div></div>
- <div class="panel" id="giftPanel"><div class="row spread"><h2>Gift gallery</h2><span class="pill" id="coinLabel">1,000 demo coins</span></div><p class="small warning">Demo gifts only — coins have no cash value and cannot be purchased or withdrawn.</p><input id="giftSearch" placeholder="Search 2,000+ gifts" oninput="renderGifts()"><div class="row"><select id="giftCategory" onchange="renderGifts()"><option value="all">All categories</option><option value="cute">Cute</option><option value="celebration">Celebration</option><option value="royal">Royal</option><option value="nature">Nature</option><option value="space">Space</option><option value="fun">Funny</option></select><span class="small" id="giftCount"></span></div><div class="gift-grid" id="giftGrid"></div><button class="secondary" onclick="showMoreGifts()">Show more gifts</button><p class="small muted" id="giftLevel">New Supporter</p><div class="meter"><span id="levelMeter"></span></div></div>
- <div class="panel"><h2>Host soundboard</h2><p class="small muted">Tap a sound to play a locally generated effect.</p><div class="sound-controls"><button onclick="playEffect('applause')">👏 Applause</button><button onclick="playEffect('cheer')">🎉 Cheer</button><button onclick="playEffect('boing')">🪀 Boing</button><button onclick="playEffect('drum')">🥁 Drum roll</button><button onclick="sayFunny()">🗣️ Funny voice</button></div></div>
- <div class="panel" id="soundPanel"><h2>Music controls</h2><p class="small muted">Original generated background tones, not commercial songs.</p><div class="row"><button onclick="musicStart()">▶ Play</button><button class="secondary" onclick="musicPause()">Ⅱ Pause</button><button class="secondary" onclick="musicStop()">■ Stop</button></div><label>Music volume</label><input type="range" min="0" max="100" value="18" id="musicVolume" oninput="setMusicVolume(this.value)"><p class="small muted" id="musicStatus">Music stopped.</p></div>
- <div class="panel"><h2>PK match preview</h2><div class="row spread"><span>OFFICIALBURAY <b id="myScore">0</b></span><span>VS</span><span>Guest <b id="theirScore">0</b></span></div><div class="row"><button onclick="addPoint('me')">+ My point</button><button class="secondary" onclick="addPoint('them')">+ Guest point</button><button class="secondary" onclick="resetPK()">Reset</button></div></div>
+
+<!-- DISCOVER -->
+<section id="discover" class="page">
+ <div class="screen">
+  <h1>Discover</h1>
+  <input id="discoverSearch" placeholder="Search creators, videos and sounds">
+  <div class="card">
+   <h2>Discover creators</h2>
+   <p class="muted">Find creators in the OFFICIALBURAY LIVE community.</p>
+   <div id="discoverResults">Creator profiles will appear here.</div>
+  </div>
+  <div class="card"><h2>Trending categories</h2>
+   <div class="grid">
+    <button class="choice" onclick="toast('Comedy selected')">😂<br>Comedy</button>
+    <button class="choice" onclick="toast('Music selected')">🎵<br>Music</button>
+    <button class="choice" onclick="toast('Gaming selected')">🎮<br>Gaming</button>
+    <button class="choice" onclick="toast('LIVE selected')">🔴<br>LIVE</button>
+   </div>
+  </div>
+ </div>
 </section>
-<section id="inbox" class="page"><h1>Inbox</h1><div class="panel"><p class="muted">Messages and notifications will appear here when messaging services are connected.</p></div></section>
-<section id="profile" class="page"><h1>Creator profile</h1><div class="panel"><div class="row"><img id="avatar" class="avatar" alt="Profile avatar"><div><b id="profileName">OFFICIALBURAY</b><div class="small muted" id="profileEmail">Local creator preview</div></div></div><label>Display name</label><input id="displayName" value="OFFICIALBURAY"><label>Bio</label><textarea id="bio" placeholder="Your creator bio"></textarea><button onclick="saveProfile()">Save profile preview</button><p class="small muted">Profile changes are stored in this browser preview. Connect your database profile table to sync across devices.</p><hr style="border-color:var(--line)"><button class="secondary" onclick="signOut()">Log out</button></div></section>
-</main>
-<nav><button class="active" onclick="go('home',this)">⌂<br>Home</button><button onclick="go('discover',this)">⌕<br>Discover</button><button onclick="go('create',this)">＋<br>Create</button><button onclick="go('inbox',this)">✉<br>Inbox</button><button onclick="go('profile',this)">◉<br>Profile</button></nav><script>
+
+<!-- CREATE PAGE -->
+<section id="create" class="page">
+ <div class="screen">
+  <h1>Create</h1>
+  <p class="muted">What would you like to do?</p>
+  <div class="grid">
+   <button class="choice" onclick="openUpload()"><span class="symbol">⬆️</span><b>UPLOAD</b><small>Post a photo or video</small></button>
+   <button class="choice" onclick="openLiveChoices()"><span class="symbol">🔴</span><b>GO LIVE</b><small>Start a LIVE session</small></button>
+  </div>
+ </div>
+</section>
+
+<!-- INBOX -->
+<section id="inbox" class="page">
+ <div class="screen">
+  <h1>Inbox</h1>
+  <div class="card"><h2>Notifications</h2><p class="muted">Your activity notifications will appear here.</p></div>
+  <div class="card"><h2>Messages</h2><p class="muted">Your creator conversations will appear here when messaging is connected.</p></div>
+ </div>
+</section>
+
+<!-- PROFILE -->
+<section id="profile" class="page">
+ <div class="screen">
+  <div class="row">
+   <img id="profileAvatar" class="avatar" src="" alt="Profile photo">
+   <div><h2 id="profileUsername">OFFICIALBURAY</h2><div class="muted">@officialburay18</div></div>
+  </div>
+  <div class="stats">
+   <div><b id="postCount">0</b><small>Posts</small></div>
+   <div><b id="followerCount">0</b><small>Followers</small></div>
+   <div><b id="followingCount">0</b><small>Following</small></div>
+   <div><b id="likeCount">0</b><small>Likes</small></div>
+  </div>
+  <p id="profileBio">Welcome to my OFFICIALBURAY LIVE profile.</p>
+  <div class="row">
+   <button class="action dark" onclick="editProfile()">Edit profile</button>
+   <button class="action dark" onclick="shareApp()">Share profile</button>
+  </div>
+  <div class="profile-tabs"><button>▦ Videos</button><button>♥ Liked</button><button>🔒 Private</button></div>
+  <div class="profile-grid" id="profilePosts">
+   <div>＋</div><div>🎬</div><div>🎬</div>
+  </div>
+ </div>
+</section>
+
+<!-- CAMERA LIVE STUDIO -->
+<section id="liveStudio" class="page">
+ <div class="live-stage">
+  <video id="cameraVideo" autoplay muted playsinline></video>
+  <div class="camera-placeholder" id="cameraPlaceholder">
+   <div><div style="font-size:55px">📷</div><h2>OFFICIALBURAY LIVE</h2><p>Camera preview will start when you allow access.</p></div>
+  </div>
+  <div class="live-top">
+   <button class="live-label" onclick="toast('LIVE setup')">● LIVE</button>
+   <button class="action dark" onclick="endLive()">✕ End</button>
+  </div>
+  <div class="live-bottom">
+   <div class="row"><b>OFFICIALBURAY</b><span class="muted"> · LIVE preview</span></div>
+   <div id="liveComments"></div>
+  </div>
+  <div class="live-controls">
+   <button onclick="flipCamera()">↻</button>
+   <button onclick="toggleBeauty()">✨</button>
+   <button onclick="toggleMic()">🎙️</button>
+   <button onclick="openLiveTools()">☷</button>
+   <button onclick="openGiftBox()">🎁</button>
+  </div>
+ </div>
+</section>
+
+<!-- VOICE LIVE -->
+<section id="voiceStudio" class="page">
+ <div class="screen">
+  <h1>Voice Chat LIVE</h1>
+  <div class="card" style="text-align:center;padding:35px 15px">
+   <div style="font-size:60px">🎙️</div>
+   <h2>OFFICIALBURAY Voice Room</h2>
+   <p class="muted">Audio room preview</p>
+   <div class="guest-grid" id="voiceGuests"></div>
+   <button class="action gold full" onclick="startVoice()">Start voice room</button>
+   <button class="action dark full" onclick="endLive()">End room</button>
+  </div>
+ </div>
+</section>
+
+<!-- GAMING LIVE -->
+<section id="gamingStudio" class="page">
+ <div class="screen">
+  <h1>Gaming LIVE</h1>
+  <div class="card">
+   <div style="font-size:55px;text-align:center">🎮</div>
+   <h2>Gaming stream setup</h2>
+   <p class="muted">Choose your game and prepare your stream.</p>
+   <input id="gameTitle" placeholder="Enter game name">
+   <button class="action gold full" onclick="startGaming()">Start gaming preview</button>
+   <p class="muted">Screen broadcasting depends on browser and device support.</p>
+  </div>
+ </div>
+</section>
+
+<!-- UPLOAD MODAL -->
+<div class="modal" id="uploadModal">
+ <div class="sheet">
+  <div class="sheet-head"><h2>Upload</h2><button class="close" onclick="closeModal('uploadModal')">×</button></div>
+  <input type="file" id="uploadFile" accept="image/*,video/*">
+  <input id="uploadCaption" placeholder="Write a caption">
+  <div id="uploadPreview"></div>
+  <button class="action gold full" onclick="submitUpload()">Next</button>
+ </div>
+</div>
+
+<!-- GO LIVE CHOICES -->
+<div class="modal" id="liveChoiceModal">
+ <div class="sheet">
+  <div class="sheet-head"><h2>Choose your LIVE</h2><button class="close" onclick="closeModal('liveChoiceModal')">×</button></div>
+  <div class="grid">
+   <button class="choice" onclick="chooseLive('camera')"><span class="symbol">📹</span><b>Camera LIVE</b><small>Go LIVE with your camera</small></button>
+   <button class="choice" onclick="chooseLive('voice')"><span class="symbol">🎙️</span><b>Voice Chat LIVE</b><small>Talk with your community</small></button>
+   <button class="choice" onclick="chooseLive('gaming')"><span class="symbol">🎮</span><b>Gaming LIVE</b><small>Gaming stream setup</small></button>
+  </div>
+ </div>
+</div>
+
+<!-- LIVE TOOLS MODAL -->
+<div class="modal" id="toolsModal">
+ <div class="sheet">
+  <div class="sheet-head"><h2>LIVE tools</h2><button class="close" onclick="closeModal('toolsModal')">×</button></div>
+  <div class="grid">
+   <button class="choice" onclick="flipCamera()">🔄<br>Flip camera</button>
+   <button class="choice" onclick="toggleFlash()">⚡<br>Flash</button>
+   <button class="choice" onclick="toggleBeauty()">✨<br>Beauty</button>
+   <button class="choice" onclick="openGuestBox()">👥<br>Guest box</button>
+   <button class="choice" onclick="openGiftBox()">🎁<br>Gifts</button>
+   <button class="choice" onclick="openModeration()">🛡️<br>Moderation</button>
+   <button class="choice" onclick="openMusic()">🎵<br>Music</button>
+   <button class="choice" onclick="openPK()">⚔️<br>PK battle</button>
+  </div>
+ </div>
+</div>
+
+<!-- GUEST BOX MODAL -->
+<div class="modal" id="guestModal">
+ <div class="sheet">
+  <div class="sheet-head"><h2>Guest boxes · 10 seats</h2><button class="close" onclick="closeModal('guestModal')">×</button></div>
+  <p class="muted">Manage the guest-seat layout. Remote invitations require the live backend.</p>
+  <div class="guest-grid" id="guestGrid"></div>
+  <button class="action dark full" onclick="cohostLayout()">Two creator co-host layout</button>
+ </div>
+</div>
+
+<!-- GIFT MODAL -->
+<div class="modal" id="giftModal">
+ <div class="sheet">
+  <div class="sheet-head"><h2>Gift box</h2><button class="close" onclick="closeModal('giftModal')">×</button></div>
+  <p class="muted">Demo gifts only. No purchases or cash withdrawals.</p>
+  <input id="giftSearch" placeholder="Search gifts" oninput="renderGiftBox()">
+  <div class="row between"><b id="demoCoins">1,000 demo coins</b><small id="giftTotal">2,100 gifts</small></div>
+  <div class="gift-grid" id="giftGrid"></div>
+ </div>
+</div>
+
+<!-- COMMENTS MODAL -->
+<div class="modal" id="commentsModal">
+ <div class="sheet">
+  <div class="sheet-head"><h2>Comments</h2><button class="close" onclick="closeModal('commentsModal')">×</button></div>
+  <div id="commentList"></div>
+  <input id="commentInput" placeholder="Add a comment">
+  <button class="action gold full" onclick="sendComment()">Send</button>
+ </div>
+</div>
+
+<!-- PROFILE EDIT MODAL -->
+<div class="modal" id="editModal">
+ <div class="sheet">
+  <div class="sheet-head"><h2>Edit profile</h2><button class="close" onclick="closeModal('editModal')">×</button></div>
+  <label>Profile photo</label><input id="newAvatar" type="file" accept="image/*">
+  <label>Name</label><input id="newName" placeholder="Display name">
+  <label>Bio</label><textarea id="newBio" placeholder="Write your bio"></textarea>
+  <button class="action gold full" onclick="saveProfile()">Save changes</button>
+ </div>
+</div>
+
+<!-- BOTTOM NAVIGATION -->
+<nav class="bottom-nav">
+ <button class="active" onclick="go('home',this)"><span>⌂</span>Home</button>
+ <button onclick="go('discover',this)"><span>⌕</span>Discover</button>
+ <button onclick="go('create',this)"><span class="create-plus">＋</span>Create</button>
+ <button onclick="go('inbox',this)"><span>✉</span>Inbox</button>
+ <button onclick="go('profile',this)"><span>◉</span>Profile</button>
+</nav>
+<div class="toast" id="toast"></div><script>
 const SUPABASE_URL="https://icrskxhuwiyczxlxgmkq.supabase.co";
 const SUPABASE_KEY="sb_publishable_tEfKo-LGH0LArx6KBaBNVQ_hDOtk4WD";
-let sb=null,user=null,coins=1000,totalGiftCoins=0,creatorReward=0,giftLimit=60,pkMe=0,pkThem=0,roomOn=false,audioCtx=null,musicTimer=null,musicGain=null,musicPlaying=false,musicNodes=[];
+let supabaseClient=null,currentUser=null,cameraStream=null,usingFrontCamera=false;
+let micMuted=false,beautyOn=false,coins=1000,likes=0,commentCount=0;
+let giftTotal=0,pkA=0,pkB=0;
+
 const $=id=>document.getElementById(id);
-function toast(t){$('toast').textContent=t;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',2300)}
-function go(id,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');else{const ix=['home','discover','create','inbox','profile'].indexOf(id);document.querySelectorAll('nav button')[Math.max(ix,0)].classList.add('active')}}
-function homeTab(id,btn){['liveTab','forYouTab','followingTab'].forEach(x=>$(x).classList.add('hide'));$(id).classList.remove('hide');btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.add('secondary'));btn.classList.remove('secondary')}
-function createMode(mode){toast(mode==='video'?'Video preview mode selected':'Post mode selected')}
-function previewMedia(){const f=$('mediaFile').files[0];if(!f)return;const u=URL.createObjectURL(f);if(f.type.startsWith('video')){$('mediaPreview').src=u;$('mediaPreview').classList.remove('hide');$('imagePreview').classList.add('hide')}else{$('imagePreview').src=u;$('imagePreview').classList.remove('hide');$('mediaPreview').classList.add('hide')}}
-function publishDemo(){if(!$('caption').value.trim()&&!$('mediaFile').files.length){toast('Add a caption or choose media first.');return}$('createStatus').textContent='Preview ready on this device. Public publishing needs backend storage.';toast('Post preview created.')}
-function startRoom(){roomOn=true;$('viewerCount').textContent='1 viewer · demo';toast('LIVE preview started.')}
-function endRoom(){roomOn=false;$('viewerCount').textContent='0 viewers';toast('LIVE preview ended.')}
-function fillGuests(){ $('guestGrid').innerHTML=Array.from({length:10},(_,i)=>`<div class="guest">🎤<br><b>Guest ${i+1}</b><br><small>Preview seat</small></div>`).join('')}
-function clearGuests(){$('guestGrid').innerHTML=Array.from({length:10},(_,i)=>`<div class="guest">＋<br><b>Seat ${i+1}</b><br><small>Empty</small></div>`).join('')}
-function cohostPreview(){fillGuests();toast('Co-host layout preview shown.')}
-const baseGifts=[
-['Rose','🌹','cute'],['Heart','❤️','cute'],['Teddy','🧸','cute'],['Kitten','🐱','cute'],['Puppy','🐶','cute'],['Butterfly','🦋','nature'],['Sunflower','🌻','nature'],['Rainbow','🌈','nature'],['Party Popper','🎉','celebration'],['Confetti','🎊','celebration'],['Fireworks','🎆','celebration'],['Drum','🥁','fun'],['Clown','🤡','fun'],['Rocket','🚀','space'],['Planet','🪐','space'],['Galaxy','🌌','space'],['Crown','👑','royal'],['Throne','🪑','royal'],['Diamond','💎','royal'],['Golden Star','🌟','royal']
+
+function toast(message){
+ const t=$('toast');t.textContent=message;t.style.display='block';
+ clearTimeout(window.toastTimer);
+ window.toastTimer=setTimeout(()=>t.style.display='none',2500);
+}
+
+function go(id,button){
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ $(id).classList.add('active');
+ document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.remove('active'));
+ if(button)button.classList.add('active');
+ else{
+  const names=['home','discover','create','inbox','profile'];
+  const index=names.indexOf(id);
+  if(index>=0)document.querySelectorAll('.bottom-nav button')[index].classList.add('active');
+ }
+}
+
+function openModal(id){$(id).classList.add('open')}
+function closeModal(id){$(id).classList.remove('open')}
+
+function openUpload(){openModal('uploadModal')}
+function openLiveChoices(){openModal('liveChoiceModal')}
+function openLiveTools(){openModal('toolsModal')}
+function openGuestBox(){closeModal('toolsModal');openModal('guestModal')}
+function openGiftBox(){closeModal('toolsModal');renderGiftBox();openModal('giftModal')}
+function openComments(){openModal('commentsModal')}
+function editProfile(){openModal('editModal')}
+function openModeration(){closeModal('toolsModal');toast('Moderation settings opened')}
+function openMusic(){closeModal('toolsModal');toast('Music controls will be added to the LIVE studio')}
+function openPK(){closeModal('toolsModal');toast('PK match setup opened')}
+
+function switchFeed(type,button){
+ document.querySelectorAll('.feed-head button').forEach(b=>b.classList.remove('selected'));
+ button.classList.add('selected');
+ if(type==='following')toast('Following feed selected');
+ else toast('For You feed selected');
+}
+
+function feedLike(button){
+ likes++;
+ button.textContent='♥';
+ button.style.color='#ff397d';
+ $('likeCount').textContent=likes;
+ toast('Liked');
+}
+
+async function chooseLive(type){
+ closeModal('liveChoiceModal');
+ if(type==='camera'){
+  go('liveStudio');
+  await startCamera();
+ }else if(type==='voice'){
+  go('voiceStudio');
+ }else{
+  go('gamingStudio');
+ }
+}
+
+async function startCamera(){
+ try{
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+   toast('Camera access needs a supported browser and secure connection.');
+   return;
+  }
+  cameraStream=await navigator.mediaDevices.getUserMedia({
+   video:{facingMode:usingFrontCamera?'environment':'user'},
+   audio:true
+  });
+  $('cameraVideo').srcObject=cameraStream;
+  $('cameraPlaceholder').classList.add('hidden');
+  toast('Camera preview started');
+ }catch(error){
+  toast('Camera permission was not granted or the camera is unavailable.');
+ }
+}
+
+async function flipCamera(){
+ usingFrontCamera=!usingFrontCamera;
+ if(cameraStream){
+  cameraStream.getTracks().forEach(track=>track.stop());
+  cameraStream=null;
+ }
+ await startCamera();
+}
+
+function toggleBeauty(){
+ beautyOn=!beautyOn;
+ $('cameraVideo').style.filter=beautyOn?'brightness(1.08) saturate(1.12)':'none';
+ toast(beautyOn?'Preview effect enabled':'Preview effect disabled');
+}
+
+function toggleMic(){
+ if(!cameraStream)return toast('Start the camera preview first');
+ const track=cameraStream.getAudioTracks()[0];
+ if(!track)return toast('No microphone track available');
+ micMuted=!micMuted;
+ track.enabled=!micMuted;
+ toast(micMuted?'Microphone muted':'Microphone on');
+}
+
+function toggleFlash(){
+ if(!cameraStream)return toast('Start camera preview first');
+ const track=cameraStream.getVideoTracks()[0];
+ if(!track)return;
+ const capabilities=track.getCapabilities?.();
+ if(!capabilities?.torch)return toast('Flash control is not supported by this camera');
+ track.applyConstraints({advanced:[{torch:true}]}).catch(()=>toast('Flash could not be enabled'));
+}
+
+function stopCamera(){
+ if(cameraStream){
+  cameraStream.getTracks().forEach(track=>track.stop());
+  cameraStream=null;
+ }
+ $('cameraVideo').srcObject=null;
+ $('cameraPlaceholder').classList.remove('hidden');
+}
+
+function endLive(){
+ stopCamera();
+ go('home');
+ toast('LIVE preview ended');
+}
+
+function fillGuestBoxes(){
+ $('guestGrid').innerHTML='';
+ for(let i=1;i<=10;i++){
+  const seat=document.createElement('div');
+  seat.className='guest';
+  seat.innerHTML='＋<br><b>Seat '+i+'</b><br><small>Available</small>';
+  $('guestGrid').appendChild(seat);
+ }
+}
+
+function cohostLayout(){
+ $('guestGrid').innerHTML=`
+ <div class="guest" style="grid-column:span 1">🎥<br><b>Host</b></div>
+ <div class="guest" style="grid-column:span 1">🎥<br><b>Co-host</b></div>
+ <div class="guest">＋<br>Guest 3</div>
+ <div class="guest">＋<br>Guest 4</div>
+ <div class="guest">＋<br>Guest 5</div>
+ <div class="guest">＋<br>Guest 6</div>
+ <div class="guest">＋<br>Guest 7</div>
+ <div class="guest">＋<br>Guest 8</div>
+ <div class="guest">＋<br>Guest 9</div>
+ <div class="guest">＋<br>Guest 10</div>`;
+ toast('Co-host layout preview');
+}
+
+function startVoice(){
+ toast('Voice room preview started. Remote audio guests need a live service.');
+}
+
+function startGaming(){
+ const game=$('gameTitle').value.trim();
+ toast(game?'Gaming preview ready: '+game:'Enter your game name first');
+}
+
+function submitUpload(){
+ const file=$('uploadFile').files[0];
+ if(!file)return toast('Choose a photo or video first');
+ const caption=$('uploadCaption').value.trim();
+ const url=URL.createObjectURL(file);
+ const item=document.createElement('article');
+ item.className='feed-card';
+ let media;
+ if(file.type.startsWith('video')){
+  media=document.createElement('video');
+  media.src=url;
+  media.controls=true;
+  media.autoplay=true;
+  media.loop=true;
+  media.playsInline=true;
+ }else{
+  media=document.createElement('img');
+  media.src=url;
+  media.alt='Uploaded preview';
+ }
+ const overlay=document.createElement('div');
+ overlay.className='feed-overlay';
+ const details=document.createElement('div');
+ details.className='feed-caption';
+ details.innerHTML='<strong>@officialburay18</strong>';
+ const text=document.createElement('p');
+ text.textContent=caption;
+ details.appendChild(text);
+ item.append(media,overlay,details);
+ $('videoFeed').prepend(item);
+ closeModal('uploadModal');
+ $('profilePosts').insertAdjacentHTML('afterbegin','<div>🎬</div>');
+ $('postCount').textContent=Number($('postCount').textContent)+1;
+ go('home');
+ toast('Local upload preview added to your feed');
+}
+
+function sendComment(){
+ const value=$('commentInput').value.trim();
+ if(!value)return;
+ const line=document.createElement('p');
+ line.textContent='@officialburay18: '+value;
+ $('commentList').appendChild(line);
+ $('commentInput').value='';
+ commentCount++;
+ toast('Comment added to this preview');
+}
+
+function shareApp(){
+ if(navigator.share){
+  navigator.share({title:'OFFICIALBURAY LIVE',text:'Join OFFICIALBURAY LIVE',url:location.href}).catch(()=>{});
+ }else if(navigator.clipboard){
+  navigator.clipboard.writeText(location.href);
+  toast('Page link copied');
+ }else toast('Share this page using your browser menu');
+}
+
+function saveProfile(){
+ const name=$('newName').value.trim()||'OFFICIALBURAY';
+ const bio=$('newBio').value.trim();
+ $('profileUsername').textContent=name;
+ $('profileBio').textContent=bio;
+ localStorage.setItem('ob_name',name);
+ localStorage.setItem('ob_bio',bio);
+ const file=$('newAvatar').files[0];
+ if(file){
+  const reader=new FileReader();
+  reader.onload=()=>{$('profileAvatar').src=reader.result;localStorage.setItem('ob_avatar',reader.result)};
+  reader.readAsDataURL(file);
+ }
+ closeModal('editModal');
+ toast('Profile preview updated on this device');
+}
+
+const giftBases=[
+ ['Rose','🌹'],['Heart','❤️'],['Star','⭐'],['Teddy','🧸'],
+ ['Butterfly','🦋'],['Flower','🌸'],['Rainbow','🌈'],['Cake','🎂'],
+ ['Fireworks','🎆'],['Party','🎉'],['Rocket','🚀'],['Planet','🪐'],
+ ['Crown','👑'],['Diamond','💎'],['Lion','🦁'],['Castle','🏰'],
+ ['Car','🏎️'],['Trophy','🏆'],['Coffee','☕'],['Chocolate','🍫']
 ];
-const prefixes=['Mini','Mega','Shiny','Golden','Rainbow','Magic','Royal','Super','Ultra','Sparkling','Cosmic','Dancing','Singing','Funny','Lovely','Mystic','Neon','Crystal','Legendary','Glowing'];
-const suffixes=['Surprise','Dream','Festival','Moment','Celebration','Wave','Show','Wish','Party','Magic'];
+const giftPrefixes=['Mini','Mega','Golden','Magic','Royal','Rainbow','Super','Ultra','Cosmic','Dancing','Sparkling','Legendary'];
 const giftList=[];
-for(let i=0;i<2100;i++){const b=baseGifts[i%baseGifts.length],v=Math.floor(i/baseGifts.length),name=v===0?b[0]:prefixes[v%prefixes.length]+' '+b[0]+' '+suffixes[Math.floor(v/prefixes.length)%suffixes.length];giftList.push({name,emoji:b[1],cat:b[2],cost:[1,2,5,8,10,15,20,30,50,100,150,200,300,500,800,1000][i%16],talk:i%17===0,dance:i%5===0})}
-let giftShown=giftLimit;
-function renderGifts(){const q=($('giftSearch').value||'').toLowerCase(),cat=$('giftCategory').value;const arr=giftList.filter(g=>(cat==='all'||g.cat===cat)&&g.name.toLowerCase().includes(q));$('giftCount').textContent=arr.length+' variations';$('giftGrid').innerHTML=arr.slice(0,giftShown).map((g,i)=>`<div class="gift" onclick="sendGift(${giftList.indexOf(g)})"><span class="emoji">${g.emoji}</span><b>${g.name}</b><br><small>${g.cost} demo coins</small></div>`).join('')||'<p class="small">No gifts found.</p>'}
-function showMoreGifts(){giftShown+=60;renderGifts()}
-function openGifts(){$('giftPanel').scrollIntoView({behavior:'smooth'});renderGifts()}
-function levelFor(n){const levels=[[0,'New Supporter'],[1,'Supporter'],[8,'Super Supporter'],[28,'VIP Supporter'],[88,'Star Supporter'],[188,'Elite Supporter'],[388,'Royal Supporter'],[888,'Legend Supporter'],[1888,'Diamond Legend'],[3888,'Icon Supporter'],[8888,'Super Icon'],[18888,'Grand Champion'],[50000,'OFFICIALBURAY Legend']];let cur=levels[0],next=levels[1];for(let i=0;i<levels.length;i++){if(n>=levels[i][0]){cur=levels[i];next=levels[i+1]||levels[i]}}$('giftLevel').textContent=cur[1]+' · '+n+' demo gift coins';$('levelMeter').style.width=(next[0]===cur[0]?100:Math.min(100,(n-cur[0])/(next[0]-cur[0])*100))+'%'}
-function sendGift(i){const g=giftList[i];if(!g)return;if(coins<g.cost){toast('Not enough demo coins.');return}coins-=g.cost;totalGiftCoins+=g.cost;creatorReward+=Math.floor(g.cost/2);$('coinLabel').textContent=coins.toLocaleString()+' demo coins';showGiftFx(g);addChatLine('🎁 '+g.name+' sent to the host!');if(g.talk&&'speechSynthesis'in window){speechSynthesis.cancel();speechSynthesis.speak(new SpeechSynthesisUtterance(g.name+' gift for the host!'))}levelFor(totalGiftCoins)}
-function showGiftFx(g){const el=document.createElement('div');el.className='gift-float'+(g.dance?' dance':'');el.innerHTML=`${g.emoji}<span>${g.name}</span>`;$('giftFx').appendChild(el);setTimeout(()=>el.remove(),2900)}
-function addChatLine(t){const d=document.createElement('div');d.className='chatline';d.textContent=t;$('stageChat').appendChild(d);while($('stageChat').children.length>4)$('stageChat').firstChild.remove()}
-function audio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();return audioCtx}
-function tone(freq,dur,type='sine',vol=.12,delay=0){const c=audio(),o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.setValueAtTime(freq,c.currentTime+delay);g.gain.setValueAtTime(.0001,c.currentTime+delay);g.gain.exponentialRampToValueAtTime(vol,c.currentTime+delay+.02);g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+delay+dur);o.connect(g);g.connect(c.destination);o.start(c.currentTime+delay);o.stop(c.currentTime+delay+dur+.03)}
-function playEffect(k){if(k==='applause'){for(let i=0;i<22;i++)tone(250+Math.random()*900,.07,'triangle',.035,i*.035)}else if(k==='cheer'){[440,554,659,880].forEach((f,i)=>tone(f,.3,'sine',.08,i*.09))}else if(k==='boing'){tone(180,.5,'sawtooth',.09);tone(420,.25,'sine',.07,.12)}else{[180,220,160,280,120].forEach((f,i)=>tone(f,.18,'triangle',.09,i*.14))}toast('Sound effect played.')}
-function sayFunny(){if('speechSynthesis'in window){speechSynthesis.cancel();speechSynthesis.speak(new SpeechSynthesisUtterance('Big love! The gifts are arriving! Thank you, everybody!'))}else toast('Speech is not supported in this browser.')}
-function musicStart(){const c=audio();if(musicPlaying)return;musicPlaying=true;const master=c.createGain();master.gain.value=Number($('musicVolume').value)/100;master.connect(c.destination);musicGain=master;let step=0;const notes=[261.63,329.63,392,329.63,293.66,349.23,440,349.23];musicTimer=setInterval(()=>{if(!musicPlaying)return;const f=notes[step++%notes.length];const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.value=f;g.gain.value=.12;o.connect(g);g.connect(master);o.start();o.stop(c.currentTime+.42);},470);$('musicStatus').textContent='Original background music playing on this device.'}
-function musicPause(){if(!musicPlaying)return;musicPlaying=false;clearInterval(musicTimer);$('musicStatus').textContent='Music paused.'}
-function musicStop(){musicPause();if(musicGain){musicGain.disconnect();musicGain=null}$('musicStatus').textContent='Music stopped.'}
-function setMusicVolume(v){if(musicGain)musicGain.gain.value=Number(v)/100}
-function addPoint(w){if(w==='me')pkMe++;else pkThem++;$('myScore').textContent=pkMe;$('theirScore').textContent=pkThem}
-function resetPK(){pkMe=pkThem=0;$('myScore').textContent='0';$('theirScore').textContent='0'}
-function saveProfile(){const n=$('displayName').value.trim()||'OFFICIALBURAY';$('profileName').textContent=n;localStorage.setItem('ob_display_name',n);localStorage.setItem('ob_bio',$('bio').value);toast('Profile preview saved on this device.')}
-function signOut(){toast('No active sign-in session in this preview.')}
-function searchCreators(){$('creatorResults').textContent='Creator search will work when creator profiles are connected.'}
-async function init(){clearGuests();renderGifts();levelFor(0);$('coinLabel').textContent=coins.toLocaleString()+' demo coins';$('displayName').value=localStorage.getItem('ob_display_name')||'OFFICIALBURAY';$('profileName').textContent=$('displayName').value;$('bio').value=localStorage.getItem('ob_bio')||'';if(window.supabase){sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);try{const{data}=await sb.auth.getSession();user=data.session?.user||null;if(user){$('authLabel').textContent='Account connected';$('profileEmail').textContent=user.email||'Connected account'}else $('authLabel').textContent='Demo preview'}catch(e){$('authLabel').textContent='Demo preview'}}}
-init();
+for(let i=0;i<2100;i++){
+ const base=giftBases[i%giftBases.length];
+ const variant=Math.floor(i/giftBases.length);
+ const name=variant===0?base[0]:giftPrefixes[variant%giftPrefixes.length]+' '+base[0]+' '+(variant+1);
+ giftList.push({
+  name:name,
+  emoji:base[1],
+  cost:[1,2,5,8,10,20,30,50,100,200,500,1000][i%12],
+  talk:i%19===0,
+  dance:i%4===0
+ });
+}
+
+function renderGiftBox(){
+ const search=$('giftSearch').value.toLowerCase();
+ const results=giftList.filter(g=>g.name.toLowerCase().includes(search)).slice(0,90);
+ $('giftTotal').textContent='2,100 gift variations';
+ $('demoCoins').textContent=coins.toLocaleString()+' demo coins';
+ $('giftGrid').innerHTML='';
+ results.forEach(g=>{
+  const b=document.createElement('button');
+  b.className='gift';
+  b.innerHTML='<span>'+g.emoji+'</span><b>'+g.name+'</b><br><small>'+g.cost+' demo coins</small>';
+  b.onclick=()=>sendGift(g);
+  $('giftGrid').appendChild(b);
+ });
+}
+
+function sendGift(g){
+ if(coins<g.cost)return toast('Not enough demo coins');
+ coins-=g.cost;
+ giftTotal+=g.cost;
+ $('demoCoins').textContent=coins.toLocaleString()+' demo coins';
+ const bubble=document.createElement('div');
+ bubble.textContent=g.emoji+' '+g.name+' sent!';
+ bubble.style.cssText='position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);z-index:100;background:#241b30;padding:18px;border-radius:20px;font-size:23px;animation:giftPop 2s forwards';
+ document.body.appendChild(bubble);
+ setTimeout(()=>bubble.remove(),2000);
+ if(g.talk&&'speechSynthesis'in window){
+  speechSynthesis.cancel();
+  speechSynthesis.speak(new SpeechSynthesisUtterance(g.name+' gift sent to the host'));
+ }
+ toast('Gift sent in demo mode');
+}
+
+function openPK(){closeModal('toolsModal');toast('PK battle preview selected');}
+function searchCreators(){
+ const q=$('discoverSearch').value.trim();
+ $('discoverResults').textContent=q?'No connected creator results for '+q:'Creator profiles will appear here.';
+}
+
+async function initializeApp(){
+ $('profileUsername').textContent=localStorage.getItem('ob_name')||'OFFICIALBURAY';
+ $('profileBio').textContent=localStorage.getItem('ob_bio')||'Welcome to my OFFICIALBURAY LIVE profile.';
+ $('newName').value=localStorage.getItem('ob_name')||'OFFICIALBURAY';
+ $('newBio').value=localStorage.getItem('ob_bio')||'';
+ const savedAvatar=localStorage.getItem('ob_avatar');
+ if(savedAvatar)$('profileAvatar').src=savedAvatar;
+ fillGuestBoxes();
+ if(window.supabase){
+  try{
+   supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+   const result=await supabaseClient.auth.getSession();
+   currentUser=result.data.session?.user||null;
+   $('accountStatus').textContent=currentUser?'Account connected':'Creator';
+  }catch(error){
+   $('accountStatus').textContent='Creator';
+  }
+ }
+}
+
+initializeApp();
 </script>
+<style>
+@keyframes giftPop{
+ 0%{opacity:0;transform:translate(-50%,-30%) scale(.5)}
+ 20%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}
+ 80%{opacity:1}
+ 100%{opacity:0;transform:translate(-50%,-100%) scale(.8)}
+}
+</style>
 </body>
-</html>
+ </html>
